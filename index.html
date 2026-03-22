@@ -5,11 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Feltshift — Psychedelic Integration Journal & Retreat Directory</title>
     <meta name="description" content="AI-powered integration journal, mood tracking, breathwork, microdose protocols, and verified retreat directory. Built for people doing real inner work.">
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600&family=DM+Sans:opsz,wght@9..40,300;400;500&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <style>
         :root {
             --bg-deep: #050705;
@@ -23,7 +21,7 @@
             --green: #7EA066;
             --green-light: #9CBC80;
             --green-dark: #556E40;
-            --green-glow: rgba(126, 160, 102, 0.3);
+            --green-glow: rgba(126, 160, 102, 0.4);
             --amber: #BF9B55;
             --amber-light: #D4B472;
             --rose: #A06060;
@@ -32,10 +30,7 @@
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
-        html {
-            scroll-behavior: smooth;
-            font-size: 16px;
-        }
+        html { scroll-behavior: smooth; }
 
         body {
             font-family: 'DM Sans', sans-serif;
@@ -45,126 +40,115 @@
             overflow-x: hidden;
         }
 
-        /* Noise texture overlay */
+        /* Sacred geometry background overlay */
         body::before {
             content: '';
             position: fixed;
             inset: 0;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+            background-image:
+                radial-gradient(circle at 20% 80%, var(--green) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, var(--amber) 0%, transparent 40%),
+                url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3Cpattern id='sacred' x='0' y='0' width='100' height='86.6' patternUnits='userSpaceOnUse'%3E%3Cpath d='M50 0L100 25v50L50 86.6 0 75V25z' fill='none' stroke='%237EA066' stroke-width='0.3' opacity='0.08'/%3E%3C/pattern%3E%3C/defs%3E%3Crect width='400' height='400' fill='url(%23sacred)'/%3E%3C/svg%3E");
+            opacity: 0.6;
             pointer-events: none;
-            z-index: 9999;
+            z-index: -2;
+            animation: subtleShift 20s ease-in-out infinite;
         }
 
-        /* Typography */
-        .font-display { font-family: 'Cormorant Garamond', serif; }
-        .font-ui { font-family: 'DM Sans', sans-serif; }
-
-        /* Animations */
-        @keyframes morphA {
-            0%, 100% { border-radius: 40% 60% 60% 40%/60% 30% 70% 40%; transform: rotate(0deg) scale(1) }
-            25% { border-radius: 50% 50% 30% 70%/50% 60% 40% 50%; transform: rotate(90deg) scale(1.05) }
-            50% { border-radius: 30% 70% 50% 50%/40% 50% 60% 50%; transform: rotate(180deg) scale(0.97) }
-            75% { border-radius: 60% 40% 40% 60%/70% 40% 60% 30%; transform: rotate(270deg) scale(1.03) }
-        }
-        @keyframes morphB {
-            0%, 100% { border-radius: 60% 40% 30% 70%/50% 60% 40% 50%; transform: rotate(0deg) }
-            33% { border-radius: 40% 60% 70% 30%/60% 40% 50% 60%; transform: rotate(-120deg) }
-            66% { border-radius: 70% 30% 50% 50%/30% 70% 40% 60%; transform: rotate(-240deg) }
-        }
-        @keyframes float {
-            0%, 100% { transform: translateY(0) }
-            50% { transform: translateY(-20px) }
-        }
-        @keyframes pulse-glow {
-            0%, 100% { box-shadow: 0 0 20px var(--green-glow), 0 0 40px rgba(126, 160, 102, 0.1) }
-            50% { box-shadow: 0 0 40px var(--green-glow), 0 0 80px rgba(126, 160, 102, 0.2) }
-        }
-        @keyframes breathe {
-            0%, 100% { transform: scale(0.95) }
-            50% { transform: scale(1.05) }
-        }
-        @keyframes draw-line {
-            from { stroke-dashoffset: 1000 }
-            to { stroke-dashoffset: 0 }
+        @keyframes subtleShift {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            50% { transform: scale(1.02) rotate(0.5deg); }
         }
 
         /* Navigation */
         .nav {
             position: fixed;
             top: 0; left: 0; right: 0;
-            padding: 1.5rem 4rem;
+            padding: 1.5rem 3rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
             z-index: 1000;
-            background: linear-gradient(180deg, var(--bg-deep), transparent);
-            transition: all .3s ease;
-        }
-        .nav.scrolled {
-            background: rgba(5, 7, 5, 0.9);
+            background: rgba(5, 7, 5, 0.7);
             backdrop-filter: blur(20px);
-            padding: 1rem 4rem;
+            border-bottom: 1px solid var(--border);
         }
+
         .nav-logo {
             font-family: 'Cormorant Garamond', serif;
-            font-size: 1.4rem;
-            letter-spacing: 0.3em;
+            font-size: 1.6rem;
+            letter-spacing: 0.25em;
             font-weight: 300;
             color: var(--green);
             text-decoration: none;
+            position: relative;
         }
+
+        .nav-logo::after {
+            content: '◈';
+            position: absolute;
+            right: -1.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.8rem;
+            animation: rotateSacred 8s linear infinite;
+        }
+
+        @keyframes rotateSacred {
+            from { transform: translateY(-50%) rotate(0deg); }
+            to { transform: translateY(-50%) rotate(360deg); }
+        }
+
         .nav-links {
             display: flex;
-            gap: 3rem;
+            gap: 2.5rem;
             align-items: center;
         }
+
         .nav-links a {
             color: var(--text-secondary);
             text-decoration: none;
             font-size: 0.75rem;
             letter-spacing: 0.15em;
             text-transform: uppercase;
-            transition: color 0.3s;
+            transition: all 0.3s;
             position: relative;
+            padding: 0.5rem 0;
         }
-        .nav-links a::after {
+
+        .nav-links a::before {
             content: '';
             position: absolute;
-            bottom: -4px; left: 0;
-            width: 0; height: 1px;
-            background: var(--green);
-            transition: width 0.3s cubic-bezier(.22, 1, .36, 1);
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--green), transparent);
+            transition: all 0.3s;
+            transform: translateX(-50%);
         }
-        .nav-links a:hover::after { width: 100%; }
-        .nav-links a:hover { color: var(--green); }
+
+        .nav-links a:hover::before { width: 100%; }
+        .nav-links a:hover { color: var(--green); text-shadow: 0 0 20px var(--green-glow); }
+
         .nav-cta {
-            background: var(--green);
+            background: linear-gradient(135deg, var(--green), var(--green-dark));
             color: var(--bg-deep) !important;
-            padding: 0.6rem 1.2rem;
+            padding: 0.75rem 1.5rem !important;
             border-radius: 100px;
             font-weight: 500;
         }
-        .nav-cta:hover::after { display: none; }
-        .mobile-menu-btn {
-            display: none;
-            width: 32px; height: 32px;
-            cursor: pointer;
-            flex-direction: column;
-            justify-content: center;
-            gap: 6px;
-        }
-        .mobile-menu-btn span {
-            width: 24px; height: 1px;
-            background: var(--text-primary);
-            transition: all .3s;
-        }
 
-        /* Three.js Canvas */
-        #hero-canvas {
-            position: absolute;
+        .nav-cta::before { display: none !important; }
+        .nav-cta:hover { transform: translateY(-2px); box-shadow: 0 5px 20px var(--green-glow); }
+
+        /* Three.js Full Screen Container */
+        #hero-canvas-container {
+            position: fixed;
             top: 0; left: 0;
             width: 100%; height: 100%;
             z-index: -1;
+            pointer-events: all;
         }
 
         /* Hero */
@@ -174,166 +158,201 @@
             align-items: center;
             justify-content: center;
             text-align: center;
-            padding: 8rem 2rem 4rem;
-            position: relative;
-            overflow: hidden;
-        }
-        .hero-content {
-            max-width: 700px;
+            padding: 2rem;
             position: relative;
             z-index: 1;
         }
+
+        .hero-content {
+            max-width: 800px;
+            padding: 3rem 2rem;
+            background: rgba(5, 7, 5, 0.85);
+            backdrop-filter: blur(40px);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.6), inset 0 0 60px rgba(126, 160, 102, 0.05);
+            position: relative;
+        }
+
+        .hero-content::before {
+            content: '';
+            position: absolute;
+            top: -1px; left: -1px; right: -1px; bottom: -1px;
+            background: linear-gradient(135deg, var(--green) 0%, transparent 30%, transparent 70%, var(--amber) 100%);
+            border-radius: 24px;
+            z-index: -1;
+            opacity: 0.3;
+        }
+
         .hero-label {
-            font-size: 0.65rem;
-            letter-spacing: 0.35em;
+            font-size: 0.7rem;
+            letter-spacing: 0.4em;
             text-transform: uppercase;
             color: var(--green);
-            margin-bottom: 2rem;
-            opacity: 0;
-            transform: translateY(20px);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
         }
+
+        .hero-label::before, .hero-label::after {
+            content: '';
+            width: 40px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--green), transparent);
+        }
+
         .hero h1 {
             font-family: 'Cormorant Garamond', serif;
-            font-size: clamp(2.5rem, 5vw, 3.5rem);
+            font-size: clamp(2.5rem, 5vw, 4rem);
             font-weight: 300;
-            line-height: 1.15;
-            margin-bottom: 1.5rem;
-            opacity: 0;
-            transform: translateY(24px);
+            line-height: 1.1;
+            margin-bottom: 1.25rem;
         }
+
         .hero h1 .highlight {
             display: block;
-            background: linear-gradient(135deg, var(--green), var(--amber));
+            background: linear-gradient(135deg, var(--green), var(--amber), var(--green));
+            background-size: 200% 200%;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            background-clip: text;
+            animation: gradientShift 5s ease infinite;
         }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
         .hero-subtitle {
             color: var(--text-secondary);
-            font-size: 1.1rem;
+            font-size: 1.05rem;
             max-width: 540px;
-            margin: 0 auto 2.5rem;
-            opacity: 0;
-            transform: translateY(20px);
+            margin: 0 auto 2rem;
+            line-height: 1.85;
         }
+
         .hero-ctas {
             display: flex;
             gap: 1rem;
             justify-content: center;
+            flex-wrap: wrap;
             margin-bottom: 1.5rem;
-            opacity: 0;
-            transform: translateY(20px);
         }
+
         .btn {
-            padding: 1rem 2rem;
+            padding: 1rem 2.25rem;
             border-radius: 100px;
-            font-size: 0.8rem;
-            letter-spacing: 0.1em;
+            font-size: 0.75rem;
+            letter-spacing: 0.15em;
             text-transform: uppercase;
             font-weight: 500;
             cursor: pointer;
-            transition: all .35s cubic-bezier(.22, 1, .36, 1);
+            transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
             text-decoration: none;
             display: inline-block;
             border: none;
+            position: relative;
+            overflow: hidden;
         }
+
         .btn-primary {
-            background: linear-gradient(135deg, var(--green), var(--green-light));
+            background: linear-gradient(135deg, var(--green), var(--green-dark));
             color: var(--bg-deep);
-            box-shadow: 0 4px 20px rgba(126, 160, 102, 0.3);
         }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn-primary:hover::before { left: 100%; }
+
         .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 30px rgba(126, 160, 102, 0.5);
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 10px 40px var(--green-glow), 0 0 60px rgba(126, 160, 102, 0.2);
         }
+
         .btn-secondary {
             background: transparent;
             color: var(--green);
             border: 1px solid var(--green);
         }
+
         .btn-secondary:hover {
             background: rgba(126, 160, 102, 0.1);
-            transform: translateY(-2px);
+            transform: translateY(-3px);
+            box-shadow: 0 0 30px var(--green-glow);
         }
+
         .hero-trust {
             font-size: 0.75rem;
             color: var(--text-muted);
-            opacity: 0;
-        }
-        .scroll-indicator {
-            position: absolute;
-            bottom: 2rem;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 0.5rem;
-            opacity: 0;
-        }
-        .scroll-indicator span {
-            font-size: 0.6rem;
-            letter-spacing: 0.2em;
-            text-transform: uppercase;
-            color: var(--text-muted);
-        }
-        .scroll-line {
-            width: 1px;
-            height: 40px;
-            background: linear-gradient(to bottom, var(--green), transparent);
-            animation: pulse-glow 2s ease infinite;
         }
 
-        /* Background blobs */
-        .blob {
+        /* Floating sacred symbols */
+        .floating-symbol {
             position: absolute;
-            border-radius: 50%;
-            filter: blur(80px);
+            font-size: 1.5rem;
+            color: var(--green);
             opacity: 0.15;
+            animation: floatSymbol 8s ease-in-out infinite;
             pointer-events: none;
         }
-        .blob-1 {
-            width: 600px; height: 600px;
-            background: var(--green);
-            top: -200px; right: -200px;
-            animation: morphA 25s ease-in-out infinite;
-        }
-        .blob-2 {
-            width: 500px; height: 500px;
-            background: var(--amber);
-            bottom: -200px; left: -200px;
-            animation: morphB 30s ease-in-out infinite;
+
+        .floating-symbol:nth-child(1) { top: 10%; left: 5%; animation-delay: 0s; }
+        .floating-symbol:nth-child(2) { top: 20%; right: 8%; animation-delay: 2s; }
+        .floating-symbol:nth-child(3) { bottom: 30%; left: 10%; animation-delay: 4s; }
+
+        @keyframes floatSymbol {
+            0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0.1; }
+            50% { transform: translateY(-20px) rotate(180deg); opacity: 0.25; }
         }
 
         /* Sections */
         section {
-            padding: 7rem 2rem;
+            padding: 6rem 2rem;
             position: relative;
+            z-index: 2;
+            background: var(--bg-deep);
         }
+
+        section:nth-child(even) {
+            background: var(--bg-surface);
+        }
+
         .section-header {
             text-align: center;
             max-width: 700px;
             margin: 0 auto 4rem;
         }
+
         .section-label {
-            font-size: 0.65rem;
+            font-size: 0.7rem;
             letter-spacing: 0.3em;
             text-transform: uppercase;
             color: var(--green);
             margin-bottom: 1rem;
         }
+
         .section-header h2 {
             font-family: 'Cormorant Garamond', serif;
-            font-size: clamp(2rem, 4vw, 2.75rem);
+            font-size: clamp(1.8rem, 4vw, 2.5rem);
             font-weight: 300;
             margin-bottom: 1rem;
         }
+
         .section-header p {
             color: var(--text-secondary);
             font-size: 1rem;
         }
 
-        /* Problem section */
+        /* Problem Cards */
         .problem-cards {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -341,76 +360,95 @@
             max-width: 900px;
             margin: 0 auto;
         }
+
         .problem-card {
-            background: var(--bg-surface);
+            background: rgba(11, 14, 10, 0.8);
             border: 1px solid var(--border);
-            border-radius: 16px;
+            border-radius: 20px;
             padding: 2rem;
-            transition: all .35s cubic-bezier(.22, 1, .36, 1);
+            transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+            position: relative;
+            overflow: hidden;
         }
+
+        .problem-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 3px;
+            background: linear-gradient(90deg, var(--rose), var(--green), var(--amber));
+            transform: scaleX(0);
+            transition: transform 0.4s;
+        }
+
+        .problem-card:hover::before { transform: scaleX(1); }
+
         .problem-card:hover {
-            transform: translateY(-4px);
+            transform: translateY(-8px);
             border-color: var(--green);
-            box-shadow: inset 0 0 40px var(--green-glow), 0 10px 40px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4), 0 0 40px var(--green-glow);
         }
+
         .problem-icon {
-            width: 48px; height: 48px;
-            margin-bottom: 1rem;
+            width: 56px; height: 56px;
+            margin-bottom: 1.25rem;
+            color: var(--green);
         }
+
         .problem-card h3 {
             font-family: 'Cormorant Garamond', serif;
-            font-size: 1.25rem;
-            margin-bottom: 0.5rem;
+            font-size: 1.3rem;
+            margin-bottom: 0.75rem;
             font-weight: 400;
         }
+
         .problem-card p {
             color: var(--text-secondary);
             font-size: 0.9rem;
+            line-height: 1.7;
         }
 
-        /* Features section */
-        .features {
-            background: linear-gradient(180deg, transparent, var(--bg-surface) 50%, transparent);
-        }
+        /* Feature Blocks */
         .feature-block {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 4rem;
             max-width: 1200px;
-            margin: 0 auto 6rem;
+            margin: 0 auto 5rem;
             align-items: center;
         }
-        .feature-block.reverse {
-            direction: rtl;
-        }
-        .feature-block.reverse > * {
-            direction: ltr;
-        }
+
         .feature-content h3 {
             font-family: 'Cormorant Garamond', serif;
-            font-size: 1.75rem;
+            font-size: 1.6rem;
             margin-bottom: 1rem;
             font-weight: 400;
         }
+
         .feature-content h3 span {
-            color: var(--green);
+            background: linear-gradient(135deg, var(--green), var(--amber));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
+
         .feature-content p {
             color: var(--text-secondary);
             margin-bottom: 1.5rem;
             line-height: 1.8;
         }
+
         .feature-why {
-            background: var(--bg-elevated);
-            border-left: 2px solid var(--green);
-            padding: 1.25rem 1.5rem;
+            background: rgba(21, 32, 24, 0.5);
+            border-left: 3px solid var(--green);
+            padding: 1.25rem;
             border-radius: 0 8px 8px 0;
             font-size: 0.85rem;
             color: var(--text-secondary);
             line-height: 1.7;
         }
+
         .feature-visual {
-            background: var(--bg-surface);
+            background: var(--bg-elevated);
             border: 1px solid var(--border);
             border-radius: 20px;
             padding: 2rem;
@@ -418,252 +456,23 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
-        }
-
-        /* Journal mockup */
-        .journal-mockup {
-            background: var(--bg-elevated);
-            border-radius: 12px;
-            padding: 1.5rem;
-        }
-        .mock-entry {
-            background: var(--bg-deep);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 1rem;
-            margin-bottom: 0.75rem;
-            font-size: 0.85rem;
-        }
-        .mock-entry.ai {
-            border-color: var(--green);
-            background: linear-gradient(135deg, var(--bg-elevated), rgba(126, 160, 102, 0.05));
-        }
-        .mock-label {
-            font-size: 0.65rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            margin-bottom: 0.5rem;
-        }
-        .typewriter-text {
-            line-height: 1.6;
-        }
-        .typewriter-cursor {
-            display: inline-block;
-            width: 2px;
-            height: 1.2em;
-            background: var(--green);
-            animation: blink 1s step-end infinite;
-            vertical-align: middle;
-            margin-left: 2px;
-        }
-        @keyframes blink {
-            50% { opacity: 0 }
-        }
-
-        /* Timeline mockup */
-        .timeline-visual {
-            display: flex;
-            gap: 0.5rem;
-            align-items: flex-end;
-        }
-        .timeline-day {
-            flex: 1;
-            text-align: center;
-        }
-        .timeline-node {
-            width: 100%;
-            height: 60px;
-            background: var(--bg-deep);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            margin-bottom: 0.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-family: 'Cormorant Garamond', serif;
-            color: var(--text-muted);
-            font-size: 0.8rem;
-            transition: all .3s;
-            cursor: pointer;
-        }
-        .timeline-day:hover .timeline-node {
-            border-color: var(--green);
-            color: var(--green);
-        }
-        .timeline-day.active .timeline-node {
-            border-color: var(--green);
-            background: rgba(126, 160, 102, 0.1);
-            color: var(--green);
-        }
-        .timeline-label {
-            font-size: 0.65rem;
-            color: var(--text-muted);
-        }
-
-        /* Chart mockup */
-        .chart-container {
-            height: 220px;
             position: relative;
+            overflow: hidden;
         }
 
-        /* Protocol cards */
-        .protocol-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 1rem;
-        }
-        .protocol-card {
-            background: var(--bg-elevated);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 1.25rem;
-            cursor: pointer;
-            transition: all .3s;
-        }
-        .protocol-card.active {
-            border-color: var(--green);
-            background: rgba(126, 160, 102, 0.05);
-        }
-        .protocol-card:hover {
-            border-color: var(--green);
-        }
-        .protocol-card h4 {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 1rem;
-            margin-bottom: 0.5rem;
-        }
-        .protocol-meta {
-            font-size: 0.7rem;
-            color: var(--text-muted);
-            margin-bottom: 0.75rem;
-        }
-        .protocol-card p {
-            font-size: 0.8rem;
-            color: var(--text-secondary);
-            line-height: 1.6;
+        .feature-visual::before {
+            content: '';
+            position: absolute;
+            top: -50%; left: -50%;
+            width: 200%; height: 200%;
+            background: radial-gradient(circle, var(--green) 0%, transparent 70%);
+            opacity: 0.05;
+            animation: pulseGlow 4s ease-in-out infinite;
         }
 
-        /* Breathwork 3D container */
-        .breath-3d-container {
-            width: 200px;
-            height: 200px;
-            margin: 0 auto;
-            position: relative;
-        }
-        #breath-canvas {
-            width: 100% !important;
-            height: 100% !important;
-        }
-
-        /* Retreat card */
-        .retreat-card {
-            background: var(--bg-elevated);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 1.5rem;
-            display: grid;
-            grid-template-columns: auto 1fr auto;
-            gap: 1.5rem;
-            align-items: center;
-        }
-        .retreat-image {
-            width: 80px; height: 80px;
-            background: var(--bg-deep);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2rem;
-        }
-        .retreat-info h4 {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 1.1rem;
-            margin-bottom: 0.25rem;
-        }
-        .retreat-meta {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            margin-bottom: 0.5rem;
-        }
-        .retreat-tags {
-            display: flex;
-            gap: 0.5rem;
-        }
-        .retreat-tag {
-            font-size: 0.65rem;
-            padding: 0.25rem 0.5rem;
-            background: var(--bg-deep);
-            border-radius: 4px;
-            color: var(--text-secondary);
-        }
-        .verified-badge {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            color: var(--green);
-            font-size: 0.75rem;
-        }
-
-        /* Stats Section */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 1.5rem;
-            margin: 3rem 0;
-        }
-        .stat-card {
-            background: var(--bg-surface);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 1.5rem;
-            text-align: center;
-            transition: all .35s cubic-bezier(.22, 1, .36, 1);
-        }
-        .stat-card:hover {
-            transform: translateY(-4px);
-            border-color: var(--green);
-        }
-        .stat-number {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 2.5rem;
-            color: var(--green);
-            margin-bottom: 0.5rem;
-        }
-        .stat-label {
-            font-size: 0.75rem;
-            color: var(--text-secondary);
-            line-height: 1.4;
-        }
-        .stat-source {
-            font-size: 0.65rem;
-            color: var(--text-muted);
-            margin-top: 0.75rem;
-        }
-
-        /* Science explanation */
-        .science-explain {
-            background: var(--bg-surface);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 2rem;
-            max-width: 800px;
-            margin: 2rem auto 0;
-        }
-        .science-explain h3 {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 1.25rem;
-            margin-bottom: 1rem;
-        }
-        .science-explain p {
-            color: var(--text-secondary);
-            line-height: 1.8;
-            margin-bottom: 1rem;
-        }
-        .science-explain cite {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            font-style: normal;
+        @keyframes pulseGlow {
+            0%, 100% { transform: scale(1); opacity: 0.03; }
+            50% { transform: scale(1.1); opacity: 0.08; }
         }
 
         /* Pricing */
@@ -674,22 +483,41 @@
             max-width: 1000px;
             margin: 0 auto;
         }
+
         .pricing-card {
-            background: var(--bg-surface);
+            background: var(--bg-elevated);
             border: 1px solid var(--border);
-            border-radius: 20px;
-            padding: 2.5rem 2rem;
+            border-radius: 24px;
+            padding: 2.5rem 1.5rem;
             position: relative;
-            transition: all .35s cubic-bezier(.22, 1, .36, 1);
+            transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
         }
+
         .pricing-card:hover {
-            transform: translateY(-4px);
+            transform: translateY(-8px);
         }
+
         .pricing-card.recommended {
             border-color: var(--green);
-            box-shadow: 0 0 40px rgba(126, 160, 102, 0.15);
-            animation: pulse-glow 3s ease infinite;
+            box-shadow: 0 0 60px var(--green-glow);
         }
+
+        .pricing-card.recommended::before {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            background: linear-gradient(135deg, var(--green), var(--amber), var(--green));
+            border-radius: 26px;
+            z-index: -1;
+            opacity: 0.5;
+            animation: rotateGradient 6s linear infinite;
+        }
+
+        @keyframes rotateGradient {
+            0% { filter: hue-rotate(0deg); }
+            100% { filter: hue-rotate(360deg); }
+        }
+
         .pricing-badge {
             position: absolute;
             top: -12px;
@@ -698,122 +526,48 @@
             background: var(--green);
             color: var(--bg-deep);
             font-size: 0.65rem;
-            padding: 0.4rem 1rem;
+            padding: 0.4rem 1.2rem;
             border-radius: 100px;
             text-transform: uppercase;
             letter-spacing: 0.1em;
             font-weight: 500;
         }
+
         .pricing-name {
             font-family: 'Cormorant Garamond', serif;
-            font-size: 1.5rem;
+            font-size: 1.6rem;
             margin-bottom: 0.5rem;
         }
+
         .pricing-price {
-            font-size: 2.5rem;
+            font-size: 2.75rem;
             font-weight: 300;
-            margin-bottom: 0.25rem;
+            background: linear-gradient(135deg, var(--text-primary), var(--green));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
+
         .pricing-price span {
-            font-size: 1rem;
-            color: var(--text-muted);
+            font-size: 0.9rem;
+            -webkit-text-fill-color: var(--text-muted);
         }
-        .pricing-desc {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            margin-bottom: 1.5rem;
-        }
+
         .pricing-features {
             list-style: none;
-            margin-bottom: 2rem;
+            margin: 1.5rem 0;
         }
+
         .pricing-features li {
             padding: 0.6rem 0;
             border-bottom: 1px solid var(--border);
             font-size: 0.85rem;
             color: var(--text-secondary);
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
         }
+
         .pricing-features li::before {
-            content: '✓';
+            content: '◈';
             color: var(--green);
-        }
-
-        /* B2B Cards */
-        .b2b-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1.5rem;
-            max-width: 900px;
-            margin: 0 auto;
-        }
-        .b2b-card {
-            background: var(--bg-surface);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 2rem;
-            transition: all .35s cubic-bezier(.22, 1, .36, 1);
-        }
-        .b2b-card:hover {
-            transform: translateY(-4px);
-            border-color: var(--amber);
-            box-shadow: inset 0 0 40px rgba(191, 155, 85, 0.05);
-        }
-        .b2b-card h3 {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 1.25rem;
-            margin-bottom: 0.5rem;
-        }
-        .b2b-card .price {
-            color: var(--amber);
-            font-size: 0.9rem;
-            margin-bottom: 1rem;
-        }
-        .b2b-card p {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-            line-height: 1.7;
-        }
-
-        /* Programs */
-        .programs-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 1rem;
-        }
-        .program-card {
-            background: var(--bg-surface);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 1.5rem;
-            transition: all .35s cubic-bezier(.22, 1, .36, 1);
-        }
-        .program-card:hover {
-            transform: translateY(-4px);
-            border-color: var(--green);
-        }
-        .program-card h4 {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 1rem;
-            margin-bottom: 0.5rem;
-        }
-        .program-price {
-            color: var(--green);
-            font-size: 1.25rem;
-            margin-bottom: 0.5rem;
-        }
-        .program-card p {
-            font-size: 0.8rem;
-            color: var(--text-secondary);
-            line-height: 1.6;
-            margin-bottom: 1rem;
-        }
-        .program-link {
-            font-size: 0.75rem;
-            color: var(--green);
-            text-decoration: none;
+            margin-right: 0.75rem;
         }
 
         /* FAQ */
@@ -821,56 +575,56 @@
             max-width: 800px;
             margin: 0 auto;
         }
+
         .faq-item {
             border-bottom: 1px solid var(--border);
         }
+
         .faq-question {
             padding: 1.5rem 0;
             display: flex;
             justify-content: space-between;
             align-items: center;
             cursor: pointer;
-            transition: color .3s;
+            transition: color 0.3s;
         }
-        .faq-question:hover {
-            color: var(--green);
-        }
+
+        .faq-question:hover { color: var(--green); }
+
         .faq-question h3 {
             font-family: 'Cormorant Garamond', serif;
-            font-size: 1.1rem;
+            font-size: 1.15rem;
             font-weight: 400;
         }
+
         .faq-icon {
             width: 24px; height: 24px;
             position: relative;
-            flex-shrink: 0;
+            transition: transform 0.3s;
         }
+
+        .faq-item.open .faq-icon {
+            transform: rotate(45deg);
+        }
+
         .faq-icon::before,
         .faq-icon::after {
             content: '';
             position: absolute;
             background: currentColor;
-            transition: transform .3s;
         }
-        .faq-icon::before {
-            width: 100%; height: 1px;
-            top: 50%; left: 0;
-        }
-        .faq-icon::after {
-            width: 1px; height: 100%;
-            top: 0; left: 50%;
-        }
-        .faq-item.open .faq-icon::after {
-            transform: rotate(90deg);
-        }
+
+        .faq-icon::before { width: 100%; height: 1px; top: 50%; left: 0; }
+        .faq-icon::after { width: 1px; height: 100%; top: 0; left: 50%; }
+
         .faq-answer {
             max-height: 0;
             overflow: hidden;
-            transition: max-height .5s cubic-bezier(.22, 1, .36, 1);
+            transition: max-height 0.5s cubic-bezier(0.22, 1, 0.36, 1);
         }
-        .faq-item.open .faq-answer {
-            max-height: 500px;
-        }
+
+        .faq-item.open .faq-answer { max-height: 500px; }
+
         .faq-answer p {
             color: var(--text-secondary);
             font-size: 0.95rem;
@@ -883,34 +637,36 @@
             padding: 8rem 2rem;
             text-align: center;
             position: relative;
-            overflow: hidden;
+            background: linear-gradient(180deg, var(--bg-deep), var(--bg-surface));
         }
+
+        .footer-cta::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 50%;
+            transform: translateX(-50%);
+            width: 2px; height: 100px;
+            background: linear-gradient(to bottom, var(--green), transparent);
+        }
+
         .footer-cta h2 {
             font-family: 'Cormorant Garamond', serif;
-            font-size: clamp(2rem, 4vw, 2.75rem);
-            margin-bottom: 1rem;
-            position: relative;
-            z-index: 1;
+            font-size: clamp(1.8rem, 4vw, 2.5rem);
+            margin: 2rem 0 1rem;
         }
+
         .footer-cta p {
             color: var(--text-secondary);
             margin-bottom: 2rem;
-            position: relative;
-            z-index: 1;
-        }
-        .footer-cta .btn {
-            font-size: 1rem;
-            padding: 1.2rem 3rem;
-            position: relative;
-            z-index: 1;
         }
 
         /* Footer */
         footer {
-            background: var(--bg-surface);
+            background: var(--bg-deep);
             border-top: 1px solid var(--border);
             padding: 4rem 2rem 2rem;
         }
+
         .footer-grid {
             display: grid;
             grid-template-columns: 2fr repeat(3, 1fr);
@@ -918,18 +674,13 @@
             max-width: 1200px;
             margin: 0 auto 3rem;
         }
-        .footer-brand {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 1.5rem;
-            color: var(--green);
-            margin-bottom: 1rem;
-            display: block;
-        }
+
         .footer-tagline {
             font-size: 0.9rem;
             color: var(--text-secondary);
             line-height: 1.7;
         }
+
         .footer-col h4 {
             font-size: 0.7rem;
             letter-spacing: 0.15em;
@@ -937,23 +688,21 @@
             color: var(--text-muted);
             margin-bottom: 1.25rem;
         }
-        .footer-col ul {
-            list-style: none;
-        }
-        .footer-col li {
-            margin-bottom: 0.75rem;
-        }
+
+        .footer-col ul { list-style: none; }
+        .footer-col li { margin-bottom: 0.75rem; }
+
         .footer-col a {
             color: var(--text-secondary);
             text-decoration: none;
             font-size: 0.85rem;
-            transition: color .3s;
+            transition: color 0.3s;
         }
-        .footer-col a:hover {
-            color: var(--green);
-        }
+
+        .footer-col a:hover { color: var(--green); }
+
         .crisis-banner {
-            background: rgba(160, 96, 96, 0.1);
+            background: linear-gradient(135deg, rgba(160, 96, 96, 0.1), rgba(160, 96, 96, 0.05));
             border: 1px solid rgba(160, 96, 96, 0.3);
             border-radius: 12px;
             padding: 1.25rem;
@@ -962,162 +711,131 @@
             align-items: center;
             justify-content: center;
             gap: 1rem;
+            max-width: 800px;
+            margin: 0 auto 2rem;
         }
-        .crisis-banner span {
-            color: var(--rose);
-            font-size: 0.85rem;
-        }
-        .crisis-banner a {
-            color: var(--rose);
-            font-weight: 500;
-            text-decoration: none;
-        }
+
+        .crisis-banner span { color: var(--rose); font-size: 0.85rem; }
+        .crisis-banner a { color: var(--rose); font-weight: 500; text-decoration: none; }
+
         .footer-bottom {
             border-top: 1px solid var(--border);
             padding-top: 2rem;
             text-align: center;
         }
+
         .footer-bottom p {
             font-size: 0.75rem;
             color: var(--text-muted);
-            margin-bottom: 0.5rem;
         }
 
-        /* Scroll progress bar */
-        .scroll-progress {
-            position: fixed;
-            top: 0; left: 0;
-            width: 0%;
-            height: 2px;
-            background: var(--green);
-            z-index: 10000;
-            transition: width .1s;
+        /* Three.js Breathwork Container */
+        #breath-canvas-container {
+            width: 220px;
+            height: 220px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        #breath-canvas {
+            width: 100% !important;
+            height: 100% !important;
+            border-radius: 50%;
         }
 
         /* Responsive */
-        @media (max-width: 1024px) {
-            .stats-grid { grid-template-columns: repeat(3, 1fr); }
-            .programs-grid { grid-template-columns: repeat(2, 1fr); }
-        }
-
         @media (max-width: 768px) {
             .nav { padding: 1rem 1.5rem; }
             .nav-links { display: none; }
-            .mobile-menu-btn { display: flex; }
-            section { padding: 5rem 1.5rem; }
-            .hero { padding: 6rem 1.5rem 3rem; }
+            .hero-content { padding: 2rem 1.5rem; }
             .hero-ctas { flex-direction: column; }
-            .btn { width: 100%; text-align: center; }
-            .problem-cards { grid-template-columns: 1fr; }
+            .btn { width: 100%; }
+            .problem-cards, .pricing-grid { grid-template-columns: 1fr; }
             .feature-block { grid-template-columns: 1fr; }
-            .feature-block.reverse { direction: ltr; }
-            .protocol-grid { grid-template-columns: 1fr; }
-            .stats-grid { grid-template-columns: 1fr; }
-            .pricing-grid { grid-template-columns: 1fr; }
-            .b2b-grid { grid-template-columns: 1fr; }
-            .programs-grid { grid-template-columns: 1fr; }
             .footer-grid { grid-template-columns: 1fr; text-align: center; }
-            .retreat-card { grid-template-columns: 1fr; text-align: center; }
-        }
-
-        /* Reduced motion */
-        @media (prefers-reduced-motion: reduce) {
-            *, *::before, *::after {
-                animation-duration: 0.01ms !important;
-                animation-iteration-count: 1 !important;
-                transition-duration: 0.01ms !important;
-            }
         }
     </style>
 </head>
 <body>
-    <!-- Scroll Progress Bar -->
-    <div class="scroll-progress" id="scroll-progress"></div>
+    <!-- Full Screen Hero Three.js Canvas -->
+    <div id="hero-canvas-container">
+        <canvas id="hero-canvas"></canvas>
+    </div>
 
     <!-- Navigation -->
-    <nav class="nav" id="nav">
+    <nav class="nav">
         <a href="#" class="nav-logo">FELTSHIFT</a>
         <div class="nav-links">
-            <a href="app.html" style="color: var(--amber);">Open App</a>
+            <a href="app.html">Open App</a>
             <a href="#features">Features</a>
-            <a href="#science">Science</a>
             <a href="#pricing">Pricing</a>
             <a href="#faq">FAQ</a>
-            <a href="#" class="nav-cta">Start Free</a>
-        </div>
-        <div class="mobile-menu-btn">
-            <span></span><span></span><span></span>
+            <a href="app.html" class="nav-cta">Start Free</a>
         </div>
     </nav>
 
-    <!-- Hero Section -->
+    <!-- Hero -->
     <section class="hero" id="hero">
-        <canvas id="hero-canvas"></canvas>
-        <div class="blob blob-1"></div>
-        <div class="blob blob-2"></div>
+        <div class="floating-symbol">◈</div>
+        <div class="floating-symbol">◉</div>
+        <div class="floating-symbol">◊</div>
 
         <div class="hero-content">
             <p class="hero-label">An Integration Platform</p>
-            <h1>Your mind changed. <span class="highlight">Now track the shift.</span></h1>
+            <h1>Your mind changed.<br><span class="highlight">Now track the shift.</span></h1>
             <p class="hero-subtitle">AI-powered integration journal. Mood tracking. Breathwork. Microdose protocols. Verified retreat directory. Built for people doing real inner work.</p>
             <div class="hero-ctas">
                 <a href="app.html" class="btn btn-primary">Start Free</a>
-                <a href="#features" class="btn btn-secondary">See How It Works</a>
+                <a href="#features" class="btn btn-secondary">Explore Features</a>
             </div>
             <p class="hero-trust">Free forever. No credit card. Your journal stays encrypted.</p>
         </div>
-
-        <div class="scroll-indicator">
-            <span>Scroll</span>
-            <div class="scroll-line"></div>
-        </div>
     </section>
 
-    <!-- Problem Section -->
+    <!-- Problem -->
     <section id="problem">
         <div class="section-header">
             <p class="section-label">The Reality</p>
             <h2>The experience opened a door. Then what?</h2>
-            <p>Millions of people are having life-changing psychedelic experiences — in ceremony, in therapy, or on their own. But when the experience ends, they're left alone with a journal and a million unanswered questions. Integration is where the real transformation happens. And almost nobody has tools for it.</p>
+            <p>Millions of people have life-changing psychedelic experiences. But when it ends, they're left alone. Integration is where transformation happens. And almost nobody has tools.</p>
         </div>
 
         <div class="problem-cards">
-            <div class="problem-card gs-reveal">
+            <div class="problem-card">
                 <div class="problem-icon">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                        <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/>
-                        <path d="M12 8v8M8 12h8" stroke-dasharray="4 4"/>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
+                        <circle cx="12" cy="12" r="10" stroke-dasharray="4 4"/>
+                        <line x1="12" y1="8" x2="12" y2="16"/>
                     </svg>
                 </div>
                 <h3>You had a breakthrough</h3>
                 <p>Then went back to your old life within a week. The insights faded. The patterns returned. Nothing anchored.</p>
             </div>
-            <div class="problem-card gs-reveal">
+            <div class="problem-card">
                 <div class="problem-icon">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                        <circle cx="12" cy="12" r="2"/>
-                        <circle cx="6" cy="12" r="2"/>
-                        <circle cx="18" cy="12" r="2"/>
-                        <circle cx="12" cy="6" r="2"/>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
+                        <circle cx="6" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="18" cy="12" r="2"/>
+                        <circle cx="9" cy="6" r="1.5"/><circle cx="15" cy="6" r="1.5"/>
                     </svg>
                 </div>
                 <h3>You journal in 4 apps</h3>
-                <p>None of them understand this work. No one asks the follow-up questions. The patterns never emerge.</p>
+                <p>None understand this work. No one asks the follow-up questions. The patterns never emerge.</p>
             </div>
-            <div class="problem-card gs-reveal">
+            <div class="problem-card">
                 <div class="problem-icon">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                        <circle cx="12" cy="12" r="10"/>
-                        <path d="M12 8v4M12 16h.01"/>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                        <circle cx="12" cy="11" r="3"/>
                     </svg>
                 </div>
                 <h3>You want a retreat</h3>
                 <p>But you don't know who to trust. Horror stories make you hesitate. Credentials are impossible to verify.</p>
             </div>
-            <div class="problem-card gs-reveal">
+            <div class="problem-card">
                 <div class="problem-icon">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                        <path d="M3 12h18M3 12l4-4M3 12l4 4"/>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
+                        <rect x="3" y="3" width="18" height="18" rx="2"/>
+                        <path d="M9 9h6v6H9z"/>
                     </svg>
                 </div>
                 <h3>You microdose</h3>
@@ -1126,229 +844,86 @@
         </div>
     </section>
 
-    <!-- Features Section -->
-    <section class="features" id="features">
+    <!-- Features -->
+    <section id="features">
         <div class="section-header">
             <p class="section-label">What We Built</p>
             <h2>Everything you need. Nothing you don't.</h2>
-            <p>Built on IFS, ACT, and somatic therapy frameworks. Powered by AI that actually understands integration.</p>
+            <p>Built on IFS, ACT, and somatic therapy frameworks. Powered by AI that understands integration.</p>
         </div>
 
-        <!-- Feature 1: AI Journal -->
-        <div class="feature-block gs-reveal">
+        <!-- AI Journal -->
+        <div class="feature-block">
             <div class="feature-content">
                 <h3>A journal that <span>talks back</span></h3>
                 <p>Not a blank page. An AI companion trained on Internal Family Systems, ACT, and somatic awareness. Write about your experience and it asks the question you didn't know you needed to hear.</p>
                 <div class="feature-why">
-                    <strong>Why this matters:</strong> Your AI adapts to your stage, your goals, and your history. It notices patterns across weeks of entries that you'd never catch yourself.
+                    <strong>Why this matters:</strong> Your AI adapts to your stage, goals, and history. It notices patterns across weeks of entries that you'd never catch.
                 </div>
             </div>
             <div class="feature-visual">
-                <div class="journal-mockup">
-                    <div class="mock-entry">
-                        <div class="mock-label">You wrote</div>
-                        <p style="color: var(--text-secondary);">"I keep seeing the same pattern in my relationships. I push people away when they get close."</p>
-                    </div>
-                    <div class="mock-entry ai">
-                        <div class="mock-label">Feltshift</div>
-                        <p class="typewriter-text">
-                            You've mentioned distance three times this week. What part of you is keeping people at arm's length—and what is it trying to protect?
-                            <span class="typewriter-cursor"></span>
-                        </p>
-                    </div>
-                </div>
+                <p style="font-family: 'Cormorant Garamond'; font-size: 0.8rem; color: var(--green); margin-bottom: 0.5rem;">You wrote:</p>
+                <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1.5rem; line-height: 1.6;">"I keep seeing the same pattern in my relationships. I push people away when they get close."</p>
+                <p style="font-family: 'Cormorant Garamond'; font-size: 0.8rem; color: var(--amber); margin-bottom: 0.5rem;">Feltshift responds:</p>
+                <p style="color: var(--text-primary); font-size: 0.95rem; line-height: 1.7;">"You've mentioned distance three times this week. What part of you is keeping people at arm's length—and what is it trying to protect?"</p>
             </div>
         </div>
 
-        <!-- Feature 2: Integration Protocol -->
-        <div class="feature-block reverse gs-reveal">
-            <div class="feature-content">
-                <h3>Structured integration. <span>Not guesswork.</span></h3>
-                <p>After every experience, you get a specific sequence of prompts timed to how your brain actually processes change. Day 0: raw capture. Day 1: body scan. Day 3: meaning. Day 7: patterns. Day 14: action. Day 30: review.</p>
+        <!-- Integration Protocol -->
+        <div class="feature-block" style="direction: rtl;">
+            <div class="feature-content" style="direction: ltr;">
+                <h3><span>Structured integration.</span> Not guesswork.</h3>
+                <p>After every experience, get a specific sequence of prompts timed to how your brain processes change. Day 0: capture. Day 1: body. Day 3: meaning. Day 7: patterns. Day 14: action. Day 30: review.</p>
                 <div class="feature-why">
-                    <strong>Why this matters:</strong> Based on neuroplasticity research. The brain is most malleable 2-4 weeks after a psychedelic experience. This protocol anchors insights during that critical window.
+                    <strong>The science:</strong> The brain is most malleable 2-4 weeks after a psychedelic experience. This protocol anchors insights before the default mode network reasserts itself.
                 </div>
             </div>
-            <div class="feature-visual">
-                <div class="timeline-visual">
-                    <div class="timeline-day active">
-                        <div class="timeline-node">0</div>
-                        <div class="timeline-label">Capture</div>
-                    </div>
-                    <div class="timeline-day">
-                        <div class="timeline-node">1</div>
-                        <div class="timeline-label">Body</div>
-                    </div>
-                    <div class="timeline-day">
-                        <div class="timeline-node">3</div>
-                        <div class="timeline-label">Meaning</div>
-                    </div>
-                    <div class="timeline-day">
-                        <div class="timeline-node">7</div>
-                        <div class="timeline-label">Patterns</div>
-                    </div>
-                    <div class="timeline-day">
-                        <div class="timeline-node">14</div>
-                        <div class="timeline-label">Action</div>
-                    </div>
-                    <div class="timeline-day">
-                        <div class="timeline-node">30</div>
-                        <div class="timeline-label">Review</div>
-                    </div>
+            <div class="feature-visual" style="direction: ltr; flex-direction: row; gap: 0.5rem;">
+                <div style="flex: 1; text-align: center; padding: 1rem; background: rgba(126, 160, 102, 0.1); border-radius: 12px; border: 1px solid var(--green);">
+                    <div style="font-family: 'Cormorant Garamond'; font-size: 1.5rem; color: var(--green);">0</div>
+                    <div style="font-size: 0.65rem; color: var(--text-muted);">Capture</div>
                 </div>
-            </div>
-        </div>
-
-        <!-- Feature 3: Mood Tracker -->
-        <div class="feature-block gs-reveal">
-            <div class="feature-content">
-                <h3>Data, <span>not vibes.</span></h3>
-                <p>Daily 3-second check-in. Tap a number. Over weeks, your data tells a story your feelings can't. 10-point scale from Shattered to Luminous. See your trends, correlations, and what actually moves the needle.</p>
-                <div class="feature-why">
-                    <strong>Why this matters:</strong> Most people have no objective measure of their inner state over time. This turns subjective experience into data you can actually use.
+                <div style="flex: 1; text-align: center; padding: 1rem; border-radius: 12px; border: 1px solid var(--border);">
+                    <div style="font-family: 'Cormorant Garamond'; font-size: 1.5rem;">1</div>
+                    <div style="font-size: 0.65rem; color: var(--text-muted);">Body</div>
                 </div>
-            </div>
-            <div class="feature-visual">
-                <div class="chart-container">
-                    <canvas id="moodChart"></canvas>
+                <div style="flex: 1; text-align: center; padding: 1rem; border-radius: 12px; border: 1px solid var(--border);">
+                    <div style="font-family: 'Cormorant Garamond'; font-size: 1.5rem;">3</div>
+                    <div style="font-size: 0.65rem; color: var(--text-muted);">Meaning</div>
+                </div>
+                <div style="flex: 1; text-align: center; padding: 1rem; border-radius: 12px; border: 1px solid var(--border);">
+                    <div style="font-family: 'Cormorant Garamond'; font-size: 1.5rem;">7</div>
+                    <div style="font-size: 0.65rem; color: var(--text-muted);">Patterns</div>
+                </div>
+                <div style="flex: 1; text-align: center; padding: 1rem; border-radius: 12px; border: 1px solid var(--border);">
+                    <div style="font-family: 'Cormorant Garamond'; font-size: 1.5rem;">14</div>
+                    <div style="font-size: 0.65rem; color: var(--text-muted);">Action</div>
+                </div>
+                <div style="flex: 1; text-align: center; padding: 1rem; border-radius: 12px; border: 1px solid var(--border);">
+                    <div style="font-family: 'Cormorant Garamond'; font-size: 1.5rem;">30</div>
+                    <div style="font-size: 0.65rem; color: var(--text-muted);">Review</div>
                 </div>
             </div>
         </div>
 
-        <!-- Feature 4: Microdose Tracker -->
-        <div class="feature-block reverse gs-reveal">
-            <div class="feature-content">
-                <h3>Know if it's working. <span>Stop guessing.</span></h3>
-                <p>Choose your protocol. Log daily: dose, focus, creativity, mood, anxiety, sleep. After 2+ weeks, see patterns: when you peak, when you need rest, what actually works for you.</p>
-            </div>
-            <div class="feature-visual">
-                <div class="protocol-grid">
-                    <div class="protocol-card active">
-                        <h4>Fadiman</h4>
-                        <div class="protocol-meta">1 day on → 2 days off</div>
-                        <p>Dr. James Fadiman's classic protocol. Prevents tolerance while maintaining subtle benefits.</p>
-                    </div>
-                    <div class="protocol-card">
-                        <h4>Stamets Stack</h4>
-                        <div class="protocol-meta">4 days on → 3 days off</div>
-                        <p>Paul Stamets' stack with Lion's Mane and Niacin. Designed for neurogenesis.</p>
-                    </div>
-                    <div class="protocol-card">
-                        <h4>Intuitive</h4>
-                        <div class="protocol-meta">When called</div>
-                        <p>For experienced practitioners. Self-guided with minimum 2-day gaps.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Feature 5: Breathwork -->
-        <div class="feature-block gs-reveal">
+        <!-- Breathwork -->
+        <div class="feature-block">
             <div class="feature-content">
                 <h3>Altered states. <span>No substances required.</span></h3>
-                <p>Guided breathwork with real science behind each pattern. 4-7-8 Reset for vagus nerve activation. Box Breathing for stress inoculation. Deep Exploration for states comparable to low-dose psychedelics.</p>
+                <p>Guided breathwork with real science. 4-7-8 Reset for vagus nerve activation. Box Breathing for stress inoculation. Deep Exploration for states comparable to low-dose psychedelics.</p>
                 <div class="feature-why">
                     <strong>Track your response:</strong> Rate yourself before and after. See how your nervous system responds over time.
                 </div>
             </div>
             <div class="feature-visual">
-                <div class="breath-3d-container">
+                <div id="breath-canvas-container">
                     <canvas id="breath-canvas"></canvas>
                 </div>
             </div>
         </div>
-
-        <!-- Feature 6: Retreat Directory -->
-        <div class="feature-block reverse gs-reveal">
-            <div class="feature-content">
-                <h3>Find experiences <span>you can trust.</span></h3>
-                <p>The retreat space has a trust problem. Our verification process exists to protect you. Credentials check. Reference verification. Safety audits. Only then: the verified badge.</p>
-            </div>
-            <div class="feature-visual">
-                <div class="retreat-card">
-                    <div class="retreat-image">🏔️</div>
-                    <div class="retreat-info">
-                        <h4>Source Sanctuary</h4>
-                        <div class="retreat-meta">Costa Rica • Psilocybin</div>
-                        <div class="retreat-tags">
-                            <span class="retreat-tag">7 days</span>
-                            <span class="retreat-tag">Small groups</span>
-                        </div>
-                    </div>
-                    <div class="verified-badge">
-                        <span>✓</span>
-                        <span>Verified</span>
-                    </div>
-                </div>
-            </div>
-        </div>
     </section>
 
-    <!-- Science Section -->
-    <section id="science">
-        <div class="section-header">
-            <p class="section-label">The Research</p>
-            <h2>Built on research. Not hype.</h2>
-        </div>
-
-        <div class="stats-grid">
-            <div class="stat-card gs-reveal">
-                <div class="stat-number" data-count="54">0%</div>
-                <div class="stat-label">Complete depression remission from 2 psilocybin sessions</div>
-                <div class="stat-source">Johns Hopkins, JAMA Psychiatry 2021</div>
-            </div>
-            <div class="stat-card gs-reveal">
-                <div class="stat-number" data-count="80">0%</div>
-                <div class="stat-label">Cancer patients with reduced anxiety 6+ months later</div>
-                <div class="stat-source">Griffiths et al, 2016</div>
-            </div>
-            <div class="stat-card gs-reveal">
-                <div class="stat-number" data-count="80">0%</div>
-                <div class="stat-label">Smoking cessation success rate</div>
-                <div class="stat-source">Johns Hopkins, 2014</div>
-            </div>
-            <div class="stat-card gs-reveal">
-                <div class="stat-number" data-count="71">0%</div>
-                <div class="stat-label">Severe PTSD patients no longer meeting diagnostic criteria</div>
-                <div class="stat-source">MAPS Phase 3</div>
-            </div>
-            <div class="stat-card gs-reveal">
-                <div class="stat-number" data-count="67">0%</div>
-                <div class="stat-label">Rated experience among top 5 most meaningful of their lives</div>
-                <div class="stat-source">Johns Hopkins</div>
-            </div>
-        </div>
-
-        <div class="science-explain gs-reveal">
-            <h3>The Neuroscience</h3>
-            <p>Psilocybin works primarily through 5-HT2A serotonin receptor agonism, temporarily disrupting the Default Mode Network (DMN) — the brain's autopilot that maintains your sense of self and habitual thought patterns. This creates a window of enhanced neuroplasticity where new neural connections form more easily.</p>
-            <p>Integration is the process of making those connections permanent. That's what this platform is built for.</p>
-            <cite>Based on research from Johns Hopkins Center for Psychedelic & Consciousness Research, Imperial College London, MAPS, and NYU Langone.</cite>
-        </div>
-    </section>
-
-    <!-- B2B Section -->
-    <section id="facilitators">
-        <div class="section-header">
-            <p class="section-label">For Professionals</p>
-            <h2>For facilitators and clinics</h2>
-        </div>
-
-        <div class="b2b-grid">
-            <div class="b2b-card gs-reveal">
-                <h3>Facilitator Dashboard</h3>
-                <p class="price">$49–$99/month</p>
-                <p>See your clients' journal entries (with permission), mood trends, and integration progress between sessions. Replace Google Docs and text check-ins with a real tool.</p>
-            </div>
-            <div class="b2b-card gs-reveal">
-                <h3>Clinic Licensing</h3>
-                <p class="price">$500–$2,000/month</p>
-                <p>White-label the integration journal as your patient aftercare system. HIPAA-compliant. Track outcomes across your entire practice.</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Pricing Section -->
+    <!-- Pricing -->
     <section id="pricing">
         <div class="section-header">
             <p class="section-label">Pricing</p>
@@ -1356,25 +931,23 @@
         </div>
 
         <div class="pricing-grid">
-            <div class="pricing-card gs-reveal">
+            <div class="pricing-card">
                 <h3 class="pricing-name">Free</h3>
                 <div class="pricing-price">$0<span>/month</span></div>
-                <p class="pricing-desc">Start your integration practice</p>
                 <ul class="pricing-features">
                     <li>3 journal entries per week</li>
                     <li>Daily mood check-in</li>
-                    <li>1 breathwork session per day</li>
+                    <li>1 breathwork session daily</li>
                     <li>Browse retreat directory</li>
                     <li>Basic educational content</li>
                 </ul>
-                <a href="app.html" class="btn btn-secondary" style="width: 100%;">Start Free</a>
+                <a href="app.html" class="btn btn-secondary" style="width: 100%; display: block; text-align: center;">Start Free</a>
             </div>
 
-            <div class="pricing-card recommended gs-reveal">
+            <div class="pricing-card recommended">
                 <span class="pricing-badge">Recommended</span>
                 <h3 class="pricing-name">Premium</h3>
                 <div class="pricing-price">$14.99<span>/month</span></div>
-                <p class="pricing-desc">Full integration toolkit</p>
                 <ul class="pricing-features">
                     <li>Unlimited AI-powered journaling</li>
                     <li>Full integration protocols (Day 0-30)</li>
@@ -1384,14 +957,13 @@
                     <li>AI Integration Reports included</li>
                     <li>Community access</li>
                 </ul>
-                <a href="app.html" class="btn btn-primary" style="width: 100%;">Start Free Trial</a>
-                <p style="text-align: center; font-size: 0.75rem; color: var(--text-muted); margin-top: 1rem;">7-day free trial. Cancel anytime.</p>
+                <a href="app.html" class="btn btn-primary" style="width: 100%; display: block; text-align: center;">Start Free Trial</a>
+                <p style="text-align: center; font-size: 0.7rem; color: var(--text-muted); margin-top: 1rem;">7-day free trial. Cancel anytime.</p>
             </div>
 
-            <div class="pricing-card gs-reveal">
+            <div class="pricing-card">
                 <h3 class="pricing-name">Facilitator</h3>
                 <div class="pricing-price">$49–$99<span>/month</span></div>
-                <p class="pricing-desc">For coaches & therapists</p>
                 <ul class="pricing-features">
                     <li>Everything in Premium</li>
                     <li>Client dashboard (with permission)</li>
@@ -1399,7 +971,7 @@
                     <li>Session notes & outcomes</li>
                     <li>Priority support</li>
                 </ul>
-                <a href="#" class="btn btn-secondary" style="width: 100%;">Contact Us</a>
+                <a href="#" class="btn btn-secondary" style="width: 100%; display: block; text-align: center;">Contact Us</a>
             </div>
         </div>
 
@@ -1408,56 +980,7 @@
         </p>
     </section>
 
-    <!-- Programs Section -->
-    <section id="programs">
-        <div class="section-header">
-            <p class="section-label">Go Deeper</p>
-            <h2>Guided programs</h2>
-        </div>
-
-        <div class="programs-grid">
-            <div class="program-card gs-reveal">
-                <h4>Post-Ayahuasca Integration</h4>
-                <div class="program-price">$49</div>
-                <p>30 days of specific prompts and breathwork designed for the unique integration needs of ayahuasca work.</p>
-                <a href="#" class="program-link">Learn more →</a>
-            </div>
-            <div class="program-card gs-reveal">
-                <h4>First Psilocybin Experience</h4>
-                <div class="program-price">$49</div>
-                <p>Preparation and integration for your first journey. What to expect, what to track, how to integrate.</p>
-                <a href="#" class="program-link">Learn more →</a>
-            </div>
-            <div class="program-card gs-reveal">
-                <h4>MDMA Therapy Aftercare</h4>
-                <div class="program-price">$49</div>
-                <p>Protocol for post-MDMA therapy sessions. Body-based practices, journaling prompts, trauma-informed approach.</p>
-                <a href="#" class="program-link">Learn more →</a>
-            </div>
-            <div class="program-card gs-reveal">
-                <h4>Breathwork for Expanded States</h4>
-                <div class="program-price">$99</div>
-                <p>Audio-guided deep sessions plus theory. Learn to guide yourself into expanded states.</p>
-                <a href="#" class="program-link">Learn more →</a>
-            </div>
-        </div>
-    </section>
-
-    <!-- Community Section -->
-    <section id="community">
-        <div class="section-header">
-            <p class="section-label">Community</p>
-            <h2>You're not alone in this.</h2>
-            <p>Monthly group integration circles. Private community. Facilitator Q&A. Small groups led by verified coaches.</p>
-        </div>
-
-        <div style="text-align: center; margin-top: 2rem;">
-            <p style="color: var(--green); font-size: 1.5rem; font-family: 'Cormorant Garamond', serif; margin-bottom: 0.5rem;">$29.99/month</p>
-            <a href="#" class="btn btn-primary">Join the Community</a>
-        </div>
-    </section>
-
-    <!-- FAQ Section -->
+    <!-- FAQ -->
     <section id="faq">
         <div class="section-header">
             <p class="section-label">FAQ</p>
@@ -1471,7 +994,7 @@
                     <div class="faq-icon"></div>
                 </div>
                 <div class="faq-answer">
-                    <p>100%. We don't sell any substances. We sell integration tools, educational content, breathwork, and a retreat directory. Education about psychedelics is protected speech. Harm reduction is encouraged by organizations like MAPS.</p>
+                    <p>100%. We don't sell substances. We sell integration tools, educational content, breathwork, and a retreat directory. Education about psychedelics is protected speech. Harm reduction is encouraged by organizations like MAPS.</p>
                 </div>
             </div>
             <div class="faq-item">
@@ -1480,34 +1003,25 @@
                     <div class="faq-icon"></div>
                 </div>
                 <div class="faq-answer">
-                    <p>Yes. End-to-end encryption. We never read your entries. We never sell your data. You can export or delete everything at any time.</p>
+                    <p>Yes. End-to-end encryption. We never read your entries. We never sell your data. You can export or delete everything anytime.</p>
                 </div>
             </div>
             <div class="faq-item">
                 <div class="faq-question">
-                    <h3>Do I need to have used psychedelics to use this?</h3>
+                    <h3>Do I need to have used psychedelics?</h3>
                     <div class="faq-icon"></div>
                 </div>
                 <div class="faq-answer">
-                    <p>Not at all. Many of our users start with breathwork, meditation, or are simply curious. The journal and mood tracker work for any consciousness practice.</p>
+                    <p>Not at all. Many users start with breathwork, meditation, or are simply curious. The journal and mood tracker work for any consciousness practice.</p>
                 </div>
             </div>
             <div class="faq-item">
                 <div class="faq-question">
-                    <h3>How is the AI journal different from ChatGPT?</h3>
+                    <h3>How is the AI different from ChatGPT?</h3>
                     <div class="faq-icon"></div>
                 </div>
                 <div class="faq-answer">
-                    <p>Our AI is specifically trained on integration therapy frameworks — IFS, somatic awareness, and ACT. It adapts to your stage, your goals, and your history. It notices patterns across weeks of entries.</p>
-                </div>
-            </div>
-            <div class="faq-item">
-                <div class="faq-question">
-                    <h3>How do you verify retreats?</h3>
-                    <div class="faq-icon"></div>
-                </div>
-                <div class="faq-answer">
-                    <p>Application review, credential verification, reference checks with past participants, safety audit including medical screening and emergency protocols, and ongoing monitoring.</p>
+                    <p>Our AI is trained on integration therapy frameworks—IFS, somatic awareness, and ACT. It adapts to your stage, goals, and history. It notices patterns across weeks of entries.</p>
                 </div>
             </div>
             <div class="faq-item">
@@ -1516,25 +1030,7 @@
                     <div class="faq-icon"></div>
                 </div>
                 <div class="faq-answer">
-                    <p>Contact the Fireside Project at <strong>62-FIRESIDE (623-473-7433)</strong>. They provide free, confidential psychedelic peer support 24/7. Your safety always comes first.</p>
-                </div>
-            </div>
-            <div class="faq-item">
-                <div class="faq-question">
-                    <h3>Can I cancel anytime?</h3>
-                    <div class="faq-icon"></div>
-                </div>
-                <div class="faq-answer">
-                    <p>Yes. No contracts. No cancellation fees. No questions asked.</p>
-                </div>
-            </div>
-            <div class="faq-item">
-                <div class="faq-question">
-                    <h3>Does this replace therapy?</h3>
-                    <div class="faq-icon"></div>
-                </div>
-                <div class="faq-answer">
-                    <p>No. This is a companion tool, not a replacement for professional support. If you're dealing with serious mental health issues, work with a licensed therapist experienced in psychedelic integration.</p>
+                    <p>Contact Fireside Project at <strong>62-FIRESIDE (623-473-7433)</strong>. They provide free, confidential psychedelic peer support 24/7. Your safety always comes first.</p>
                 </div>
             </div>
         </div>
@@ -1542,11 +1038,9 @@
 
     <!-- Footer CTA -->
     <section class="footer-cta">
-        <div class="blob blob-1" style="opacity: 0.08;"></div>
-        <div class="blob blob-2" style="opacity: 0.08;"></div>
         <h2>Your journey deserves better tools.</h2>
         <p>Start with the free journal. Stay for the integration.</p>
-        <a href="app.html" class="btn btn-primary" style="font-size: 1.1rem; padding: 1.2rem 3rem;">Start Free</a>
+        <a href="app.html" class="btn btn-primary" style="font-size: 1rem; padding: 1.2rem 3rem;">Start Free</a>
         <p style="margin-top: 1.5rem; font-size: 0.8rem; color: var(--text-muted);">No credit card. No ads. No bullshit.</p>
     </section>
 
@@ -1555,12 +1049,12 @@
         <div class="crisis-banner">
             <span>In crisis?</span>
             <a href="tel:623-473-7433">Fireside Project: 62-FIRESIDE</a>
-            <span> · Free 24/7 peer support</span>
+            <span>Free 24/7 peer support</span>
         </div>
 
         <div class="footer-grid">
             <div>
-                <span class="nav-logo">FELTSHIFT</span>
+                <a href="#" class="nav-logo" style="display: inline-block; margin-bottom: 1rem;">FELTSHIFT</a>
                 <p class="footer-tagline">Prepare for what comes. Process what happened. Track what changes.</p>
             </div>
             <div class="footer-col">
@@ -1570,16 +1064,13 @@
                     <li><a href="#features">Journal</a></li>
                     <li><a href="#features">Mood Tracker</a></li>
                     <li><a href="#features">Breathwork</a></li>
-                    <li><a href="#features">Retreats</a></li>
                 </ul>
             </div>
             <div class="footer-col">
                 <h4>Company</h4>
                 <ul>
-                    <li><a href="#science">Science</a></li>
                     <li><a href="#pricing">Pricing</a></li>
                     <li><a href="#faq">FAQ</a></li>
-                    <li><a href="#">Blog</a></li>
                     <li><a href="#">Contact</a></li>
                 </ul>
             </div>
@@ -1593,304 +1084,314 @@
         </div>
 
         <div class="footer-bottom">
-            <p>This platform does not provide medical advice, does not encourage illegal activity, and is for educational and personal development purposes. 18+ only.</p>
+            <p>This platform does not provide medical advice and is for educational purposes. 18+ only.</p>
             <p style="margin-top: 1rem;">© 2026 Feltshift. Your consciousness, your data, your journey.</p>
         </div>
     </footer>
 
     <script>
-        // Register GSAP ScrollTrigger
-        gsap.registerPlugin(ScrollTrigger);
-
-        // Hero animations
-        gsap.to('.hero-label', {
-            opacity: 1, y: 0, duration: 0.8, delay: 0.2, ease: 'power3.out'
-        });
-        gsap.to('.hero h1', {
-            opacity: 1, y: 0, duration: 0.8, delay: 0.4, ease: 'power3.out'
-        });
-        gsap.to('.hero-subtitle', {
-            opacity: 1, y: 0, duration: 0.8, delay: 0.6, ease: 'power3.out'
-        });
-        gsap.to('.hero-ctas', {
-            opacity: 1, y: 0, duration: 0.8, delay: 0.8, ease: 'power3.out'
-        });
-        gsap.to('.hero-trust', {
-            opacity: 1, y: 0, duration: 0.8, delay: 1, ease: 'power3.out'
-        });
-        gsap.to('.scroll-indicator', {
-            opacity: 1, duration: 0.8, delay: 1.2, ease: 'power3.out'
-        });
-
-        // Scroll reveals
-        gsap.utils.toArray('.gs-reveal').forEach((el, i) => {
-            gsap.fromTo(el,
-                { opacity: 0, y: 24 },
-                {
-                    opacity: 1, y: 0, duration: 0.6,
-                    ease: 'power3.out',
-                    scrollTrigger: {
-                        trigger: el,
-                        start: 'top 85%',
-                        once: true
-                    },
-                    delay: (i % 3) * 0.06
-                }
-            );
-        });
-
-        // Stats counter animation
-        gsap.utils.toArray('.stat-number').forEach(stat => {
-            const target = parseInt(stat.dataset.count);
-            gsap.to(stat, {
-                innerHTML: target + '%',
-                duration: 2,
-                ease: 'power2.out',
-                snap: { innerHTML: 1 },
-                scrollTrigger: {
-                    trigger: stat,
-                    start: 'top 80%',
-                    once: true
-                }
-            });
-        });
-
-        // Navigation scroll effect
-        window.addEventListener('scroll', () => {
-            const nav = document.getElementById('nav');
-            if (window.scrollY > 100) {
-                nav.classList.add('scrolled');
-            } else {
-                nav.classList.remove('scrolled');
-            }
-
-            // Scroll progress bar
-            const progress = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
-            document.getElementById('scroll-progress').style.width = progress + '%';
-        });
-
-        // FAQ accordion
+        // FAQ Accordion
         document.querySelectorAll('.faq-question').forEach(q => {
             q.addEventListener('click', () => {
                 const item = q.parentElement;
                 const isOpen = item.classList.contains('open');
-
-                // Close all
                 document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
-
-                // Toggle current
-                if (!isOpen) {
-                    item.classList.add('open');
-                }
+                if (!isOpen) item.classList.add('open');
             });
         });
 
-        // Timeline day hover
-        document.querySelectorAll('.timeline-day').forEach(day => {
-            day.addEventListener('mouseenter', () => {
-                document.querySelectorAll('.timeline-day').forEach(d => d.classList.remove('active'));
-                day.classList.add('active');
-            });
-        });
-
-        // Protocol card selection
-        document.querySelectorAll('.protocol-card').forEach(card => {
-            card.addEventListener('click', () => {
-                document.querySelectorAll('.protocol-card').forEach(c => c.classList.remove('active'));
-                card.classList.add('active');
-            });
-        });
-
-        // Hero Three.js Particle System
-        function initHeroParticles() {
+        // HERO THREE.JS - Sacred Geometry Particle System
+        function initHeroThree() {
+            const container = document.getElementById('hero-canvas-container');
             const canvas = document.getElementById('hero-canvas');
-            if (!canvas) return;
+            if (!canvas || !container) return;
 
             const scene = new THREE.Scene();
-            const camera = new THREE.PerspectiveCamera(75, canvas.clientWidth / canvas.clientHeight, 0.1, 1000);
-            camera.position.z = 5;
+            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.z = 18;
 
             const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
-            renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+            renderer.setSize(window.innerWidth, window.innerHeight);
             renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-            // Particle geometry
-            const geometry = new THREE.BufferGeometry();
-            const positions = [];
-            const colors = [];
-
-            for (let i = 0; i < 300; i++) {
-                const theta = Math.random() * Math.PI * 2;
-                const phi = Math.acos(2 * Math.random() - 1);
-                const r = 1.5 + Math.sin(Date.now() * 0.001 + i) * 0.3;
-
-                positions.push(
-                    r * Math.sin(phi) * Math.cos(theta),
-                    r * Math.sin(phi) * Math.sin(theta),
-                    r * Math.cos(phi)
-                );
-
-                // Green or amber
-                const isGreen = Math.random() > 0.3;
-                const opacity = 0.3 + Math.random() * 0.5;
-                if (isGreen) {
-                    colors.push(0.49 * opacity, 0.63 * opacity, 0.4 * opacity);
-                } else {
-                    colors.push(0.75 * opacity, 0.61 * opacity, 0.33 * opacity);
-                }
-            }
-
-            geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
-            geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
-
-            const material = new THREE.PointsMaterial({
-                size: 0.05,
-                vertexColors: true,
-                transparent: true,
-                opacity: 0.8
-            });
-
-            const particles = new THREE.Points(geometry, material);
-            scene.add(particles);
-
-            // Animation loop
-            let time = 0;
-            function animate() {
-                requestAnimationFrame(animate);
-                time += 0.005;
-
-                particles.rotation.y = time * 0.3;
-                particles.rotation.z = time * 0.1;
-
-                // Breathing scale
-                const scale = 0.95 + Math.sin(time * 2) * 0.05;
-                particles.scale.setScalar(scale);
-
-                renderer.render(scene, camera);
-            }
-            animate();
-
-            // Resize handler
-            window.addEventListener('resize', () => {
-                camera.aspect = canvas.clientWidth / canvas.clientHeight;
-                camera.updateProjectionMatrix();
-                renderer.setSize(canvas.clientWidth, canvas.clientHeight);
-            });
-        }
-
-        // Breathwork Three.js Torus
-        function initBreathTorus() {
-            const canvas = document.getElementById('breath-canvas');
-            if (!canvas) return;
-
-            const scene = new THREE.Scene();
-            const camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
-            camera.position.z = 4;
-
-            const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
-            renderer.setSize(200, 200);
-            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-
-            // Torus
-            const geometry = new THREE.TorusGeometry(1.2, 0.15, 8, 32);
-            const material = new THREE.MeshBasicMaterial({
+            // Sacred geometry - Icosahedron wireframe
+            const icoGeo = new THREE.IcosahedronGeometry(6, 1);
+            const icoMat = new THREE.MeshBasicMaterial({
                 color: 0x7EA066,
                 wireframe: true,
                 transparent: true,
-                opacity: 0.7
+                opacity: 0.15
             });
-            const torus = new THREE.Mesh(geometry, material);
-            scene.add(torus);
+            const icosahedron = new THREE.Mesh(icoGeo, icoMat);
+            scene.add(icosahedron);
 
-            // Inner particles
-            const particleGeo = new THREE.BufferGeometry();
-            const positions = [];
-            for (let i = 0; i < 50; i++) {
-                const theta = Math.random() * Math.PI * 2;
-                const phi = Math.random() * Math.PI;
-                const r = 0.3 + Math.random() * 0.7;
-                positions.push(
-                    r * Math.sin(phi) * Math.cos(theta),
-                    r * Math.sin(phi) * Math.sin(theta),
-                    r * Math.cos(phi)
-                );
-            }
-            particleGeo.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
-            const particleMat = new THREE.PointsMaterial({
+            // Inner glowing icosahedron
+            const innerIco = new THREE.IcosahedronGeometry(4, 0);
+            const innerMat = new THREE.MeshBasicMaterial({
                 color: 0xBF9B55,
-                size: 0.04,
+                wireframe: true,
                 transparent: true,
-                opacity: 0.6
+                opacity: 0.1
             });
-            const innerParticles = new THREE.Points(particleGeo, particleMat);
-            scene.add(innerParticles);
+            const innerMesh = new THREE.Mesh(innerIco, innerMat);
+            innerMesh.rotation.z = Math.PI / 5;
+            scene.add(innerMesh);
+
+            // Particle field - representing spores/mycelium
+            const particlesCount = 2000;
+            const positions = new Float32Array(particlesCount * 3);
+            const colors = new Float32Array(particlesCount * 3);
+
+            for (let i = 0; i < particlesCount; i++) {
+                // Create flowing neural/mycelium pattern
+                const i3 = i * 3;
+                const r = 12 + Math.random() * 20;
+                const theta = Math.random() * Math.PI * 2;
+                const phi = Math.acos(2 * Math.random() - 1);
+
+                // Organic clustering
+                const cluster = Math.floor(i / 200);
+                const clusterOffset = cluster * (Math.PI / 5);
+
+                positions[i3] = r * Math.sin(phi) * Math.cos(theta + clusterOffset);
+                positions[i3 + 1] = r * Math.sin(phi) * Math.sin(theta + clusterOffset);
+                positions[i3 + 2] = r * Math.cos(phi) * (0.5 + Math.random() * 0.5);
+
+                // Color gradient: green to amber
+                const t = Math.random();
+                colors[i3] = 0.49 + t * 0.26;     // R
+                colors[i3 + 1] = 0.63 - t * 0.02; // G
+                colors[i3 + 2] = 0.4 - t * 0.07;  // B
+            }
+
+            const particleGeo = new THREE.BufferGeometry();
+            particleGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            particleGeo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+            const particleMat = new THREE.PointsMaterial({
+                size: 0.15,
+                vertexColors: true,
+                transparent: true,
+                opacity: 0.8,
+                sizeAttenuation: true
+            });
+
+            const particles = new THREE.Points(particleGeo, particleMat);
+            scene.add(particles);
+
+            // Connection lines (mycelial network effect)
+            const linePositions = [];
+            const particlePositions = particleGeo.attributes.position.array;
+
+            // Only connect nearby particles to create organic web
+            for (let i = 0; i < particlesCount; i += 5) {
+                const i3 = i * 3;
+                const x1 = particlePositions[i3];
+                const y1 = particlePositions[i3 + 1];
+                const z1 = particlePositions[i3 + 2];
+
+                for (let j = i + 1; j < i + 20 && j < particlesCount; j += 3) {
+                    const j3 = j * 3;
+                    const x2 = particlePositions[j3];
+                    const y2 = particlePositions[j3 + 1];
+                    const z2 = particlePositions[j3 + 2];
+                    const dist = Math.sqrt((x2-x1)**2 + (y2-y1)**2 + (z2-z1)**2);
+
+                    if (dist < 8) {
+                        linePositions.push(x1, y1, z1, x2, y2, z2);
+                    }
+                }
+            }
+
+            const lineGeo = new THREE.BufferGeometry();
+            lineGeo.setAttribute('position', new THREE.Float32BufferAttribute(linePositions, 3));
+            const lineMat = new THREE.LineBasicMaterial({
+                color: 0x7EA066,
+                transparent: true,
+                opacity: 0.05
+            });
+            const connectionLines = new THREE.LineSegments(lineGeo, lineMat);
+            scene.add(connectionLines);
+
+            // Mouse interaction
+            let mouseX = 0, mouseY = 0;
+            let targetX = 0, targetY = 0;
+
+            window.addEventListener('mousemove', (e) => {
+                mouseX = (e.clientX / window.innerWidth) * 2 - 1;
+                mouseY = (e.clientY / window.innerHeight) * 2 - 1;
+            }, { passive: true });
+
+            // Mouse click creates ripple
+            let ripple = { active: false, time: 0 };
+            window.addEventListener('click', () => {
+                ripple.active = true;
+                ripple.time = 0;
+            });
 
             // Animation
             let time = 0;
             function animate() {
                 requestAnimationFrame(animate);
-                time += 0.02;
+                time += 0.003;
 
-                // Breathing animation
-                const scale = 0.95 + Math.sin(time * 1.5) * 0.1;
-                torus.scale.setScalar(scale);
+                // Smooth mouse follow
+                targetX = targetX * 0.98 + mouseX * 0.02;
+                targetY = targetY * 0.98 + mouseY * 0.02;
 
-                torus.rotation.x = Math.sin(time * 0.5) * 0.1;
-                torus.rotation.y += 0.005;
+                // Rotate sacred geometry
+                icosahedron.rotation.x = time * 0.3 + targetY * 0.3;
+                icosahedron.rotation.y = time * 0.4 + targetX * 0.3;
+                icosahedron.rotation.z = time * 0.1;
 
-                innerParticles.rotation.y -= 0.002;
+                innerMesh.rotation.x = -time * 0.2;
+                innerMesh.rotation.y = -time * 0.3;
+
+                // Breathing scale
+                const breathe = 1 + Math.sin(time * 1.5) * 0.02;
+                icosahedron.scale.setScalar(breathe);
+                innerMesh.scale.setScalar(breathe * 0.8);
+
+                // Animate particles
+                const positions = particleGeo.attributes.position.array;
+                for (let i = 0; i < particlesCount; i++) {
+                    const i3 = i * 3;
+                    // Gentle spiral motion
+                    const r = Math.sqrt(positions[i3]**2 + positions[i3+1]**2);
+                    const theta = Math.atan2(positions[i3+1], positions[i3]) + 0.001;
+                    positions[i3] = r * Math.cos(theta);
+                    positions[i3+1] = r * Math.sin(theta);
+                }
+                particleGeo.attributes.position.needsUpdate = true;
+
+                // Camera drift
+                camera.position.x = targetX * 2;
+                camera.position.y = -targetY * 2;
+                camera.lookAt(0, 0, 0);
+
+                // Ripple effect on click
+                if (ripple.active) {
+                    ripple.time += 0.05;
+                    const rippleScale = 1 + ripple.time * 3;
+                    connectionLines.scale.setScalar(rippleScale);
+                    lineMat.opacity = Math.max(0, 0.1 - ripple.time * 0.02);
+                    if (lineMat.opacity <= 0) ripple.active = false;
+                } else {
+                    connectionLines.scale.setScalar(1);
+                    lineMat.opacity = 0.05;
+                }
+
+                renderer.render(scene, camera);
+            }
+            animate();
+
+            // Resize
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
+        }
+
+        // Breathwork Three.js
+        function initBreathThree() {
+            const canvas = document.getElementById('breath-canvas');
+            const container = document.getElementById('breath-canvas-container');
+            if (!canvas || !container) return;
+
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
+            camera.position.z = 5;
+
+            const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+            renderer.setSize(220, 220);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+            // Glowing torus
+            const torusGeo = new THREE.TorusGeometry(1.4, 0.12, 16, 48);
+            const torusMat = new THREE.MeshBasicMaterial({
+                color: 0x7EA066,
+                wireframe: true,
+                transparent: true,
+                opacity: 0.6
+            });
+            const torus = new THREE.Mesh(torusGeo, torusMat);
+
+            // Add inner glow ring
+            const glowGeo = new THREE.TorusGeometry(1.4, 0.3, 16, 48);
+            const glowMat = new THREE.MeshBasicMaterial({
+                color: 0x7EA066,
+                transparent: true,
+                opacity: 0.08
+            });
+            const glowRing = new THREE.Mesh(glowGeo, glowMat);
+
+            const group = new THREE.Group();
+            group.add(torus);
+            group.add(glowRing);
+            scene.add(group);
+
+            // Orbiting particles
+            const orbitCount = 30;
+            const orbitGeo = new THREE.BufferGeometry();
+            const positions = new Float32Array(orbitCount * 3);
+            const radii = [];
+            const speeds = [];
+
+            for (let i = 0; i < orbitCount; i++) {
+                radii.push(0.2 + Math.random() * 0.8);
+                speeds.push(0.02 + Math.random() * 0.03);
+                positions[i * 3] = positions[i * 3 + 1] = positions[i * 3 + 2] = 0;
+            }
+            orbitGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+
+            const orbitMat = new THREE.PointsMaterial({
+                color: 0xBF9B55,
+                size: 0.06,
+                transparent: true,
+                opacity: 0.8
+            });
+            const orbitParticles = new THREE.Points(orbitGeo, orbitMat);
+            group.add(orbitParticles);
+
+            // Animation
+            let time = 0;
+            function animate() {
+                requestAnimationFrame(animate);
+                time += 0.015;
+
+                // Breathing animation (4-second cycle)
+                const breathCycle = (Math.sin(time * 1.5) + 1) / 2;
+                const scale = 0.9 + breathCycle * 0.25;
+                group.scale.setScalar(scale);
+
+                // Rotate
+                torus.rotation.x = Math.sin(time * 0.5) * 0.2;
+                torus.rotation.y += 0.008;
+
+                glowRing.rotation.z -= 0.005;
+
+                // Orbit particles
+                const op = orbitGeo.attributes.position.array;
+                for (let i = 0; i < orbitCount; i++) {
+                    const t = time * speeds[i] + i * 0.21;
+                    const r = radii[i] * (0.8 + breathCycle * 0.4);
+                    op[i * 3] = Math.cos(t) * r;
+                    op[i * 3 + 1] = Math.sin(t) * r;
+                    op[i * 3 + 2] = Math.cos(t * 2) * r * 0.3;
+                }
+                orbitGeo.attributes.position.needsUpdate = true;
+                orbitParticles.rotation.z += 0.002;
 
                 renderer.render(scene, camera);
             }
             animate();
         }
 
-        // Mood Chart
-        function initMoodChart() {
-            const ctx = document.getElementById('moodChart');
-            if (!ctx) return;
-
-            new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-                    datasets: [{
-                        label: 'Mood',
-                        data: [5, 6, 4, 7, 8, 7, 6],
-                        borderColor: '#7EA066',
-                        backgroundColor: 'rgba(126, 160, 102, 0.1)',
-                        borderWidth: 2,
-                        tension: 0.4,
-                        fill: true,
-                        pointBackgroundColor: '#BF9B55',
-                        pointBorderColor: '#BF9B55',
-                        pointRadius: 4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: {
-                        y: {
-                            min: 1, max: 10,
-                            grid: { color: '#1C231A' },
-                            ticks: { color: '#6E695E', stepSize: 2 }
-                        },
-                        x: {
-                            grid: { display: false },
-                            ticks: { color: '#6E695E' }
-                        }
-                    }
-                }
-            });
-        }
-
-        // Initialize everything
+        // Initialize
         window.addEventListener('load', () => {
-            initHeroParticles();
-            initBreathTorus();
-            initMoodChart();
+            initHeroThree();
+            initBreathThree();
         });
     </script>
 </body>
