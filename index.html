@@ -4,20 +4,22 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>FELTSHIFT — What Happens After</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 :root {
---void: #0a0f0c;
+--void: #050807;
+--deep: #0a120e;
 --forest: #0d1f15;
---deep-forest: #1a3d2e;
+--leaf: #1a3d2e;
 --moss: #2d5a3d;
 --sage: #5a8c69;
---glow: #8af88a;
---gold: #c9a227;
+--glow: #7af87a;
+--gold: #d4af37;
 --cream: #f5f1eb;
---mist: rgba(245, 241, 235, 0.03);
+--mist: rgba(245, 241, 235, 0.02);
 }
 
 html { scroll-behavior: smooth; }
@@ -30,39 +32,14 @@ overflow-x: hidden;
 line-height: 1.7;
 }
 
-h1, h2, h3 { font-family: 'Cormorant Garamond', serif; font-weight: 400; }
+h1, h2, h3, h4 { font-family: 'Cormorant Garamond', serif; font-weight: 300; }
 
-/* === MESH GRADIENT BACKGROUND === */
-.mesh-bg {
+/* === THREE.JS CANVAS === */
+#hero-canvas {
 position: fixed;
 top: 0; left: 0;
 width: 100%; height: 100%;
 z-index: -1;
-background:
-radial-gradient(ellipse 80% 50% at 20% 40%, rgba(138, 248, 138, 0.08) 0%, transparent 50%),
-radial-gradient(ellipse 60% 40% at 80% 60%, rgba(201, 162, 39, 0.05) 0%, transparent 40%),
-radial-gradient(ellipse 100% 100% at 50% 100%, var(--forest) 0%, var(--void) 70%);
-}
-
-/* === FLOATING PARTICLES === */
-.particles {
-position: fixed;
-top: 0; left: 0;
-width: 100%; height: 100%;
-pointer-events: none;
-z-index: 0;
-}
-
-.particle {
-position: absolute;
-border-radius: 50%;
-filter: blur(1px);
-animation: drift linear infinite;
-}
-
-@keyframes drift {
-from { transform: translateY(100vh) translateX(0); }
-to { transform: translateY(-100px) translateX(50px); }
 }
 
 /* === HERO === */
@@ -74,73 +51,66 @@ justify-content: center;
 position: relative;
 padding: 2rem;
 text-align: center;
+perspective: 1000px;
 }
 
 .hero-content {
 position: relative;
 z-index: 2;
 max-width: 900px;
+animation: heroFade 2s ease-out;
+}
+
+@keyframes heroFade {
+from { opacity: 0; transform: translateY(30px); }
+to { opacity: 1; transform: translateY(0); }
 }
 
 .tag {
-display: inline-block;
-font-size: 0.65rem;
-letter-spacing: 0.4em;
+display: inline-flex;
+align-items: center;
+gap: 1rem;
+font-size: 0.6rem;
+letter-spacing: 0.5em;
 text-transform: uppercase;
 color: var(--sage);
-margin-bottom: 3rem;
-padding: 0.8rem 1.5rem;
-border: 1px solid rgba(90, 140, 105, 0.3);
-position: relative;
+margin-bottom: 2.5rem;
+padding: 0.6rem 1.5rem;
+border: 1px solid var(--moss);
+background: linear-gradient(90deg, transparent, rgba(122, 248, 122, 0.03), transparent);
 }
 
-.tag::before, .tag::after {
-content: '◆';
-position: absolute;
-top: 50%;
-transform: translateY(-50%);
-color: var(--glow);
-opacity: 0.5;
-font-size: 0.4rem;
-}
-
-.tag::before { left: 0.5rem; }
-.tag::after { right: 0.5rem; }
+.tag span { opacity: 0.5; }
 
 .hero h1 {
-font-size: clamp(4rem, 12vw, 10rem);
-line-height: 0.9;
-letter-spacing: -0.03em;
-margin-bottom: 2rem;
-background: linear-gradient(180deg, #fff 0%, var(--glow) 50%, var(--sage) 100%);
+font-size: clamp(5rem, 15vw, 12rem);
+line-height: 0.85;
+letter-spacing: -0.04em;
+margin-bottom: 1.5rem;
+background: linear-gradient(
+180deg,
+#fff 0%,
+var(--cream) 20%,
+var(--glow) 60%,
+var(--sage) 100%
+);
 -webkit-background-clip: text;
 -webkit-text-fill-color: transparent;
+filter: drop-shadow(0 0 60px rgba(122, 248, 122, 0.3));
 position: relative;
-}
-
-.hero h1::after {
-content: 'FELTSHIFT';
-position: absolute;
-top: 0; left: 0;
-width: 100%; height: 100%;
-filter: blur(40px);
-opacity: 0.3;
-z-index: -1;
-background: var(--glow);
--webkit-background-clip: text;
--webkit-text-fill-color: transparent;
 }
 
 .hero-sub {
 font-size: 1.1rem;
 color: var(--sage);
-max-width: 450px;
-margin: 0 auto 3rem;
+max-width: 420px;
+margin: 0 auto 2.5rem;
 font-weight: 300;
 }
 
 .hero-sub span {
 color: var(--glow);
+font-weight: 400;
 position: relative;
 }
 
@@ -150,29 +120,28 @@ position: absolute;
 bottom: -2px; left: 0;
 width: 100%; height: 1px;
 background: var(--glow);
-opacity: 0.5;
+opacity: 0.4;
 }
 
-.scroll-hint {
+.scroll-line {
 position: absolute;
 bottom: 3rem;
 left: 50%;
 transform: translateX(-50%);
-font-size: 0.6rem;
-letter-spacing: 0.3em;
-text-transform: uppercase;
-color: var(--sage);
+width: 1px;
+height: 60px;
+background: linear-gradient(180deg, var(--glow), transparent);
 opacity: 0.5;
-animation: breathe-text 3s ease-in-out infinite;
+animation: pulseLine 2s ease-in-out infinite;
 }
 
-@keyframes breathe-text {
-0%, 100% { opacity: 0.3; }
-50% { opacity: 0.6; }
+@keyframes pulseLine {
+0%, 100% { opacity: 0.3; transform: translateX(-50%) scaleY(1); }
+50% { opacity: 0.6; transform: translateX(-50%) scaleY(1.2); }
 }
 
 /* === BUTTONS === */
-.cta-group {
+.buttons {
 display: flex;
 gap: 1rem;
 justify-content: center;
@@ -180,60 +149,59 @@ flex-wrap: wrap;
 }
 
 .btn {
-padding: 1.1rem 2.5rem;
+padding: 1rem 2.5rem;
 border: none;
 cursor: pointer;
-transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 text-decoration: none;
 display: inline-block;
-font-size: 0.7rem;
-letter-spacing: 0.15em;
+font-size: 0.65rem;
+letter-spacing: 0.2em;
 text-transform: uppercase;
+font-weight: 500;
 position: relative;
 overflow: hidden;
+transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-glow {
+background: var(--glow);
+color: var(--void);
+box-shadow:
+0 0 40px rgba(122, 248, 122, 0.3),
+0 0 80px rgba(122, 248, 122, 0.1);
+}
+
+.btn-glow:hover {
+box-shadow:
+0 0 60px rgba(122, 248, 122, 0.5),
+0 0 120px rgba(122, 248, 122, 0.2);
+transform: translateY(-2px);
+}
+
+.btn-outline {
+color: var(--sage);
+border: 1px solid var(--moss);
 background: transparent;
 }
 
-.btn-primary {
-color: var(--void);
-background: var(--glow);
-box-shadow:
-0 0 30px rgba(138, 248, 138, 0.3),
-inset 0 0 20px rgba(255, 255, 255, 0.2);
-}
-
-.btn-primary::before {
-content: '';
-position: absolute;
-top: 0; left: -100%;
-width: 100%; height: 100%;
-background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-transition: left 0.5s;
-}
-
-.btn-primary:hover::before {
-left: 100%;
-}
-
-.btn-ghost {
-color: var(--sage);
-border: 1px solid rgba(90, 140, 105, 0.5);
-}
-
-.btn-ghost:hover {
+.btn-outline:hover {
 border-color: var(--glow);
 color: var(--glow);
-box-shadow: 0 0 30px rgba(138, 248, 138, 0.15);
+box-shadow: inset 0 0 30px rgba(122, 248, 122, 0.1);
 }
 
-/* === VISUAL BREAK === */
-.visual-break {
-padding: 8rem 2rem;
+/* === SECTIONS === */
+section {
 position: relative;
-overflow: hidden;
 }
 
-.break-content {
+/* === MYCELIUM VISUAL === */
+.mycelium {
+padding: 10rem 2rem;
+background: linear-gradient(180deg, transparent, var(--forest), var(--void));
+}
+
+.mycelium-inner {
 max-width: 1200px;
 margin: 0 auto;
 display: grid;
@@ -242,192 +210,154 @@ gap: 6rem;
 align-items: center;
 }
 
-.visual-side {
+.mycelium-visual {
 position: relative;
 height: 500px;
+display: flex;
+align-items: center;
+justify-content: center;
 }
 
-/* Abstract spore form */
-.spore-form {
+.spore-cluster {
 position: absolute;
-top: 50%; left: 50%;
-transform: translate(-50%, -50%);
-width: 300px; height: 300px;
+width: 100%; height: 100%;
+top: 0; left: 0;
 }
 
-.spore-blob {
+.spore-orb {
 position: absolute;
 border-radius: 50%;
+filter: blur(1px);
 }
 
-.spore-blob:nth-child(1) {
-width: 200px; height: 200px;
-top: 20%; left: 10%;
-background: radial-gradient(ellipse at 30% 20%, rgba(138, 248, 138, 0.4), rgba(45, 90, 61, 0.2));
-animation: morph1 8s ease-in-out infinite;
+.spore-orb:nth-child(1) {
+width: 120px; height: 120px;
+top: 20%; left: 30%;
+background: radial-gradient(circle at 30% 30%, rgba(122, 248, 122, 0.6), rgba(45, 90, 61, 0.3));
+box-shadow: 0 0 60px rgba(122, 248, 122, 0.3);
+animation: float1 8s ease-in-out infinite;
 }
 
-.spore-blob:nth-child(2) {
-width: 150px; height: 150px;
-top: 40%; left: 40%;
-background: radial-gradient(ellipse at 40% 30%, rgba(201, 162, 39, 0.2), rgba(45, 90, 61, 0.1));
-animation: morph2 10s ease-in-out infinite reverse;
+.spore-orb:nth-child(2) {
+width: 80px; height: 80px;
+top: 40%; left: 60%;
+background: radial-gradient(circle, rgba(201, 162, 39, 0.5), rgba(45, 90, 61, 0.2));
+animation: float2 12s ease-in-out infinite;
 }
 
-@keyframes morph1 {
-0%, 100% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
-50% { border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; }
+.spore-orb:nth-child(3) {
+width: 60px; height: 60px;
+top: 60%; left: 25%;
+background: radial-gradient(circle, rgba(122, 248, 122, 0.4), transparent);
+animation: float3 10s ease-in-out infinite;
 }
 
-@keyframes morph2 {
-0%, 100% { border-radius: 40% 60% 70% 30% / 40% 70% 60% 50%; }
-50% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
+@keyframes float1 {
+0%, 100% { transform: translate(0, 0); }
+50% { transform: translate(20px, -30px); }
+}
+@keyframes float2 {
+0%, 100% { transform: translate(0, 0); }
+50% { transform: translate(-30px, 20px); }
+}
+@keyframes float3 {
+0%, 100% { transform: translate(0, 0) scale(1); }
+50% { transform: translate(15px, -15px) scale(1.1); }
 }
 
-/* Gills texture */
-.gills {
-position: absolute;
-bottom: 10%; left: 50%;
-transform: translateX(-50%);
-width: 150px; height: 200px;
-opacity: 0.3;
+.cap {
+width: 160px; height: 100px;
+background: linear-gradient(135deg, var(--glow) 0%, var(--moss) 100%);
+border-radius: 80px 80px 0 0;
+position: relative;
+box-shadow: 0 0 80px rgba(122, 248, 122, 0.2);
+animation: breathe 4s ease-in-out infinite;
 }
 
-.gill-line {
-width: 100%; height: 1px;
-background: linear-gradient(90deg, transparent, var(--glow), transparent);
-margin-bottom: 8px;
-opacity: 0.5;
-animation: gill-pulse 4s ease-in-out infinite;
+@keyframes breathe {
+0%, 100% { transform: scale(1); }
+50% { transform: scale(1.02); }
 }
 
-.gill-line:nth-child(odd) { animation-delay: 0.5s; }
-.gill-line:nth-child(3n) { animation-delay: 1s; }
-
-@keyframes gill-pulse {
-0%, 100% { opacity: 0.3; }
-50% { opacity: 0.6; }
-}
-
-.break-text h2 {
+.mycelium-text h2 {
 font-size: clamp(1.8rem, 4vw, 3rem);
 line-height: 1.2;
 margin-bottom: 1.5rem;
+}
+
+.mycelium-text h2 span {
+color: var(--glow);
 font-weight: 400;
 }
 
-.break-text h2 em {
-color: var(--glow);
-font-style: normal;
-}
-
-.break-text p {
+.mycelium-text p {
 color: var(--sage);
-font-size: 1.05rem;
+font-size: 1rem;
 line-height: 1.9;
 margin-bottom: 1.5rem;
 }
 
-.quote-mark {
-font-size: 8rem;
-position: absolute;
-top: -2rem; left: -2rem;
-color: var(--glow);
-opacity: 0.1;
-font-family: serif;
-line-height: 1;
-}
-
-/* === MANIFESTO === */
-.manifesto {
+/* === TRUTH === */
+.truth {
 padding: 12rem 2rem;
-background: linear-gradient(180deg, var(--void) 0%, var(--forest) 50%, var(--void) 100%);
 text-align: center;
-position: relative;
+background: var(--void);
 }
 
-.manifesto::before {
-content: '';
-position: absolute;
-top: 0; left: 50%;
-transform: translateX(-50%);
-width: 1px; height: 100px;
-background: linear-gradient(180deg, transparent, var(--glow), transparent);
-opacity: 0.5;
-}
-
-.manifesto-text {
-max-width: 800px;
+.truth-inner {
+max-width: 700px;
 margin: 0 auto;
-position: relative;
 }
 
-.manifesto-label {
-font-size: 0.6rem;
-letter-spacing: 0.5em;
-text-transform: uppercase;
-color: var(--sage);
-margin-bottom: 3rem;
-}
-
-.manifesto-quote {
+.truth pre {
 font-family: 'Cormorant Garamond', serif;
-font-size: clamp(1.3rem, 3vw, 2rem);
+font-size: clamp(1.4rem, 3vw, 2rem);
 line-height: 1.6;
 font-style: italic;
+white-space: normal;
 }
 
-.manifesto-quote span {
+.truth span {
 color: var(--glow);
-position: relative;
 }
 
-.manifesto-quote span::after {
-content: '';
-position: absolute;
-bottom: -4px; left: 0;
-width: 100%; height: 2px;
-background: var(--glow);
-opacity: 0.3;
-}
-
-/* === FEATURES GRID === */
+/* === FEATURES === */
 .features {
 padding: 8rem 2rem;
-position: relative;
+background: linear-gradient(180deg, var(--void), var(--deep), var(--void));
 }
 
-.section-header {
+.section-head {
 text-align: center;
-margin-bottom: 6rem;
+margin-bottom: 5rem;
 }
 
-.section-header h2 {
-font-size: clamp(2rem, 5vw, 3.5rem);
-margin-bottom: 1rem;
+.section-head h2 {
+font-size: clamp(2rem, 5vw, 3rem);
+margin-bottom: 0.8rem;
 }
 
-.section-header p {
+.section-head p {
 color: var(--sage);
-font-size: 0.95rem;
+font-size: 0.9rem;
 }
 
-.grid {
+.cards {
 display: grid;
-grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+grid-template-columns: repeat(3, 1fr);
 gap: 1.5rem;
-max-width: 1200px;
+max-width: 1100px;
 margin: 0 auto;
 }
 
 .card {
 background: var(--mist);
-border: 1px solid rgba(90, 140, 105, 0.2);
-padding: 3rem;
+border: 1px solid var(--moss);
+padding: 2.5rem;
+transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+cursor: pointer;
 position: relative;
 overflow: hidden;
-transition: all 0.5s ease;
-cursor: pointer;
 }
 
 .card::before {
@@ -435,14 +365,14 @@ content: '';
 position: absolute;
 top: 0; left: 0;
 width: 100%; height: 2px;
-background: linear-gradient(90deg, transparent, var(--glow), transparent);
+background: var(--glow);
 transform: translateX(-100%);
-transition: transform 0.6s ease;
+transition: transform 0.5s;
 }
 
 .card:hover {
-border-color: rgba(138, 248, 138, 0.3);
-background: rgba(138, 248, 138, 0.03);
+background: rgba(122, 248, 122, 0.02);
+border-color: rgba(122, 248, 122, 0.3);
 transform: translateY(-5px);
 }
 
@@ -451,160 +381,144 @@ transform: translateX(0);
 }
 
 .card-num {
-font-size: 0.6rem;
-letter-spacing: 0.2em;
+font-size: 0.55rem;
+letter-spacing: 0.25em;
 color: var(--glow);
-margin-bottom: 1.5rem;
-display: block;
+margin-bottom: 1rem;
+opacity: 0.8;
 }
 
 .card h3 {
-font-size: 1.5rem;
-margin-bottom: 1rem;
+font-size: 1.4rem;
+margin-bottom: 0.8rem;
 }
 
 .card p {
 color: var(--sage);
 font-size: 0.9rem;
-line-height: 1.8;
+line-height: 1.7;
 }
 
 .card-icon {
-width: 50px; height: 50px;
-border: 1px solid rgba(138, 248, 138, 0.3);
-border-radius: 50%;
+width: 48px; height: 48px;
+border: 1px solid var(--moss);
+margin-bottom: 1.5rem;
 display: flex;
 align-items: center;
 justify-content: center;
-font-size: 1.2rem;
-margin-bottom: 1.5rem;
-transition: all 0.4s;
+transition: all 0.3s;
 }
 
 .card:hover .card-icon {
 border-color: var(--glow);
-box-shadow: 0 0 30px var(--glow);
+box-shadow: 0 0 30px rgba(122, 248, 122, 0.1);
 }
 
 /* === STATS === */
 .stats {
-padding: 6rem 2rem;
-text-align: center;
-border-top: 1px solid rgba(90, 140, 105, 0.2);
-border-bottom: 1px solid rgba(90, 140, 105, 0.2);
+padding: 5rem 2rem;
+border-top: 1px solid var(--moss);
+border-bottom: 1px solid var(--moss);
 }
 
-.stats-grid {
+.stats-wrap {
 display: grid;
 grid-template-columns: repeat(4, 1fr);
-gap: 3rem;
-max-width: 1000px;
+gap: 2rem;
+max-width: 900px;
 margin: 0 auto;
 }
 
 .stat {
+text-align: center;
 position: relative;
 }
 
-.stat::after {
+.stat:not(:last-child)::after {
 content: '';
 position: absolute;
-top: 50%; right: -1.5rem;
+top: 50%; right: 0;
 transform: translateY(-50%);
 width: 1px; height: 40px;
-background: rgba(90, 140, 105, 0.3);
-}
-
-.stat:last-child::after {
-display: none;
+background: var(--moss);
 }
 
 .stat-value {
 font-family: 'Cormorant Garamond', serif;
-font-size: 3rem;
+font-size: 2.5rem;
 color: var(--glow);
 display: block;
-margin-bottom: 0.5rem;
+line-height: 1;
 }
 
 .stat-label {
-font-size: 0.65rem;
-letter-spacing: 0.2em;
+font-size: 0.6rem;
+letter-spacing: 0.15em;
 text-transform: uppercase;
 color: var(--sage);
+margin-top: 0.5rem;
+display: block;
 }
 
 /* === PATH === */
 .path {
 padding: 10rem 2rem;
-position: relative;
+background: linear-gradient(180deg, var(--void), var(--forest));
 }
 
-.path-header {
+.path-head {
 text-align: center;
 margin-bottom: 5rem;
 }
 
-.path-timeline {
+.steps {
 display: grid;
 grid-template-columns: repeat(3, 1fr);
-gap: 2rem;
-max-width: 1200px;
+gap: 3rem;
+max-width: 1000px;
 margin: 0 auto;
-position: relative;
-}
-
-.path-timeline::before {
-content: '';
-position: absolute;
-top: 40px; left: 10%; width: 80%; height: 1px;
-background: linear-gradient(90deg, transparent, var(--moss), transparent);
-opacity: 0.3;
 }
 
 .step {
 text-align: center;
-padding: 2rem;
 position: relative;
 }
 
 .step-icon {
-width: 80px; height: 80px;
+width: 90px; height: 90px;
 border: 1px solid var(--moss);
 border-radius: 50%;
 display: flex;
 align-items: center;
 justify-content: center;
-font-size: 1.5rem;
-margin: 0 auto 2rem;
+font-size: 1.8rem;
+margin: 0 auto 1.5rem;
 position: relative;
-background: var(--void);
-transition: all 0.4s;
+transition: all 0.3s;
 }
 
 .step:hover .step-icon {
 border-color: var(--glow);
-box-shadow: 0 0 40px rgba(138, 248, 138, 0.2);
-transform: scale(1.05);
+box-shadow: 0 0 40px rgba(122, 248, 122, 0.15);
 }
 
-.step-num {
+.badge {
 position: absolute;
-top: -10px; right: -10px;
-width: 24px; height: 24px;
+top: -5px; right: -5px;
+width: 26px; height: 26px;
 background: var(--glow);
 color: var(--void);
 border-radius: 50%;
-font-size: 0.65rem;
+font-size: 0.6rem;
+font-weight: 600;
 display: flex;
 align-items: center;
 justify-content: center;
-font-weight: 600;
 }
 
 .step h3 {
-font-size: 1.3rem;
-margin-bottom: 1rem;
+font-size: 1.2rem;
+margin-bottom: 0.8rem;
 }
 
 .step p {
@@ -613,99 +527,83 @@ font-size: 0.9rem;
 }
 
 /* === CTA === */
-.cta-section {
+.cta {
 padding: 12rem 2rem;
 text-align: center;
 position: relative;
+background: var(--void);
 }
 
-.cta-glow {
+.cta::before {
+content: '';
 position: absolute;
 top: 50%; left: 50%;
 transform: translate(-50%, -50%);
-width: 600px; height: 600px;
-background: radial-gradient(circle, rgba(138, 248, 138, 0.08) 0%, transparent 60%);
+width: 800px; height: 800px;
+background: radial-gradient(circle, rgba(122, 248, 122, 0.05) 0%, transparent 50%);
 pointer-events: none;
 }
 
-.cta-section h2 {
-font-size: clamp(2.5rem, 6vw, 4rem);
-margin-bottom: 1.5rem;
+.cta h2 {
+font-size: clamp(2rem, 5vw, 3.5rem);
+margin-bottom: 1rem;
 position: relative;
 }
 
-.cta-section p {
+.cta p {
 color: var(--sage);
 max-width: 400px;
-margin: 0 auto 3rem;
+margin: 0 auto 2rem;
 }
 
 /* === FOOTER === */
 footer {
 padding: 4rem 2rem;
-border-top: 1px solid rgba(90, 140, 105, 0.2);
+border-top: 1px solid var(--moss);
 text-align: center;
 }
 
-.footer-logo {
+.brand {
 font-family: 'Cormorant Garamond', serif;
-font-size: 1.8rem;
-letter-spacing: 0.3em;
+font-size: 1.5rem;
+letter-spacing: 0.4em;
 margin-bottom: 0.5rem;
 }
 
-.footer-tag {
+.tagline {
 font-size: 0.65rem;
 color: var(--sage);
 letter-spacing: 0.2em;
-text-transform: uppercase;
 }
 
 /* === RESPONSIVE === */
 @media (max-width: 900px) {
-.break-content {
+.mycelium-inner {
 grid-template-columns: 1fr;
 text-align: center;
 }
 
-.visual-side {
-order: -1;
-height: 300px;
+.cards {
+grid-template-columns: 1fr;
+max-width: 500px;
 }
 
-.stats-grid {
+.steps {
+grid-template-columns: 1fr;
+}
+
+.stats-wrap {
 grid-template-columns: repeat(2, 1fr);
 }
 
 .stat::after { display: none; }
-
-.path-timeline {
-grid-template-columns: 1fr;
-gap: 3rem;
 }
 
-.path-timeline::before {
-display: none;
-}
-}
-
-@media (max-width: 600px) {
-.hero h1 { font-size: 3rem; }
-
-.stats-grid {
-grid-template-columns: 1fr;
-}
-
-.card {
-padding: 2rem;
-}
-}
-
-/* === SCROLL ANIMATIONS === */
+/* === REVEAL ANIMATION === */
 .reveal {
 opacity: 0;
-transform: translateY(40px);
-transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+transform: translateY(30px);
+transition: all 0.8s ease;
 }
 
 .reveal.active {
@@ -713,108 +611,89 @@ opacity: 1;
 transform: translateY(0);
 }
 
-.reveal-delay-1 { transition-delay: 0.1s; }
-.reveal-delay-2 { transition-delay: 0.2s; }
-.reveal-delay-3 { transition-delay: 0.3s; }
+.delay-1 { transition-delay: 0.1s; }
+.delay-2 { transition-delay: 0.2s; }
+.delay-3 { transition-delay: 0.3s; }
 </style>
 </head>
 <body>
 
-<div class="mesh-bg"></div>
+<canvas id="hero-canvas"></canvas>
 
-<div class="particles" id="particles"></div>
-
-<!-- Hero -->
 <section class="hero">
 <div class="hero-content">
-<span class="tag">Psychedelic Integration Platform</span>
+<span class="tag"><span>●</span> Psychedelic Integration Platform <span>●</span></span>
 <h1>FELTSHIFT</h1>
-<p class="hero-sub">
-The ceremony is <span>10%</span>. Integration is <span>90%</span>. Most people get dropped where the real work begins.
-</p>
-<div class="cta-group">
-<a href="#join" class="btn btn-primary">Get Early Access</a>
-<a href="#platform" class="btn btn-ghost">Explore</a>
+<p class="hero-sub">The ceremony is <span>10%</span>. Integration is <span>90%</span>. Most get dropped where the work begins.</p>
+<div class="buttons">
+<a href="#join" class="btn btn-glow">Get Early Access</a>
+<a href="#platform" class="btn btn-outline">Explore</a>
 </div>
 </div>
-<span class="scroll-hint">Scroll</span>
+<div class="scroll-line"></div>
 </section>
 
-<!-- Visual Break -->
-<section class="visual-break" id="platform">
-<div class="break-content reveal">
-<div class="visual-side">
-<div class="spore-form">
-<div class="spore-blob"></div>
-<div class="spore-blob"></div>
-<div class="gills">
-<div class="gill-line"></div>
-<div class="gill-line"></div>
-<div class="gill-line"></div>
-<div class="gill-line"></div>
-<div class="gill-line"></div>
-<div class="gill-line"></div>
-<div class="gill-line"></div>
-<div class="gill-line"></div>
+<section class="mycelium" id="platform">
+<div class="mycelium-inner reveal">
+<div class="mycelium-visual">
+<div class="spore-cluster">
+<div class="spore-orb"></div>
+<div class="spore-orb"></div>
+<div class="spore-orb"></div>
 </div>
+<div class="cap"></div>
 </div>
-</div>
-<div class="break-text">
-<span class="quote-mark">"</span>
-<h2>Where the ceremony <em>ends</em>, we <em>begin</em>.</h2>
-<p>Feltshift is built for the 30 days after. The weird liminal space where visions fade but integration hasn't begun. Where most people get dropped.</p>
+<div class="mycelium-text">
+<h2>Where ceremony <span>ends</span>, we <span>begin</span>.</h2>
+<p>Feltshift is the 30 days after. The liminal space where visions fade but integration hasn't started. Where most people get dropped.</p>
 <p>We don't sell ceremony. We build infrastructure for actual transformation.</p>
 </div>
 </div>
 </section>
 
-<!-- Manifesto -->
-<section class="manifesto">
-<div class="manifesto-text reveal">
-<p class="manifesto-label">The Unspoken Truth</p>
-<blockquote class="manifesto-quote">
-"Most people go to ceremony unprepared and leave unsupported. The real work starts when the medicine wears off. That's where <span>we're different</span>."
-</blockquote>
+<section class="truth">
+<div class="truth-inner reveal">
+<pre>"Most go unprepared and leave unsupported.
+The real work starts when the medicine wears off.
+That's where <span>we're different</span>."</pre>
 </div>
 </section>
 
-<!-- Features -->
 <section class="features">
-<div class="section-header reveal">
+<div class="section-head reveal">
 <h2>The Platform</h2>
-<p>Three core systems. One purpose.</p>
+<p>Three systems. One purpose.</p>
 </div>
-<div class="grid">
-<div class="card reveal">
+<div class="cards">
+<div class="card reveal delay-1">
 <div class="card-icon">◈</div>
-<span class="card-num">01 / Integration</span>
+<span class="card-num">01 / INTEGRATION</span>
 <h3>The Integration Journal</h3>
-<p>AI-guided journaling that doesn't ask "how do you feel?" Structured protocols: Day 0, 1, 3, 7, 14, 30. Pattern recognition. Your growth, mapped.</p>
+<p>AI-guided journaling with structured protocols. Day 0 through Day 30.</p>
 </div>
-<div class="card reveal reveal-delay-1">
+<div class="card reveal delay-2">
 <div class="card-icon">◇</div>
-<span class="card-num">02 / Discovery</span>
+<span class="card-num">02 / DISCOVERY</span>
 <h3>The Retreat Directory</h3>
-<p>Verified legal retreats only. Blue badge = vetted. Not another listing site — a trust network of practitioners who actually care.</p>
+<p>Verified legal retreats only. Blue badge = vetted.</p>
 </div>
-<div class="card reveal reveal-delay-2">
+<div class="card reveal delay-3">
 <div class="card-icon">◉</div>
-<span class="card-num">03 / Preparation</span>
+<span class="card-num">03 / PREPARATION</span>
 <h3>30-Day Protocols</h3>
-<p>Not generic journaling. Structured flows that adapt to YOU. Day 0 grounding through Day 30 synthesis. Nobody else does this.</p>
+<p>Structured flows that adapt to you. Nobody else does this.</p>
 </div>
 </div>
 </section>
 
-<!-- Stats -->
 <section class="stats reveal">
-<div class="stats-grid">
+<div class="stats-wrap">
 <div class="stat">
-<span class="stat-value">$485k</span>
+<span class="stat-value">485k</span>
 <span class="stat-label">Year 1 Target</span>
 </div>
 <div class="stat">
-<span class="stat-value">2,000</span>
+<span class="stat-value">2k</span>
 <span class="stat-label">Premium Members</span>
 </div>
 <div class="stat">
@@ -822,84 +701,174 @@ The ceremony is <span>10%</span>. Integration is <span>90%</span>. Most people g
 <span class="stat-label">Verified Retreats</span>
 </div>
 <div class="stat">
-<span class="stat-value">$14.99</span>
+<span class="stat-value">15</span>
 <span class="stat-label">Per Month</span>
 </div>
 </div>
 </section>
 
-<!-- Path -->
 <section class="path">
-<div class="path-header reveal">
+<div class="path-head reveal">
 <h2>The Full Journey</h2>
 </div>
-<div class="path-timeline">
+<div class="steps">
 <div class="step reveal">
 <div class="step-icon">
-<span>◈</span>
-<span class="step-num">01</span>
+◈
+<span class="badge">01</span>
 </div>
 <h3>Preparation</h3>
-<p>Set and setting. Intention setting. Safety protocols. We prep you for the work.</p>
+<p>Set and setting. Safety protocols.</p>
 </div>
-<div class="step reveal reveal-delay-1">
+<div class="step reveal delay-1">
 <div class="step-icon">
-<span>◉</span>
-<span class="step-num">02</span>
+◉
+<span class="badge">02</span>
 </div>
 <h3>Experience</h3>
-<p>The ceremony. The opening. We don't sell this — we prepare you for it.</p>
+<p>The ceremony. The opening.</p>
 </div>
-<div class="step reveal reveal-delay-2">
+<div class="step reveal delay-2">
 <div class="step-icon">
-<span>◈</span>
-<span class="step-num">03</span>
+◈
+<span class="badge">03</span>
 </div>
 <h3>Integration</h3>
-<p>Where 90% of value lives. Our focus. The 30 days after.</p>
+<p>Where 90% of the value lives.</p>
 </div>
 </div>
 </section>
 
-<!-- CTA -->
-<section class="cta-section" id="join">
-<div class="cta-glow"></div>
+<section class="cta" id="join">
 <div class="reveal">
-<h2>Your inner journey<br>deserves structure.</h2>
-<p>Join 500+ people building the future of consciousness exploration.</p>
-<a href="#" class="btn btn-primary">Get Early Access</a>
+<h2>Your journey deserves structure.</h2>
+<p>Join 500+ building the future of consciousness exploration.</p>
+<a href="#" class="btn btn-glow">Get Early Access</a>
 </div>
 </section>
 
-<!-- Footer -->
 <footer>
-<div class="footer-logo">FELTSHIFT</div>
-<div class="footer-tag">What Happens After // feltshift.me</div>
+<div class="brand">FELTSHIFT</div>
+<div class="tagline">What Happens After</div>
 </footer>
 
 <script>
-// Floating particles
-const particles = document.getElementById('particles');
-for (let i = 0; i < 20; i++) {
-const p = document.createElement('div');
-p.className = 'particle';
-p.style.cssText = `
-left: ${Math.random() * 100}%;
-width: ${Math.random() * 4 + 2}px;
-height: ${Math.random() * 4 + 2}px;
-background: ${Math.random() > 0.5 ? 'rgba(138, 248, 138, 0.6)' : 'rgba(201, 162, 39, 0.4)'};
-animation-duration: ${Math.random() * 15 + 15}s;
-animation-delay: ${Math.random() * 10}s;
-`;
-particles.appendChild(p);
+// Three.js Organic Background
+const canvas = document.querySelector('#hero-canvas');
+const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+const scene = new THREE.Scene();
+scene.fog = new THREE.FogExp2(0x050807, 0.02);
+
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+camera.position.z = 30;
+
+// Organic particles
+const particlesGeometry = new THREE.BufferGeometry();
+const particleCount = 80;
+const positions = new Float32Array(particleCount * 3);
+const sizes = new Float32Array(particleCount);
+
+for(let i = 0; i < particleCount; i++) {
+positions[i * 3] = (Math.random() - 0.5) * 60;
+positions[i * 3 + 1] = (Math.random() - 0.5) * 40;
+positions[i * 3 + 2] = (Math.random() - 0.5) * 40;
+sizes[i] = Math.random() * 3;
 }
+
+particlesGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+particlesGeometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
+
+const particlesMaterial = new THREE.PointsMaterial({
+color: 0x7af87a,
+size: 0.2,
+transparent: true,
+opacity: 0.6,
+blending: THREE.AdditiveBlending
+});
+
+const particles = new THREE.Points(particlesGeometry, particlesMaterial);
+scene.add(particles);
+
+// Floating organic blobs
+const blobGeometry = new THREE.SphereGeometry(1, 32, 32);
+const blobs = [];
+
+for(let i = 0; i < 5; i++) {
+const blob = new THREE.Mesh(
+blobGeometry,
+new THREE.MeshBasicMaterial({
+color: 0x1a3d2e,
+transparent: true,
+opacity: 0.15,
+blending: THREE.AdditiveBlending
+})
+);
+blob.position.set(
+(Math.random() - 0.5) * 50,
+(Math.random() - 0.5) * 30,
+(Math.random() - 0.5) * 20 - 10
+);
+blob.scale.setScalar(Math.random() * 8 + 4);
+blob.userData = {
+vx: (Math.random() - 0.5) * 0.01,
+vy: (Math.random() - 0.5) * 0.01
+};
+scene.add(blob);
+blobs.push(blob);
+}
+
+// Animation
+let mouseX = 0, mouseY = 0;
+document.addEventListener('mousemove', (e) => {
+mouseX = (e.clientX / window.innerWidth) * 2 - 1;
+mouseY = -(e.clientY / window.innerHeight) * 2 + 1;
+});
+
+function animate() {
+requestAnimationFrame(animate);
+
+// Rotate particles
+particles.rotation.y += 0.0003;
+particles.rotation.x += 0.0001;
+
+// Move blobs
+blobs.forEach((blob, i) => {
+blob.position.x += blob.userData.vx + mouseX * 0.001;
+blob.position.y += blob.userData.vy + mouseY * 0.001;
+
+blob.scale.setScalar(
+4 + Math.sin(Date.now() * 0.001 + i) * 2
+);
+
+// Wrap around
+if(Math.abs(blob.position.x) > 40) blob.userData.vx *= -1;
+if(Math.abs(blob.position.y) > 25) blob.userData.vy *= -1;
+});
+
+// Camera drift
+camera.position.x += (mouseX * 2 - camera.position.x) * 0.02;
+camera.position.y += (mouseY * 2 - camera.position.y) * 0.02;
+
+renderer.render(scene, camera);
+}
+animate();
+
+// Resize
+window.addEventListener('resize', () => {
+renderer.setSize(window.innerWidth, window.innerHeight);
+camera.aspect = window.innerWidth / window.innerHeight;
+camera.updateProjectionMatrix();
+});
 
 // Scroll reveal
 const observer = new IntersectionObserver((entries) => {
 entries.forEach(e => {
-if (e.isIntersecting) e.target.classList.add('active');
+if(e.isIntersecting) e.target.classList.add('active');
 });
-}, { threshold: 0.1, rootMargin: '-50px' });
+}, { threshold: 0.1 });
 
 document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 </script>
