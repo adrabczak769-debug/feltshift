@@ -4,23 +4,25 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>FELTSHIFT — What Happens After</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Inter:wght@300;0,Inter:wght@300;1,400&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 :root {
---void: #050807;
---deep: #0a120e;
---forest: #0d1f15;
---leaf: #1a3d2e;
---moss: #2d5a3d;
---sage: #5a8c69;
---glow: #7af87a;
---gold: #d4af37;
---cream: #f5f1eb;
---text: #e8e8e8;
---muted: #8a9a8a;
+--void: #020403;
+--abyss: #070d09;
+--deep: #0f1a12;
+--root: #152018;
+--bark: #1a2d1f;
+--moss: #2d4a35;
+--fern: #3d5f4a;
+--leaf: #5a8769;
+--sprout: #7aaf87;
+--glow: #9ff9a8;
+--pulse: rgba(159, 249, 168, 0.15);
+--amber: #c9a227;
+--mist: rgba(200, 220, 210, 0.03);
 }
 
 html { scroll-behavior: smooth; }
@@ -28,98 +30,180 @@ html { scroll-behavior: smooth; }
 body {
 font-family: 'Inter', sans-serif;
 background: var(--void);
-color: var(--text);
+color: #e8f0e8;
 line-height: 1.7;
+overflow-x: hidden;
 }
 
-h1, h2, h3, h4 { font-family: 'Cormorant Garamond', serif; font-weight: 400; }
+/* ---- LIVING BACKGROUND ---- */
+#living-canvas {
+position: fixed;
+top: 0; left: 0;
+width: 100%; height: 100%;
+z-index: -2;
+}
 
-#hero-canvas {
-position: fixed; top: 0; left: 0;
+#organic-layer {
+position: fixed;
+top: 0; left: 0;
 width: 100%; height: 100%;
 z-index: -1;
+background: 
+radial-gradient(ellipse 80% 50% at 20% 30%, rgba(45, 74, 53, 0.4) 0%, transparent 60%),
+radial-gradient(ellipse 60% 40% at 80% 70%, rgba(159, 249, 168, 0.08) 0%, transparent 50%),
+radial-gradient(circle at 50% 100%, var(--deep) 0%, var(--void) 70%);
+pointer-events: none;
 }
 
-/* HERO */
+/* ---- NAV ---- */
+.nav {
+position: fixed;
+top: 0; left: 0; right: 0;
+padding: 1.5rem 3rem;
+display: flex;
+justify-content: space-between;
+align-items: center;
+z-index: 100;
+background: linear-gradient(180deg, var(--void), transparent);
+}
+
+.nav-logo {
+font-family: 'Cormorant Garamond', serif;
+font-size: 1.3rem;
+letter-spacing: 0.4em;
+font-weight: 300;
+color: var(--glow);
+}
+
+.nav-links {
+display: flex;
+gap: 3rem;
+}
+
+.nav-links a {
+color: var(--leaf);
+text-decoration: none;
+font-size: 0.7rem;
+letter-spacing: 0.15em;
+text-transform: uppercase;
+transition: color 0.3s;
+position: relative;
+}
+
+.nav-links a::after {
+content: '';
+position: absolute;
+bottom: -4px; left: 0;
+width: 0; height: 1px;
+background: var(--glow);
+transition: width 0.3s;
+}
+
+.nav-links a:hover::after { width: 100%; }
+.nav-links a:hover { color: var(--glow); }
+
+/* ---- HERO ---- */
 .hero {
 min-height: 100vh;
 display: flex;
-align-items: center;
+flex-direction: column;
 justify-content: center;
-padding: 2rem;
-text-align: center;
-}
-
-.hero-content {
-max-width: 800px;
+padding: 8rem 4rem 4rem;
 position: relative;
-z-index: 1;
 }
 
-.tag {
-font-size: 0.65rem;
-letter-spacing: 0.3em;
+.hero-grid {
+max-width: 1400px;
+margin: 0 auto;
+display: grid;
+grid-template-columns: 1.2fr 1fr;
+gap: 6rem;
+align-items: center;
+}
+
+.hero-text {}
+
+.hero-label {
+font-size: 0.6rem;
+letter-spacing: 0.4em;
 text-transform: uppercase;
-color: var(--sage);
+color: var(--sprout);
 margin-bottom: 2rem;
-display: block;
+display: flex;
+align-items: center;
+gap: 1rem;
+}
+
+.hero-label::before {
+content: '';
+width: 30px;
+height: 1px;
+background: var(--moss);
 }
 
 .hero h1 {
-font-size: clamp(3.5rem, 10vw, 7rem);
-line-height: 0.95;
-letter-spacing: -0.03em;
+font-family: 'Cormorant Garamond', serif;
+font-size: clamp(3.5rem, 6vw, 6rem);
+line-height: 1;
+letter-spacing: -0.02em;
 margin-bottom: 1.5rem;
-background: linear-gradient(180deg, #fff 0%, var(--glow) 100%);
--webkit-background-clip: text;
--webkit-text-fill-color: transparent;
-}
-
-.hero-sub {
-font-size: 1.15rem;
-color: var(--muted);
-max-width: 600px;
-margin: 0 auto 2rem;
 font-weight: 300;
 }
 
-.social-proof {
-font-size: 0.75rem;
-color: var(--sage);
-margin-bottom: 2.5rem;
-letter-spacing: 0.05em;
+.hero h1 span {
+display: block;
+color: var(--glow);
+font-size: 0.5em;
+letter-spacing: 0.3em;
+text-transform: uppercase;
+margin-top: 1rem;
 }
 
-.cta-group {
+.hero-sub {
+color: var(--leaf);
+font-size: 1.1rem;
+max-width: 450px;
+margin-bottom: 2.5rem;
+font-weight: 300;
+}
+
+.hero-cta {
 display: flex;
 gap: 1rem;
-justify-content: center;
-flex-wrap: wrap;
+align-items: center;
 }
 
 .btn {
-padding: 1rem 2rem;
+padding: 1.1rem 2.5rem;
 border: none;
 cursor: pointer;
 text-decoration: none;
 display: inline-block;
-font-size: 0.75rem;
-letter-spacing: 0.1em;
+font-size: 0.65rem;
+letter-spacing: 0.15em;
 text-transform: uppercase;
-transition: all 0.3s ease;
+font-weight: 500;
+transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+position: relative;
+overflow: hidden;
 }
 
-.btn-glow {
+.btn-living {
 background: var(--glow);
 color: var(--void);
+border: 1px solid var(--glow);
+box-shadow: 0 0 30px rgba(159, 249, 168, 0.2);
 }
 
-.btn-glow:hover {
-box-shadow: 0 0 40px rgba(122, 248, 122, 0.4);
+.btn-living:hover {
+box-shadow: 
+0 0 60px rgba(159, 249, 168, 0.4),
+0 0 100px rgba(159, 249, 168, 0.1);
+transform: translateY(-2px);
 }
 
 .btn-ghost {
-color: var(--sage);
+color: var(--sprout);
 border: 1px solid var(--moss);
 background: transparent;
 }
@@ -127,324 +211,449 @@ background: transparent;
 .btn-ghost:hover {
 border-color: var(--glow);
 color: var(--glow);
+background: rgba(159, 249, 168, 0.05);
 }
 
-/* SECTIONS */
-section { padding: 8rem 2rem; }
-
-.section-head {
-text-align: center;
-margin-bottom: 5rem;
-}
-
-.section-head h2 {
-font-size: clamp(2rem, 5vw, 3.5rem);
-margin-bottom: 0.8rem;
-}
-
-.section-head p {
-color: var(--muted);
-font-size: 0.95rem;
-}
-
-/* FEATURES */
-.features { background: linear-gradient(180deg, var(--void), var(--deep), var(--void)); }
-
-.feature {
-max-width: 900px;
-margin: 0 auto 5rem;
-padding: 3rem;
-border: 1px solid var(--moss);
-background: rgba(10, 20, 14, 0.5);
-}
-
-.feature:last-child { margin-bottom: 0; }
-
-.feature-num {
-font-size: 0.6rem;
-letter-spacing: 0.2em;
-color: var(--glow);
-text-transform: uppercase;
-margin-bottom: 1rem;
-}
-
-.feature h3 {
-font-size: 1.8rem;
-margin-bottom: 1rem;
-}
-
-.feature-desc {
-color: var(--muted);
-margin-bottom: 2rem;
-font-size: 1.05rem;
-}
-
-.how-it-works {
-background: rgba(122, 248, 122, 0.03);
-border-left: 2px solid var(--glow);
-padding: 1.5rem 2rem;
-margin-bottom: 2rem;
-}
-
-.how-it-works h4 {
-font-size: 0.8rem;
-letter-spacing: 0.1em;
-color: var(--glow);
-margin-bottom: 1rem;
-text-transform: uppercase;
-}
-
-.how-it-works p {
-color: var(--text);
-font-size: 0.9rem;
-margin-bottom: 0.8rem;
-}
-
-.difference-list {
-margin-top: 2rem;
-}
-
-.difference-list h4 {
-font-size: 0.75rem;
-letter-spacing: 0.1em;
-color: var(--glow);
-margin-bottom: 1rem;
-text-transform: uppercase;
-}
-
-.difference-list ul {
-list-style: none;
-}
-
-.difference-list li {
-color: var(--muted);
-font-size: 0.9rem;
-padding: 0.5rem 0;
+.hero-visual {
 position: relative;
-padding-left: 1.5rem;
+height: 500px;
+display: flex;
+align-items: center;
+justify-content: center;
 }
 
-.difference-list li::before {
-content: '▸';
+/* Living spore */
+.spore-container {
+position: relative;
+width: 300px; height: 300px;
+}
+
+.spore-glow {
 position: absolute;
-left: 0;
-color: var(--glow);
-}
-
-/* STEPS */
-.steps { background: var(--forest); }
-
-.steps-grid {
-display: grid;
-grid-template-columns: repeat(4, 1fr);
-gap: 2rem;
-max-width: 1000px;
-margin: 0 auto;
-}
-
-.step {
-text-align: center;
-}
-
-.step-num {
-font-size: 3rem;
-font-family: 'Cormorant Garamond', serif;
-color: var(--glow);
+top: 50%; left: 50%;
+transform: translate(-50%, -50%);
+width: 200px; height: 200px;
+background: var(--glow);
+border-radius: 50%;
+filter: blur(60px);
 opacity: 0.3;
-margin-bottom: 0.5rem;
+animation: breathe 4s ease-in-out infinite;
 }
 
-.step h3 {
-font-size: 1.1rem;
-margin-bottom: 0.8rem;
+@keyframes breathe {
+0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.3; }
+50% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.5; }
 }
 
-.step p {
-color: var(--muted);
-font-size: 0.85rem;
-}
-
-/* PRICING */
-.pricing { background: var(--void); }
-
-.tiers {
-display: grid;
-grid-template-columns: repeat(3, 1fr);
-gap: 2rem;
-max-width: 1000px;
-margin: 0 auto;
-}
-
-.tier {
-border: 1px solid var(--moss);
-padding: 2.5rem;
-position: relative;
-transition: all 0.3s;
-}
-
-.tier:hover {
-border-color: var(--glow);
-}
-
-.tier-featured {
-border-color: var(--glow);
-background: rgba(122, 248, 122, 0.03);
-}
-
-.tier-label {
-font-size: 0.65rem;
-letter-spacing: 0.2em;
-text-transform: uppercase;
-color: var(--sage);
-margin-bottom: 0.5rem;
-}
-
-.tier h3 {
-font-size: 2rem;
-margin-bottom: 0.5rem;
-}
-
-.tier-price {
-font-size: 1.5rem;
-color: var(--glow);
-margin-bottom: 2rem;
-}
-
-.tier ul {
-list-style: none;
-}
-
-.tier li {
-color: var(--muted);
-font-size: 0.85rem;
-padding: 0.4rem 0;
-padding-left: 1.2rem;
-position: relative;
-}
-
-.tier li::before {
-content: '✓';
+.spore-core {
 position: absolute;
-left: 0;
-color: var(--glow);
+top: 50%; left: 50%;
+transform: translate(-50%, -50%);
+width: 120px; height: 120px;
+background: radial-gradient(circle at 30% 30%, var(--glow), var(--sprout));
+border-radius: 50%;
+box-shadow: 
+0 0 60px rgba(159, 249, 168, 0.3),
+inset -20px -20px 40px rgba(0,0,0,0.2);
+z-index: 2;
 }
 
-/* DATA */
-.data-bar {
-border-top: 1px solid var(--moss);
-border-bottom: 1px solid var(--moss);
-padding: 3rem 2rem;
-background: var(--void);
+.spore-ring {
+position: absolute;
+top: 50%; left: 50%;
+transform: translate(-50%, -50%);
+border: 1px solid var(--moss);
+border-radius: 50%;
+opacity: 0.4;
 }
 
-.data-grid {
-display: grid;
-grid-template-columns: repeat(4, 1fr);
-gap: 2rem;
-max-width: 1000px;
-margin: 0 auto;
+.spore-ring:nth-child(1) { width: 200px; height: 200px; animation: spin 20s linear infinite; }
+.spore-ring:nth-child(2) { width: 280px; height: 280px; animation: spin 30s linear infinite reverse; }
+.spore-ring:nth-child(3) { width: 360px; height: 360px; animation: spin 40s linear infinite; border-style: dashed; }
+
+@keyframes spin {
+from { transform: translate(-50%, -50%) rotate(0deg); }
+to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* ---- TRUTH SECTION ---- */
+.truth-section {
+padding: 12rem 4rem;
 text-align: center;
+position: relative;
 }
 
-.data-point h4 {
-font-size: 2rem;
-color: var(--glow);
-margin-bottom: 0.5rem;
-}
-
-.data-point p {
-color: var(--muted);
-font-size: 0.75rem;
-}
-
-/* FAQ */
-.faq { background: var(--deep); }
-
-.questions {
+.truth-text {
 max-width: 800px;
 margin: 0 auto;
+position: relative;
 }
 
-.question {
-margin-bottom: 3rem;
+.quote-mark {
+font-family: 'Cormorant Garamond', serif;
+font-size: 15rem;
+position: absolute;
+top: -5rem; left: -3rem;
+color: var(--glow);
+opacity: 0.05;
+line-height: 1;
+pointer-events: none;
 }
 
-.question h3 {
-font-size: 1.1rem;
-margin-bottom: 0.8rem;
+.truth-text p {
+font-family: 'Cormorant Garamond', serif;
+font-size: clamp(1.5rem, 3vw, 2.2rem);
+line-height: 1.5;
+font-style: italic;
+font-weight: 400;
+}
+
+.truth-text span {
 color: var(--glow);
 }
 
-.question p {
-color: var(--muted);
-font-size: 0.95rem;
+/* ---- CAPABILITIES ---- */
+.capabilities {
+padding: 8rem 4rem;
 }
 
-/* FINAL CTA */
-.final-cta {
+.section-header {
 text-align: center;
-padding: 10rem 2rem;
-background: linear-gradient(180deg, var(--void), var(--forest));
+margin-bottom: 6rem;
 }
 
-.final-cta h2 {
-font-size: clamp(1.8rem, 5vw, 3rem);
+.section-header h2 {
+font-family: 'Cormorant Garamond', serif;
+font-size: clamp(2rem, 4vw, 3.5rem);
 margin-bottom: 1rem;
+font-weight: 300;
 }
 
-.final-cta p {
-color: var(--muted);
-max-width: 450px;
-margin: 0 auto 2rem;
+.section-header p {
+color: var(--leaf);
+font-size: 1rem;
 }
 
-.privacy-note {
-font-size: 0.75rem;
-color: var(--sage);
-margin-top: 1.5rem;
+.cap-grid {
+max-width: 1200px;
+margin: 0 auto;
+display: grid;
+grid-template-columns: repeat(2, 1fr);
+gap: 1px;
+background: var(--moss);
+}
+
+.cap-cell {
+background: var(--void);
+padding: 4rem;
+position: relative;
+overflow: hidden;
+transition: all 0.5s;
+cursor: pointer;
+}
+
+.cap-cell::before {
+content: '';
+position: absolute;
+top: 0; left: 0;
+width: 100%; height: 2px;
+background: linear-gradient(90deg, transparent, var(--glow), transparent);
+transform: translateX(-100%);
+transition: transform 0.6s;
+}
+
+.cap-cell:hover::before {
+transform: translateX(0);
+}
+
+.cap-cell:hover {
+background: radial-gradient(circle at 50% 0%, rgba(159, 249, 168, 0.03), transparent 70%);
+}
+
+.cap-num {
+font-size: 0.55rem;
+letter-spacing: 0.2em;
+color: var(--glow);
+margin-bottom: 1.5rem;
 opacity: 0.7;
 }
 
-/* FOOTER */
+.cap-cell h3 {
+font-family: 'Cormorant Garamond', serif;
+font-size: 1.8rem;
+margin-bottom: 1rem;
+font-weight: 400;
+}
+
+.cap-cell p {
+color: var(--leaf);
+font-size: 0.95rem;
+line-height: 1.8;
+}
+
+.cap-icon {
+width: 50px; height: 50px;
+border: 1px solid var(--moss);
+margin-bottom: 2rem;
+display: flex;
+align-items: center;
+justify-content: center;
+transition: all 0.3s;
+}
+
+.cap-cell:hover .cap-icon {
+border-color: var(--glow);
+box-shadow: 0 0 30px rgba(159, 249, 168, 0.1);
+}
+
+/* ---- DATA STRIP ---- */
+.data-strip {
+padding: 6rem 4rem;
+border-top: 1px solid var(--moss);
+border-bottom: 1px solid var(--moss);
+}
+
+.data-grid {
+max-width: 1100px;
+margin: 0 auto;
+display: flex;
+justify-content: space-between;
+}
+
+.data-item {
+text-align: center;
+position: relative;
+flex: 1;
+}
+
+.data-item:not(:last-child)::after {
+content: '';
+position: absolute;
+top: 50%; right: 0;
+transform: translateY(-50%);
+width: 1px; height: 50px;
+background: var(--moss);
+}
+
+.data-big {
+font-family: 'Cormorant Garamond', serif;
+font-size: 3rem;
+color: var(--glow);
+line-height: 1;
+margin-bottom: 0.5rem;
+}
+
+.data-label {
+font-size: 0.65rem;
+letter-spacing: 0.1em;
+text-transform: uppercase;
+color: var(--leaf);
+}
+
+/* ---- PATH ---- */
+.path-section {
+padding: 10rem 4rem;
+background: linear-gradient(180deg, var(--void), var(--deep));
+}
+
+.path-grid {
+max-width: 900px;
+margin: 0 auto;
+display: grid;
+grid-template-columns: repeat(3, 1fr);
+gap: 4rem;
+position: relative;
+}
+
+.path-grid::before {
+content: '';
+position: absolute;
+top: 40px; left: 10%; width: 80%; height: 1px;
+background: linear-gradient(90deg, transparent, var(--moss), transparent);
+}
+
+.path-step {
+text-align: center;
+position: relative;
+}
+
+.step-circle {
+width: 80px; height: 80px;
+border: 1px solid var(--moss);
+border-radius: 50%;
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 1.5rem;
+margin: 0 auto 2rem;
+background: var(--void);
+position: relative;
+transition: all 0.4s;
+}
+
+.path-step:hover .step-circle {
+border-color: var(--glow);
+box-shadow: 0 0 40px rgba(159, 249, 168, 0.1);
+}
+
+.step-badge {
+position: absolute;
+top: -8px; right: -8px;
+width: 24px; height: 24px;
+background: var(--glow);
+color: var(--void);
+border-radius: 50%;
+font-size: 0.6rem;
+font-weight: 600;
+display: flex;
+align-items: center;
+justify-content: center;
+}
+
+.path-step h3 {
+font-family: 'Cormorant Garamond', serif;
+font-size: 1.3rem;
+margin-bottom: 1rem;
+font-weight: 400;
+}
+
+.path-step p {
+color: var(--leaf);
+font-size: 0.9rem;
+}
+
+/* ---- PRICING ---- */
+.pricing-section {
+padding: 10rem 4rem;
+}
+
+.tier-grid {
+max-width: 1000px;
+margin: 0 auto;
+display: grid;
+grid-template-columns: repeat(3, 1fr);
+gap: 2rem;
+}
+
+.tier-card {
+border: 1px solid var(--moss);
+padding: 3rem;
+position: relative;
+transition: all 0.4s;
+}
+
+.tier-card.featured {
+border-color: var(--glow);
+background: radial-gradient(circle at 50% 0%, rgba(159, 249, 168, 0.05), transparent 70%);
+box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+}
+
+.tier-card:hover {
+transform: translateY(-5px);
+border-color: var(--glow);
+}
+
+.tier-label {
+font-size: 0.6rem;
+letter-spacing: 0.2em;
+text-transform: uppercase;
+color: var(--sprout);
+margin-bottom: 1rem;
+}
+
+.tier-card h3 {
+font-family: 'Cormorant Garamond', serif;
+font-size: 1.8rem;
+margin-bottom: 0.5rem;
+font-weight: 400;
+}
+
+.tier-price {
+font-size: 1.3rem;
+color: var(--glow);
+margin-bottom: 2rem;
+padding-bottom: 1.5rem;
+border-bottom: 1px solid var(--moss);
+}
+
+.tier-card ul {
+list-style: none;
+}
+
+.tier-card li {
+color: var(--leaf);
+font-size: 0.85rem;
+padding: 0.5rem 0;
+padding-left: 1.5rem;
+position: relative;
+}
+
+.tier-card li::before {
+content: '—';
+position: absolute;
+left: 0;
+color: var(--glow);
+}
+
+/* ---- FINAL ---- */
+.final-section {
+padding: 12rem 4rem;
+text-align: center;
+position: relative;
+}
+
+.final-section::before {
+content: '';
+position: absolute;
+top: 50%; left: 50%;
+transform: translate(-50%, -50%);
+width: 800px; height: 800px;
+background: radial-gradient(circle, rgba(159, 249, 168, 0.05) 0%, transparent 60%);
+pointer-events: none;
+}
+
+.final-section h2 {
+font-family: 'Cormorant Garamond', serif;
+font-size: clamp(2rem, 5vw, 4rem);
+margin-bottom: 1.5rem;
+font-weight: 300;
+position: relative;
+}
+
+.final-section p {
+color: var(--leaf);
+max-width: 450px;
+margin: 0 auto 2.5rem;
+position: relative;
+}
+
+/* ---- FOOTER ---- */
 footer {
-padding: 4rem 2rem;
+padding: 4rem;
 border-top: 1px solid var(--moss);
 text-align: center;
 }
 
-.footer-brand {
+.footer-logo {
 font-family: 'Cormorant Garamond', serif;
 font-size: 1.5rem;
-letter-spacing: 0.3em;
+letter-spacing: 0.5em;
+margin-bottom: 1rem;
+color: var(--glow);
+}
+
+.footer-note {
+font-size: 0.65rem;
+color: var(--moss);
+letter-spacing: 0.1em;
 margin-bottom: 0.5rem;
 }
 
-.footer-copy {
-font-size: 0.65rem;
-color: var(--sage);
-opacity: 0.6;
-margin-bottom: 1rem;
-}
-
-.footer-links {
-display: flex;
-gap: 2rem;
-justify-content: center;
-flex-wrap: wrap;
-font-size: 0.7rem;
-}
-
-.footer-links a {
-color: var(--sage);
-text-decoration: none;
-text-transform: uppercase;
-letter-spacing: 0.1em;
-}
-
+/* ---- ANIMATIONS ---- */
 .reveal {
 opacity: 0;
-transform: translateY(30px);
-transition: all 0.8s ease;
+transform: translateY(40px);
+transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .reveal.active {
@@ -453,349 +662,314 @@ transform: translateY(0);
 }
 
 @media (max-width: 900px) {
-.steps-grid, .tiers, .data-grid { grid-template-columns: 1fr; }
-.feature { padding: 2rem; }
+.hero-grid { grid-template-columns: 1fr; text-align: center; }
+.hero-sub { margin-left: auto; margin-right: auto; }
+.cap-grid { grid-template-columns: 1fr; }
+.data-grid { flex-direction: column; gap: 3rem; }
+.data-item:not(:last-child)::after { display: none; }
+.tier-grid { grid-template-columns: 1fr; }
+.path-grid { grid-template-columns: 1fr; }
+.path-grid::before { display: none; }
+.nav { display: none; }
 }
 </style>
 </head>
 <body>
 
-<canvas id="hero-canvas"></canvas>
+<canvas id="living-canvas"></canvas>
+<div id="organic-layer"></div>
 
-<!-- HERO -->
+<nav class="nav">
+<span class="nav-logo">FELTSHIFT</span>
+<div class="nav-links">
+<a href="#journal">Journal</a>
+<a href="#retreats">Retreats</a>
+<a href="#breathwork">Breathwork</a>
+<a href="#pricing">Pricing</a>
+</div>
+</nav>
+
 <section class="hero">
-<div class="hero-content">
-<span class="tag">Psychedelic Integration Platform</span>
-<h1>Your mind changed.<br>Now track the shift.</h1>
-<p class="hero-sub">The app that helps you prepare, process, and grow from psychedelic and consciousness experiences. AI-powered journaling. Pattern tracking you can't see alone. Breathwork you can feel. Retreats you can trust.</p>
-<p class="social-proof">4.9★ on the App Store · Trusted by explorers in 40+ countries · Your data is encrypted and private. Always.</p>
-<div class="cta-group">
-<a href="#demo" class="btn btn-glow">Open Your Journal — Free</a>
-<a href="#features" class="btn btn-ghost">See What It Does</a>
+<div class="hero-grid">
+<div class="hero-text">
+<span class="hero-label">Consciousness Integration Platform</span>
+<h1>
+Your mind changed.
+<span>Now track the shift</span>
+</h1>
+<p class="hero-sub">AI-powered journaling that listens. Pattern tracking you can't see alone. Breathwork that alters states. Retreats you can trust. Built for the 90% that happens after.</p>
+<div class="hero-cta">
+<a href="#" class="btn btn-living">Open Your Journal — Free</a>
+<a href="#capabilities" class="btn btn-ghost">Explore</a>
 </div>
 </div>
-</section>
-
-<!-- FEATURES -->
-<section class="features" id="features">
-<div class="section-head reveal">
-<h2>What Feltshift Actually Does</h2>
-<p>Not features. Capabilities.</p>
+<div class="hero-visual">
+<div class="spore-container">
+<div class="spore-ring"></div>
+<div class="spore-ring"></div>
+<div class="spore-ring"></div>
+<div class="spore-glow"></div>
+<div class="spore-core"></div>
 </div>
-
-<!-- Feature 1: Journal -->
-<div class="feature reveal">
-<span class="feature-num">01 / The Journal That Listens</span>
-<h3>It's not a blank page. It's an AI companion that reads, asks, and tracks patterns you'd never catch.</h3>
-<p class="feature-desc">This isn't a blank page. It's an AI companion that reads what you write, asks deeper follow-up questions, identifies emotional patterns across weeks of entries, and surfaces insights you'd never catch on your own.</p>
-<div class="how-it-works">
-<h4>How it works</h4>
-<p><strong>You write:</strong> "I keep feeling stuck in the same loop at work. The ceremony showed me I'm afraid of being seen."</p>
-<p><strong>The AI responds:</strong> "You've mentioned fear of visibility three times in the past two weeks. The first was after your breathwork session on March 3rd. What do you think connects these moments?"</p>
-<p>Over time, the AI maps recurring themes — fear, control, connection, grief — and shows you a visual "theme map" of your inner landscape.</p>
-</div>
-<div class="difference-list">
-<h4>What makes this different</h4>
-<ul>
-<li>It doesn't just store your words. It understands them.</li>
-<li>Tracks emotional themes across weeks and months — not just daily mood</li>
-<li>Asks questions based on IFS, somatic therapy, and ACT frameworks</li>
-<li>Connects dots between experiences, moods, and entries</li>
-<li>End-to-end encrypted. No one reads it but you and your AI.</li>
-</ul>
-</div>
-</div>
-
-<!-- Feature 2: Integration Engine -->
-<div class="feature reveal">
-<span class="feature-num">02 / The Integration Engine</span>
-<h3>After a psychedelic experience, the app activates a 30-day protocol that guides you through the critical days that follow.</h3>
-<p class="feature-desc">Not a course. Not articles. Active prompts delivered at the right moment. Not a course. Not articles. Active prompts delivered at the right moment.</p>
-<div class="how-it-works">
-<h4>How it works</h4>
-<p>You log an experience → The app immediately begins a 30-day integration sequence tailored to YOUR experience:</p>
-<p>Day 0: Voice capture. Hit record and speak. Transcribes and tags emotions.</p>
-<p>Day 1: Body scan. "Where do you feel different today?"</p>
-<p>Day 3: Memory. "What image keeps coming back?"</p>
-<p>Day 7: Pattern check. "Has anything changed with people this week?"</p>
-<p>Day 14: Action bridge. "What will you commit to doing differently?"</p>
-<p>Day 30: Full integration report — AI-generated summary of mood shifts, theme evolution, and growth areas.</p>
-</div>
-<div class="difference-list">
-<h4>What makes this different</h4>
-<ul>
-<li>It's not content you read. It's prompts that arrive at the right time.</li>
-<li>It adapts. If you mention grief on Day 3, Day 7 goes deeper on grief.</li>
-<li>The 30-day report: a complete visual map of how you changed.</li>
-</ul>
-</div>
-</div>
-
-<!-- Feature 3: Tracker -->
-<div class="feature reveal">
-<span class="feature-num">03 / The Tracker</span>
-<h3>Your consciousness journey generates data. The app captures it and shows you patterns invisible to the naked eye.</h3>
-<p class="feature-desc">Mood tracking. Microdose tracking. Experience timeline visualization.</p>
-<div class="how-it-works">
-<h4>Mood Tracker</h4>
-<p>10-second daily check-in. Tap your mood. Tag your energy. Done.</p>
-<p>Over weeks, see a visual mood graph that reveals cycles, triggers, and trends.</p>
-<p>The AI flags patterns: "Your mood tends to dip 4 days after high-intensity experiences."</p>
-</div>
-<div class="how-it-works">
-<h4>Microdose Tracker</h4>
-<p>After 30 days, get a detailed report: "Your creativity scores are 34% higher on dose days."</p>
-<p>Adjust your protocol based on YOUR data, not Reddit advice.</p>
-</div>
-</div>
-
-<!-- Feature 4: Breathwork -->
-<div class="feature reveal">
-<span class="feature-num">04 / Breathwork Sessions</span>
-<h3>Guided audio sessions that create real altered states — no substances needed.</h3>
-<p class="feature-desc">Not a meditation app. These are intense, body-shaking, vision-inducing breathwork protocols.</p>
-<div class="how-it-works">
-<h4>What's inside</h4>
-<p><strong>Deep Exploration (35 min)</strong> — Holotropic-style connected breathing. Can produce visual experiences, emotional releases.</p>
-<p><strong>Nervous System Reset (12 min)</strong> — Vagus nerve activation. For anxiety, overwhelm, post-experience grounding.</p>
-<p><strong>Energy Protocol (18 min)</strong> — Wim Hof-inspired rhythmic breathing with breath holds.</p>
-<p><strong>Pre-Journey Preparation (20 min)</strong> — Centering practice designed for hours before a ceremony.</p>
-</div>
-</div>
-
-<!-- Feature 5: Retreats -->
-<div class="feature reveal">
-<span class="feature-num">05 / The Retreat Finder</span>
-<h3>Not a blog post. A search engine with verification, reviews, and direct booking.</h3>
-<p class="feature-desc">Search by location, substance, price, duration, group size. Real reviews. Verified safety.</p>
-<div class="how-it-works">
-<h4>How it works</h4>
-<p>Search → Filter → See credentials → Verified badge tells you "this one has been checked"</p>
-<p>Tap "I'm Interested" → get a preparation guide loaded into your journal.</p>
-<p>After your retreat → integration protocol activates automatically.</p>
-</div>
-<div class="difference-list">
-<h4>The Verified Badge means</h4>
-<ul>
-<li>Facilitator training verified (not self-reported)</li>
-<li>Medical screening process checked</li>
-<li>Emergency procedures in place</li>
-<li>References from 3+ past participants</li>
-<li>Integration support (not just drop-off)</li>
-</ul>
-</div>
-</div>
-
-<!-- Feature 6: Insight Engine -->
-<div class="feature reveal">
-<span class="feature-num">06 / The Insight Engine</span>
-<h3>When AI reads months of your data, it reveals patterns invisible to you.</h3>
-<p class="feature-desc">This is the feature nobody else has. It turns your inner work into visible, trackable, undeniable growth.</p>
-<div class="how-it-works">
-<h4>Weekly Insights</h4>
-<p>"You mentioned 'control' 4 times this week, down from 11 last month. Something is shifting."</p>
-<p>"Your anxiety scores spike every Monday. Is there something about the start of your week worth exploring?"</p>
-</div>
-<div class="how-it-works">
-<h4>Monthly Reports</h4>
-<p>Mood trend graph with annotations. Top emotional themes. Integration score. Personalized recommendation.</p>
 </div>
 </div>
 </section>
 
-<!-- STEPS -->
-<section class="steps">
-<div class="section-head reveal">
-<h2>How It Works</h2>
-<p>Four steps to insight</p>
+<section class="truth-section">
+<div class="truth-text reveal">
+<span class="quote-mark">"</span>
+<p>Most people go to ceremony unprepared and leave unsupported. The real work starts when the medicine wears off. That's where <span>we're different</span>.</p>
 </div>
-<div class="steps-grid">
-<div class="step reveal">
-<span class="step-num">01</span>
-<h3>Open and check in</h3>
-<p>10 seconds. Mood, energy, one thought. Done.</p>
+</section>
+
+<section class="capabilities" id="capabilities">
+<div class="section-header reveal">
+<h2>The Living Platform</h2>
+<p>Six systems. One organism. Built for integration.</p>
 </div>
-<div class="step reveal">
-<span class="step-num">02</span>
-<h3>Write when called</h3>
-<p>The AI meets you with a prompt. Write a sentence or a page.</p>
+<div class="cap-grid">
+<div class="cap-cell reveal">
+<div class="cap-icon">◈</div>
+<span class="cap-num">01 / LISTENING</span>
+<h3>The Journal That Responds</h3>
+<p>It doesn't store your words. It understands them. AI asks follow-up questions based on IFS, somatic, and ACT frameworks. Tracks themes across weeks. Reveals patterns invisible to you.</p>
 </div>
-<div class="step reveal">
-<span class="step-num">03</span>
-<h3>Log your practices</h3>
-<p>Breathwork, meditation, microdose, ceremony — whatever you're exploring.</p>
+<div class="cap-cell reveal">
+<div class="cap-icon">◇</div>
+<span class="cap-num">02 / GUIDING</span>
+<h3>The Integration Protocol</h3>
+<p>30-day structured flow. Day 0 voice capture. Day 1 body scan. Day 3 memory prompts. Day 7 pattern check. Day 30 AI-generated report of your transformation.</p>
 </div>
-<div class="step reveal">
-<span class="step-num">04</span>
-<h3>Watch patterns emerge</h3>
-<p>Over days and weeks, your data reveals insights no reflection could catch.</p>
+<div class="cap-cell reveal">
+<div class="cap-icon">◉</div>
+<span class="cap-num">03 / TRACKING</span>
+<h3>The Data Engine</h3>
+<p>Mood correlations. Microdose analytics. Experience timeline visualization. See what substances, practices, and conditions actually move your needle. Finally, data.</p>
+</div>
+<div class="cap-cell reveal">
+<div class="cap-icon">◎</div>
+<span class="cap-num">04 / BREATHING</span>
+<h3>Altered States, No Substances</h3>
+<p>Holotropic-style connected breathing. Vagus nerve activation. Energy protocols. 35-minute deep exploration sessions that produce visual experiences. Original ambient soundscapes.</p>
+</div>
+<div class="cap-cell reveal">
+<div class="cap-icon">◐</div>
+<span class="cap-num">05 / FINDING</span>
+<h3>Verified Retreat Directory</h3>
+<p>Not listings. Audited safety. Facilitator credentials verified. Medical screening protocols checked. Past participant references required. The badge means they earned it.</p>
+</div>
+<div class="cap-cell reveal">
+<div class="cap-icon">◑</div>
+<span class="cap-num">06 / REVEALING</span>
+<h3>The Insight Engine</h3>
+<p>Weekly pattern alerts. Monthly growth reports. Theme mapping across time. "You mentioned control 4 times this week, down from 11 last month. Something is shifting."</p>
 </div>
 </div>
 </section>
 
-<!-- DATA -->
-<section class="data-bar">
+<section class="data-strip">
 <div class="data-grid">
-<div class="data-point reveal">
-<h4>4.2x</h4>
-<p>Average journals per week vs 0.8x with traditional apps</p>
+<div class="data-item reveal">
+<span class="data-big">4.2x</span>
+<span class="data-label">Journals per week</span>
 </div>
-<div class="data-point reveal">
-<h4>73%</h4>
-<p>Report feeling "more clear" after first 30-day protocol</p>
+<div class="data-item reveal">
+<span class="data-big">73%</span>
+<span class="data-label">Feel clearer after 30 days</span>
 </div>
-<div class="data-point reveal">
-<h4>3x</h4>
-<p>More likely to report lasting change with full integration cycle</p>
+<div class="data-item reveal">
+<span class="data-big">3x</span>
+<span class="data-label">Lasting change with protocol</span>
 </div>
-<div class="data-point reveal">
-<h4>+2.1</h4>
-<p>Average mood shift from Deep Exploration breathwork</p>
+<div class="data-item reveal">
+<span class="data-big">$15</span>
+<span class="data-label">Per month for Journey</span>
 </div>
 </div>
 </section>
 
-<!-- PRICING -->
-<section class="pricing" id="pricing">
-<div class="section-head reveal">
-<h2>Simple Pricing</h2>
+<section class="path-section">
+<div class="section-header reveal">
+<h2>The Full Journey</h2>
 </div>
-<div class="tiers">
-<div class="tier reveal">
-<span class="tier-label">Free</span>
-<h3>Start</h3>
+<div class="path-grid">
+<div class="path-step reveal">
+<div class="step-circle">
+⊹
+<span class="step-badge">01</span>
+</div>
+<h3>Preparation</h3>
+<p>Set intention. Safety protocols. The right guide. We prep you for the work.</p>
+</div>
+<div class="path-step reveal">
+<div class="step-circle">
+◉
+<span class="step-badge">02</span>
+</div>
+<h3>Experience</h3>
+<p>The ceremony. The opening. We don't sell this — we prepare you for it.</p>
+</div>
+<div class="path-step reveal">
+<div class="step-circle">
+⊹
+<span class="step-badge">03</span>
+</div>
+<h3>Integration</h3>
+<p>Where 90% of the value lives. Our focus. Our reason for existing.</p>
+</div>
+</div>
+</section>
+
+<section class="pricing-section" id="pricing">
+<div class="section-header reveal">
+<h2>Join</h2>
+<p>Three pathways. Pick yours.</p>
+</div>
+<div class="tier-grid">
+<div class="tier-card reveal">
+<span class="tier-label">Seed</span>
+<h3>Free</h3>
 <p class="tier-price">$0</p>
 <ul>
 <li>Daily mood check-in</li>
-<li>3 journal entries/week</li>
+<li>3 journal entries per week</li>
 <li>1 breathwork session</li>
-<li>Browse retreats</li>
-<li>Basic experience logging</li>
+<li>Browse retreat directory</li>
 </ul>
 </div>
-<div class="tier tier-featured reveal">
-<span class="tier-label">Most Popular</span>
+<div class="tier-card featured reveal">
+<span class="tier-label">Growth</span>
 <h3>Journey</h3>
-<p class="tier-price">$14.99/mo or $99/yr</p>
+<p class="tier-price">$14.99/mo</p>
 <ul>
 <li>Unlimited AI journaling</li>
-<li>Full 30-day integration protocols</li>
-<li>Microdose tracker with analytics</li>
+<li>Full 30-day protocols</li>
+<li>Microdose analytics</li>
 <li>All breathwork sessions</li>
 <li>Weekly AI insights</li>
 <li>Mood correlation engine</li>
 <li>Experience timeline</li>
-<li>Offline mode</li>
+<li>End-to-end encrypted</li>
 </ul>
 </div>
-<div class="tier reveal">
-<span class="tier-label">For Practitioners</span>
+<div class="tier-card reveal">
+<span class="tier-label">Guide</span>
 <h3>Facilitator</h3>
 <p class="tier-price">$99/mo</p>
 <ul>
 <li>Everything in Journey</li>
-<li>Assign protocols to clients</li>
-<li>Client progress dashboard</li>
+<li>Client protocols</li>
+<li>Progress dashboard</li>
 <li>Custom branding</li>
-<li>Analytics on outcomes</li>
+<li>Outcome analytics</li>
 <li>Priority support</li>
 </ul>
 </div>
 </div>
 </section>
 
-<!-- FAQ -->
-<section class="faq">
-<div class="section-head reveal">
-<h2>FAQ</h2>
-</div>
-<div class="questions">
-<div class="question reveal">
-<h3>Is this a therapy app?</h3>
-<p>No. We don't diagnose or treat anything. We give you tools for self-reflection, tracking, and growth. If you need professional support, our bot can help you find a qualified integration therapist near you.</p>
-</div>
-<div class="question reveal">
-<h3>Do I need to use psychedelics to use this?</h3>
-<p>No. Most of our tools work for anyone exploring consciousness through any practice. Breathwork alone can produce profound experiences. Meditation practitioners use the journal and mood tracking too.</p>
-</div>
-<div class="question reveal">
-<h3>Is my data private?</h3>
-<p>Completely. End-to-end encryption. We can't read your journal entries even if we wanted to. No ads. No data selling. Ever.</p>
-</div>
-<div class="question reveal">
-<h3>What's the Verified badge?</h3>
-<p>It means we've audited the retreat's facilitator credentials, medical screening, emergency procedures, and collected references from past participants. They've earned it.</p>
-</div>
-</div>
-</section>
-
-<!-- FINAL CTA -->
-<section class="final-cta" id="join">
+<section class="final-section">
 <div class="reveal">
-<h2>The experience already happened.<br>What you do with it is up to you.</h2>
+<h2>The experience happened.<br>What you do with it is up to you.</h2>
 <p>Your journal is waiting. Your first breathwork session is ready. Your data starts building today.</p>
-<a href="#" class="btn btn-glow">Start Free — No Credit Card</a>
-<p class="privacy-note">Your journal is encrypted end-to-end. We can't read it. We don't sell your data. We don't show ads. This is your space.</p>
+<a href="#" class="btn btn-living">Start Free — No Credit Card</a>
 </div>
 </section>
 
-<!-- FOOTER -->
 <footer>
-<div class="footer-brand">FELTSHIFT</div>
-<p class="footer-copy">Education and personal development platform. Not medical advice. Not a substitute for professional therapy.</p>
-<p class="footer-copy">Crisis support: 988 Lifeline | Fireside Project: 62-FIRESIDE</p>
-<div class="footer-links">
-<a href="#">Journal</a>
-<a href="#">Tracker</a>
-<a href="#">Breathwork</a>
-<a href="#">Retreats</a>
-<a href="#">About</a>
-<a href="#">Privacy</a>
-</div>
+<div class="footer-logo">FELTSHIFT</div>
+<p class="footer-note">What Happens After // feltshift.me</p>
+<p class="footer-note">Not medical advice. Crisis: 988 Lifeline | Fireside: 62-FIRESIDE</p>
 </footer>
 
 <script>
-// Three.js background
-const canvas = document.querySelector('#hero-canvas');
+// Living Three.js background
+const canvas = document.querySelector('#living-canvas');
 const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-camera.position.z = 30;
+camera.position.z = 40;
 
-const particlesGeo = new THREE.BufferGeometry();
-const count = 100;
-const positions = new Float32Array(count * 3);
+// Organic particle field
+const particleCount = 150;
+const geometry = new THREE.BufferGeometry();
+const positions = new Float32Array(particleCount * 3);
+const velocities = [];
 
-for(let i = 0; i < count * 3; i++) {
-positions[i] = (Math.random() - 0.5) * 60;
+for(let i = 0; i < particleCount; i++) {
+positions[i * 3] = (Math.random() - 0.5) * 80;
+positions[i * 3 + 1] = (Math.random() - 0.5) * 60;
+positions[i * 3 + 2] = (Math.random() - 0.5) * 40;
+velocities.push({
+x: (Math.random() - 0.5) * 0.02,
+y: (Math.random() - 0.5) * 0.02,
+z: (Math.random() - 0.5) * 0.01
+});
 }
 
-particlesGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
 
-const particlesMat = new THREE.PointsMaterial({
-color: 0x7af87a,
-size: 0.2,
+const material = new THREE.PointsMaterial({
+color: 0x7aaf87,
+size: 0.15,
 transparent: true,
-opacity: 0.6,
-blending: THREE.AdditiveBlending
+opacity: 0.6
 });
 
-const particles = new THREE.Points(particlesGeo, particlesMat);
+const particles = new THREE.Points(geometry, material);
 scene.add(particles);
 
-let mouseX = 0, mouseY = 0;
-document.addEventListener('mousemove', (e) => {
-mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
-mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
-});
+// Organic floating spheres
+const blobGeo = new THREE.SphereGeometry(1, 32, 32);
+const blobs = [];
+for(let i = 0; i < 4; i++) {
+const blob = new THREE.Mesh(blobGeo, new THREE.MeshBasicMaterial({
+color: 0x1a2d1f,
+transparent: true,
+opacity: 0.2
+}));
+blob.position.set(
+(Math.random() - 0.5) * 60,
+(Math.random() - 0.5) * 40,
+(Math.random() - 0.5) * 20
+);
+blob.scale.setScalar(Math.random() * 10 + 5);
+scene.add(blob);
+blobs.push(blob);
+}
 
+// Animation
+let frame = 0;
 function animate() {
 requestAnimationFrame(animate);
-particles.rotation.y += 0.0003;
-particles.rotation.x += mouseY * 0.0001;
+frame++;
+
+// Gentle particle movement
+const positions = geometry.attributes.position.array;
+for(let i = 0; i < particleCount; i++) {
+positions[i * 3] += velocities[i].x + Math.sin(frame * 0.001 + i) * 0.01;
+positions[i * 3 + 1] += velocities[i].y;
+positions[i * 3 + 2] += velocities[i].z;
+
+// Wrap around
+if(Math.abs(positions[i * 3]) > 50) velocities[i].x *= -1;
+if(Math.abs(positions[i * 3 + 1]) > 40) velocities[i].y *= -1;
+}
+geometry.attributes.position.needsUpdate = true;
+
+// Slight rotation
+particles.rotation.y += 0.0002;
+
+// Blob morphing
+blobs.forEach((blob, i) => {
+blob.scale.setScalar(
+5 + Math.sin(frame * 0.002 + i) * 2
+);
+});
+
 renderer.render(scene, camera);
 }
 animate();
@@ -806,12 +980,17 @@ camera.aspect = window.innerWidth / window.innerHeight;
 camera.updateProjectionMatrix();
 });
 
-// Scroll reveal
-const obs = new IntersectionObserver((entries) => {
-entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('active'); });
-}, { threshold: 0.1 });
+// Reveal on scroll
+const observer = new IntersectionObserver((entries) => {
+entries.forEach(e => {
+if(e.isIntersecting) {
+e.target.style.transitionDelay = (e.target.dataset.delay || 0) + 's';
+e.target.classList.add('active');
+}
+});
+}, { threshold: 0.1, rootMargin: '-50px' });
 
-document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 </script>
 
 </body>
