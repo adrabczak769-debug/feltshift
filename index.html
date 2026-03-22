@@ -1,728 +1,941 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FELTSHIFT — What Happens After</title>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        :root {
-            --void: #0a0f0a;
-            --fungus: #1a2f1a;
-            --spore: #2a3a2a;
-            --mycelium: #4a6a4a;
-            --biolum: #7ae87a;
-            --spore-white: rgba(122, 232, 122, 0.3);
-        }
-
-        body {
-            font-family: 'Space Grotesk', sans-serif;
-            background: var(--void);
-            color: #e8f0e8;
-            overflow-x: hidden;
-        }
-
-        /* Floating Spore Particles */
-        .spores {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 1;
-            overflow: hidden;
-        }
-
-        .spore {
-            position: absolute;
-            width: 2px;
-            height: 2px;
-            background: var(--biolum);
-            border-radius: 50%;
-            opacity: 0.6;
-            animation: float 15s infinite ease-in-out;
-            box-shadow: 0 0 6px var(--biolum);
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(100vh) translateX(0) scale(0); opacity: 0; }
-            10% { opacity: 0.6; }
-            50% { transform: translateY(50vh) translateX(50px) scale(1); }
-            90% { opacity: 0.3; }
-        }
-
-        /* Hero Section */
-        .hero {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .hero::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background:
-                radial-gradient(ellipse at 20% 50%, rgba(26, 47, 26, 0.8) 0%, transparent 50%),
-                radial-gradient(ellipse at 80% 80%, rgba(74, 106, 74, 0.3) 0%, transparent 40%),
-                radial-gradient(circle at 50% 50%, rgba(122, 232, 122, 0.05) 0%, transparent 70%);
-            z-index: 0;
-        }
-
-        .glow-orb {
-            position: absolute;
-            width: 600px;
-            height: 600px;
-            background: radial-gradient(circle, rgba(122, 232, 122, 0.15) 0%, transparent 70%);
-            border-radius: 50%;
-            animation: pulse 4s ease-in-out infinite;
-            z-index: 0;
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); opacity: 0.5; }
-            50% { transform: scale(1.1); opacity: 0.8; }
-        }
-
-        .hero-content {
-            text-align: center;
-            position: relative;
-            z-index: 2;
-            padding: 2rem;
-            max-width: 900px;
-        }
-
-        .tag {
-            font-family: 'IBM Plex Mono', monospace;
-            font-size: 0.7rem;
-            letter-spacing: 0.3em;
-            color: var(--mycelium);
-            text-transform: uppercase;
-            margin-bottom: 2rem;
-            display: inline-block;
-            border: 1px solid var(--spore);
-            padding: 0.5rem 1rem;
-        }
-
-        h1 {
-            font-size: clamp(3rem, 8vw, 7rem);
-            font-weight: 700;
-            letter-spacing: -0.05em;
-            line-height: 0.9;
-            margin-bottom: 1.5rem;
-            background: linear-gradient(180deg, #fff 0%, var(--biolum) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .hero-sub {
-            font-size: 1.2rem;
-            line-height: 1.6;
-            color: var(--mycelium);
-            max-width: 600px;
-            margin: 0 auto 3rem;
-        }
-
-        .hero-sub strong {
-            color: var(--biolum);
-        }
-
-        .cta-group {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .btn {
-            font-family: 'IBM Plex Mono', monospace;
-            font-size: 0.8rem;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            padding: 1rem 2.5rem;
-            border: none;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-decoration: none;
-            display: inline-block;
-        }
-
-        .btn-primary {
-            background: var(--biolum);
-            color: var(--void);
-            box-shadow: 0 0 30px rgba(122, 232, 122, 0.3);
-        }
-
-        .btn-primary:hover {
-            box-shadow: 0 0 50px rgba(122, 232, 122, 0.5);
-            transform: translateY(-2px);
-        }
-
-        .btn-ghost {
-            background: transparent;
-            color: var(--mycelium);
-            border: 1px solid var(--spore);
-        }
-
-        .btn-ghost:hover {
-            border-color: var(--biolum);
-            color: var(--biolum);
-        }
-
-        /* Organic Shape Divider */
-        .organics {
-            position: relative;
-            height: 200px;
-            overflow: hidden;
-        }
-
-        .organic-shape {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(180deg, var(--void) 0%, var(--fungus) 100%);
-            clip-path: ellipse(120% 100% at 50% 0%);
-        }
-
-        /* Feature Section */
-        .features {
-            padding: 8rem 2rem;
-            background: var(--fungus);
-            position: relative;
-        }
-
-        .features::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 300px;
-            background: linear-gradient(180deg, var(--void) 0%, transparent 100%);
-            pointer-events: none;
-        }
-
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        .section-header {
-            text-align: center;
-            margin-bottom: 5rem;
-        }
-
-        .section-header h2 {
-            font-size: clamp(2rem, 5vw, 4rem);
-            font-weight: 700;
-            margin-bottom: 1rem;
-            background: linear-gradient(90deg, #fff 0%, var(--biolum) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .section-header p {
-            color: var(--mycelium);
-            font-size: 1.1rem;
-            max-width: 500px;
-            margin: 0 auto;
-        }
-
-        .feature-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 2rem;
-        }
-
-        .feature-card {
-            background: rgba(10, 15, 10, 0.5);
-            border: 1px solid var(--spore);
-            padding: 3rem;
-            position: relative;
-            overflow: hidden;
-            transition: all 0.3s;
-        }
-
-        .feature-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, var(--biolum), transparent);
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-
-        .feature-card:hover {
-            border-color: var(--mycelium);
-            transform: translateY(-5px);
-        }
-
-        .feature-card:hover::before {
-            opacity: 1;
-        }
-
-        .feature-icon {
-            width: 60px;
-            height: 60px;
-            border: 1px solid var(--mycelium);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 1.5rem;
-            font-family: 'IBM Plex Mono', monospace;
-            font-size: 1.5rem;
-            color: var(--biolum);
-        }
-
-        .feature-card h3 {
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-            color: #fff;
-        }
-
-        .feature-card p {
-            color: var(--mycelium);
-            line-height: 1.6;
-        }
-
-        /* Mushroom Visual Section */
-        .mushroom-section {
-            min-height: 80vh;
-            display: flex;
-            align-items: center;
-            position: relative;
-            overflow: hidden;
-            background: var(--void);
-        }
-
-        .mushroom-bg {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background:
-                radial-gradient(ellipse at 30% 70%, rgba(122, 232, 122, 0.1) 0%, transparent 50%),
-                url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="1" fill="%237ae87a" opacity="0.3"/></svg>');
-            background-size: cover, 50px 50px;
-            opacity: 0.5;
-        }
-
-        .mushroom-content {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 4rem;
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 4rem;
-            align-items: center;
-        }
-
-        .mushroom-visual {
-            position: relative;
-            height: 500px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .mushroom-ring {
-            position: absolute;
-            border: 1px solid var(--mycelium);
-            border-radius: 50%;
-            opacity: 0.3;
-        }
-
-        .mushroom-ring:nth-child(1) {
-            width: 300px;
-            height: 300px;
-            animation: rotate 20s linear infinite;
-        }
-
-        .mushroom-ring:nth-child(2) {
-            width: 400px;
-            height: 400px;
-            animation: rotate 30s linear infinite reverse;
-        }
-
-        .mushroom-ring:nth-child(3) {
-            width: 500px;
-            height: 500px;
-            animation: rotate 40s linear infinite;
-        }
-
-        @keyframes rotate {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-
-        .mushroom-core {
-            width: 200px;
-            height: 200px;
-            background: radial-gradient(circle, var(--biolum) 0%, var(--fungus) 70%, transparent 100%);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 0 100px rgba(122, 232, 122, 0.3);
-            position: relative;
-            z-index: 2;
-        }
-
-        .mushroom-core::before {
-            content: 'MYCO';
-            font-family: 'IBM Plex Mono', monospace;
-            font-size: 1.5rem;
-            letter-spacing: 0.5em;
-            text-indent: 0.5em;
-            color: var(--void);
-            font-weight: 500;
-        }
-
-        .mushroom-text h2 {
-            font-size: 3rem;
-            margin-bottom: 1.5rem;
-            line-height: 1.1;
-        }
-
-        .mushroom-text h2 span {
-            color: var(--biolum);
-        }
-
-        .mushroom-text p {
-            color: var(--mycelium);
-            font-size: 1.1rem;
-            line-height: 1.7;
-            margin-bottom: 2rem;
-        }
-
-        /* Stats Bar */
-        .stats-bar {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 2rem;
-            padding: 3rem;
-            background: rgba(10, 15, 10, 0.8);
-            border-top: 1px solid var(--spore);
-            border-bottom: 1px solid var(--spore);
-        }
-
-        .stat {
-            text-align: center;
-        }
-
-        .stat-value {
-            font-family: 'IBM Plex Mono', monospace;
-            font-size: 2.5rem;
-            color: var(--biolum);
-            display: block;
-            margin-bottom: 0.5rem;
-        }
-
-        .stat-label {
-            font-size: 0.8rem;
-            color: var(--mycelium);
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-        }
-
-        /* Three Pillars */
-        .pillars {
-            padding: 8rem 2rem;
-            background: var(--fungus);
-        }
-
-        .pillars-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 0;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        .pillar {
-            padding: 4rem;
-            border-right: 1px solid var(--spore);
-            position: relative;
-        }
-
-        .pillar:last-child {
-            border-right: none;
-        }
-
-        .pillar-num {
-            font-family: 'IBM Plex Mono', monospace;
-            font-size: 5rem;
-            color: rgba(122, 232, 122, 0.1);
-            position: absolute;
-            top: 1rem;
-            right: 2rem;
-        }
-
-        .pillar h3 {
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-            margin-top: 2rem;
-        }
-
-        .pillar p {
-            color: var(--mycelium);
-            line-height: 1.6;
-        }
-
-        /* CTA Section */
-        .cta-section {
-            padding: 10rem 2rem;
-            text-align: center;
-            background: var(--void);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .cta-section::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 800px;
-            height: 800px;
-            background: radial-gradient(circle, rgba(122, 232, 122, 0.1) 0%, transparent 70%);
-            pointer-events: none;
-        }
-
-        .cta-content {
-            position: relative;
-            z-index: 1;
-        }
-
-        .cta-section h2 {
-            font-size: clamp(2.5rem, 6vw, 5rem);
-            margin-bottom: 1.5rem;
-        }
-
-        .cta-section p {
-            color: var(--mycelium);
-            font-size: 1.2rem;
-            max-width: 500px;
-            margin: 0 auto 3rem;
-        }
-
-        /* Footer */
-        footer {
-            padding: 4rem 2rem;
-            background: var(--void);
-            border-top: 1px solid var(--spore);
-            text-align: center;
-        }
-
-        .footer-brand {
-            font-size: 2rem;
-            font-weight: 700;
-            letter-spacing: 0.2em;
-            margin-bottom: 1rem;
-            color: #fff;
-        }
-
-        .footer-tag {
-            font-family: 'IBM Plex Mono', monospace;
-            font-size: 0.7rem;
-            color: var(--mycelium);
-            letter-spacing: 0.3em;
-            text-transform: uppercase;
-        }
-
-        /* Responsive */
-        @media (max-width: 968px) {
-            .mushroom-content {
-                grid-template-columns: 1fr;
-                text-align: center;
-            }
-
-            .mushroom-visual {
-                order: -1;
-                height: 350px;
-            }
-
-            .pillars-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .pillar {
-                border-right: none;
-                border-bottom: 1px solid var(--spore);
-            }
-
-            .pillar:last-child {
-                border-bottom: none;
-            }
-
-            .stats-bar {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        @media (max-width: 600px) {
-            .stats-bar {
-                grid-template-columns: 1fr;
-            }
-
-            .feature-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FELTSHIFT — What Happens After</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+--deep-forest: #0d1f15;
+--forest: #1a3d2e;
+--moss: #2d5a3d;
+--sage: #4a7c59;
+--spore: #7ae87a;
+--glow: rgba(122, 232, 122, 0.15);
+--amber: #d4a84b;
+--amber-glow: rgba(212, 168, 75, 0.2);
+--cream: #f5f1eb;
+--charcoal: #1a1a1a;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+font-family: 'Inter', sans-serif;
+background: var(--deep-forest);
+color: var(--cream);
+overflow-x: hidden;
+line-height: 1.6;
+}
+
+h1, h2, h3 { font-family: 'Lora', serif; font-weight: 500; }
+
+/* === ORGANIC CANVAS === */
+.organic-canvas {
+position: fixed;
+top: 0; left: 0;
+width: 100%;
+height: 100%;
+pointer-events: none;
+z-index: 0;
+opacity: 0.6;
+}
+
+/* === HERO === */
+.hero {
+min-height: 100vh;
+display: flex;
+align-items: center;
+justify-content: center;
+position: relative;
+overflow: hidden;
+padding: 2rem;
+}
+
+.hero::before {
+content: '';
+position: absolute;
+top: 0; left: 0; right: 0; bottom: 0;
+background:
+radial-gradient(ellipse 80% 50% at 50% 100%, var(--forest) 0%, transparent 70%),
+radial-gradient(ellipse 50% 30% at 20% 50%, var(--glow) 0%, transparent 60%);
+z-index: 1;
+}
+
+.hero-glow {
+position: absolute;
+width: 800px;
+height: 800px;
+border-radius: 50%;
+background: radial-gradient(circle, var(--spore) 0%, transparent 60%);
+filter: blur(80px);
+opacity: 0.08;
+animation: breathe 8s ease-in-out infinite;
+z-index: 1;
+}
+
+@keyframes breathe {
+0%, 100% { transform: scale(1); opacity: 0.08; }
+50% { transform: scale(1.1); opacity: 0.12; }
+}
+
+.hero-content {
+text-align: center;
+position: relative;
+z-index: 2;
+max-width: 900px;
+}
+
+.tag {
+font-size: 0.7rem;
+letter-spacing: 0.4em;
+text-transform: uppercase;
+color: var(--sage);
+margin-bottom: 2rem;
+display: inline-flex;
+align-items: center;
+gap: 1rem;
+}
+
+.tag::before, .tag::after {
+content: '';
+width: 40px;
+height: 1px;
+background: var(--moss);
+}
+
+.hero h1 {
+font-size: clamp(3.5rem, 10vw, 8rem);
+font-weight: 400;
+letter-spacing: -0.03em;
+line-height: 0.95;
+margin-bottom: 1.5rem;
+background: linear-gradient(180deg, #fff 30%, var(--spore) 100%);
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+}
+
+.hero-sub {
+font-size: 1.25rem;
+color: var(--sage);
+max-width: 500px;
+margin: 0 auto 3rem;
+font-weight: 300;
+}
+
+.hero-sub em {
+color: var(--spore);
+font-style: normal;
+}
+
+.cta-group {
+display: flex;
+gap: 1rem;
+justify-content: center;
+flex-wrap: wrap;
+}
+
+.btn {
+padding: 1rem 2.5rem;
+border: none;
+cursor: pointer;
+transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+text-decoration: none;
+display: inline-block;
+font-size: 0.75rem;
+letter-spacing: 0.15em;
+text-transform: uppercase;
+font-weight: 500;
+}
+
+.btn-primary {
+background: var(--spore);
+color: var(--deep-forest);
+box-shadow: 0 4px 30px rgba(122, 232, 122, 0.2);
+}
+
+.btn-primary:hover {
+box-shadow: 0 8px 40px rgba(122, 232, 122, 0.4);
+transform: translateY(-2px);
+}
+
+.btn-ghost {
+background: transparent;
+color: var(--sage);
+border: 1px solid var(--moss);
+position: relative;
+overflow: hidden;
+}
+
+.btn-ghost::before {
+content: '';
+position: absolute;
+top: 0; left: -100%;
+width: 100%; height: 100%;
+background: var(--spore);
+transition: left 0.4s ease;
+z-index: -1;
+}
+
+.btn-ghost:hover {
+color: var(--deep-forest);
+border-color: var(--spore);
+}
+
+.btn-ghost:hover::before {
+left: 0;
+}
+
+/* === ORGANIC DIVIDER === */
+.organic-divider {
+position: relative;
+height: 150px;
+overflow: hidden;
+}
+
+.organic-divider svg {
+position: absolute;
+bottom: 0;
+width: 100%;
+height: 100%;
+}
+
+/* === TYPOGRAPHY SECTION === */
+.truth-section {
+padding: 12rem 2rem;
+background: linear-gradient(180deg, var(--forest) 0%, var(--deep-forest) 100%);
+position: relative;
+}
+
+.truth-content {
+max-width: 800px;
+margin: 0 auto;
+text-align: center;
+}
+
+.truth-label {
+font-size: 0.65rem;
+letter-spacing: 0.5em;
+text-transform: uppercase;
+color: var(--sage);
+margin-bottom: 3rem;
+}
+
+.truth-quote {
+font-family: 'Lora', serif;
+font-size: clamp(1.5rem, 4vw, 2.5rem);
+line-height: 1.5;
+font-weight: 400;
+margin-bottom: 2rem;
+}
+
+.truth-quote span {
+color: var(--spore);
+}
+
+.truth-attribution {
+color: var(--sage);
+font-size: 0.9rem;
+}
+
+/* === MYCELIUM VISUAL === */
+.mycelium-section {
+min-height: 100vh;
+display: flex;
+align-items: center;
+position: relative;
+padding: 6rem 2rem;
+overflow: hidden;
+}
+
+.mycelium-bg {
+position: absolute;
+top: 0; left: 0;
+width: 100%; height: 100%;
+background:
+radial-gradient(ellipse 60% 40% at 70% 50%, var(--glow) 0%, transparent 60%);
+z-index: 1;
+}
+
+.mycelium-content {
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 6rem;
+max-width: 1400px;
+margin: 0 auto;
+align-items: center;
+position: relative;
+z-index: 2;
+}
+
+.mycelium-visual {
+position: relative;
+height: 600px;
+display: flex;
+align-items: center;
+justify-content: center;
+}
+
+/* Animated mycelium structure */
+.mycelium-structure {
+position: absolute;
+width: 100%; height: 100%;
+}
+
+.spore-ring {
+position: absolute;
+border: 1px solid var(--moss);
+border-radius: 50%;
+top: 50%; left: 50%;
+transform: translate(-50%, -50%);
+opacity: 0.3;
+}
+
+.spore-ring:nth-child(1) { width: 200px; height: 200px; animation: pulse-ring 4s ease-in-out infinite; }
+.spore-ring:nth-child(2) { width: 300px; height: 300px; animation: pulse-ring 6s ease-in-out infinite 0.5s; }
+.spore-ring:nth-child(3) { width: 400px; height: 400px; animation: pulse-ring 8s ease-in-out infinite 1s; }
+.spore-ring:nth-child(4) { width: 500px; height: 500px; animation: pulse-ring 10s ease-in-out infinite 1.5s; border-style: dashed; }
+
+@keyframes pulse-ring {
+0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.2; }
+50% { transform: translate(-50%, -50%) scale(1.02); opacity: 0.4; }
+}
+
+/* Floating orbs */
+.orb {
+position: absolute;
+border-radius: 50%;
+background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.2), transparent);
+animation: float-orb 20s ease-in-out infinite;
+}
+
+.orb-1 { width: 60px; height: 60px; background: var(--spore); opacity: 0.6; top: 20%; left: 30%; animation-delay: 0s; }
+.orb-2 { width: 40px; height: 40px; background: var(--amber); opacity: 0.4; top: 60%; left: 70%; animation-delay: -5s; }
+.orb-3 { width: 80px; height: 80px; background: var(--spore); opacity: 0.3; top: 70%; left: 20%; animation-delay: -10s; }
+.orb-4 { width: 30px; height: 30px; background: var(--amber); opacity: 0.5; top: 30%; left: 80%; animation-delay: -15s; }
+
+@keyframes float-orb {
+0%, 100% { transform: translate(0, 0) scale(1); }
+25% { transform: translate(30px, -20px) scale(1.05); }
+50% { transform: translate(-20px, 30px) scale(0.95); }
+75% { transform: translate(-30px, -10px) scale(1.02); }
+}
+
+.central-cap {
+width: 180px;
+height: 180px;
+background: linear-gradient(135deg, var(--spore) 0%, var(--moss) 100%);
+border-radius: 50%;
+position: relative;
+box-shadow:
+0 0 60px rgba(122, 232, 122, 0.3),
+inset -20px -20px 40px rgba(0,0,0,0.2);
+z-index: 10;
+animation: breathe-cap 6s ease-in-out infinite;
+}
+
+.central-cap::before {
+content: '';
+position: absolute;
+top: 20%; left: 20%;
+width: 60%; height: 30%;
+background: radial-gradient(ellipse, rgba(255,255,255,0.3), transparent);
+border-radius: 50%;
+}
+
+@keyframes breathe-cap {
+0%, 100% { transform: scale(1); }
+50% { transform: scale(1.02); }
+}
+
+.mycelium-text h2 {
+font-size: clamp(2rem, 4vw, 3rem);
+line-height: 1.2;
+margin-bottom: 2rem;
+font-weight: 400;
+}
+
+.mycelium-text h2 span {
+color: var(--spore);
+font-style: italic;
+}
+
+.mycelium-text p {
+color: var(--sage);
+font-size: 1.1rem;
+line-height: 1.8;
+margin-bottom: 1.5rem;
+max-width: 500px;
+}
+
+/* === FEATURE CARDS === */
+.features-section {
+padding: 10rem 2rem;
+background: var(--deep-forest);
+position: relative;
+}
+
+.features-section::before {
+content: '';
+position: absolute;
+top: 0; left: 0; right: 0;
+height: 400px;
+background: linear-gradient(180deg, var(--forest) 0%, transparent 100%);
+}
+
+.section-header {
+text-align: center;
+margin-bottom: 6rem;
+position: relative;
+z-index: 2;
+}
+
+.section-header h2 {
+font-size: clamp(2rem, 5vw, 3.5rem);
+margin-bottom: 1rem;
+}
+
+.section-header p {
+color: var(--sage);
+font-size: 1.1rem;
+max-width: 400px;
+margin: 0 auto;
+}
+
+.feature-cards {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+gap: 2rem;
+max-width: 1200px;
+margin: 0 auto;
+position: relative;
+z-index: 2;
+}
+
+.feature-card {
+background: rgba(26, 61, 46, 0.3);
+border: 1px solid var(--moss);
+padding: 3rem;
+position: relative;
+overflow: hidden;
+transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.feature-card::before {
+content: '';
+position: absolute;
+top: 0; left: 0; right: 0;
+height: 3px;
+background: linear-gradient(90deg, transparent, var(--spore), transparent);
+opacity: 0;
+transition: opacity 0.5s;
+}
+
+.feature-card:hover {
+border-color: var(--sage);
+transform: translateY(-8px);
+background: rgba(26, 61, 46, 0.5);
+}
+
+.feature-card:hover::before {
+opacity: 1;
+}
+
+.card-number {
+font-size: 0.65rem;
+letter-spacing: 0.3em;
+text-transform: uppercase;
+color: var(--spore);
+margin-bottom: 1rem;
+}
+
+.feature-card h3 {
+font-size: 1.5rem;
+margin-bottom: 1rem;
+font-weight: 500;
+}
+
+.feature-card p {
+color: var(--sage);
+line-height: 1.7;
+font-size: 0.95rem;
+}
+
+.card-glow {
+position: absolute;
+top: -50%; right: -50%;
+width: 100%; height: 100%;
+background: radial-gradient(circle, var(--glow) 0%, transparent 70%);
+opacity: 0;
+transition: opacity 0.5s;
+pointer-events: none;
+}
+
+.feature-card:hover .card-glow {
+opacity: 1;
+}
+
+/* === STATS === */
+.stats-section {
+padding: 8rem 2rem;
+background: linear-gradient(180deg, var(--deep-forest) 0%, var(--forest) 100%);
+text-align: center;
+}
+
+.stats-grid {
+display: grid;
+grid-template-columns: repeat(4, 1fr);
+gap: 3rem;
+max-width: 1000px;
+margin: 0 auto;
+}
+
+.stat-card {
+padding: 2rem;
+position: relative;
+}
+
+.stat-number {
+font-family: 'Lora', serif;
+font-size: clamp(2.5rem, 5vw, 4rem);
+color: var(--spore);
+font-weight: 400;
+display: block;
+margin-bottom: 0.5rem;
+}
+
+.stat-label {
+font-size: 0.7rem;
+letter-spacing: 0.2em;
+text-transform: uppercase;
+color: var(--sage);
+}
+
+/* === INTEGRATION PATH === */
+.path-section {
+padding: 10rem 2rem;
+background: var(--forest);
+position: relative;
+}
+
+.path-grid {
+display: grid;
+grid-template-columns: repeat(3, 1fr);
+gap: 0;
+max-width: 1200px;
+margin: 0 auto;
+border: 1px solid var(--moss);
+}
+
+.path-step {
+padding: 4rem 3rem;
+position: relative;
+border-right: 1px solid var(--moss);
+transition: all 0.4s;
+}
+
+.path-step:last-child {
+border-right: none;
+}
+
+.path-step:hover {
+background: rgba(122, 232, 122, 0.03);
+}
+
+.step-icon {
+width: 50px;
+height: 50px;
+border: 1px solid var(--moss);
+border-radius: 50%;
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 1.2rem;
+margin-bottom: 1.5rem;
+transition: all 0.4s;
+}
+
+.path-step:hover .step-icon {
+border-color: var(--spore);
+box-shadow: 0 0 20px var(--glow);
+}
+
+.path-step h3 {
+font-size: 1.3rem;
+margin-bottom: 1rem;
+font-weight: 500;
+}
+
+.path-step p {
+color: var(--sage);
+font-size: 0.95rem;
+line-height: 1.7;
+}
+
+.step-number {
+position: absolute;
+top: 1.5rem;
+right: 1.5rem;
+font-size: 4rem;
+font-family: 'Lora', serif;
+color: rgba(122, 232, 122, 0.08);
+font-weight: 400;
+}
+
+/* === FINAL CTA === */
+.final-cta {
+padding: 12rem 2rem;
+text-align: center;
+background: var(--deep-forest);
+position: relative;
+overflow: hidden;
+}
+
+.final-cta::before {
+content: '';
+position: absolute;
+top: 50%; left: 50%;
+transform: translate(-50%, -50%);
+width: 1000px; height: 1000px;
+background: radial-gradient(circle, var(--glow) 0%, transparent 60%);
+pointer-events: none;
+}
+
+.final-cta h2 {
+font-size: clamp(2rem, 6vw, 4rem);
+margin-bottom: 1.5rem;
+position: relative;
+z-index: 2;
+}
+
+.final-cta p {
+color: var(--sage);
+max-width: 400px;
+margin: 0 auto 3rem;
+position: relative;
+z-index: 2;
+}
+
+/* === FOOTER === */
+footer {
+padding: 4rem 2rem;
+background: var(--deep-forest);
+border-top: 1px solid var(--moss);
+text-align: center;
+}
+
+.footer-logo {
+font-family: 'Lora', serif;
+font-size: 1.5rem;
+letter-spacing: 0.3em;
+margin-bottom: 1rem;
+}
+
+.footer-tag {
+font-size: 0.7rem;
+color: var(--sage);
+letter-spacing: 0.2em;
+text-transform: uppercase;
+}
+
+/* === RESPONSIVE === */
+@media (max-width: 968px) {
+.mycelium-content {
+grid-template-columns: 1fr;
+text-align: center;
+}
+
+.mycelium-visual {
+order: -1;
+height: 400px;
+}
+
+.mycelium-text p {
+margin-left: auto;
+margin-right: auto;
+}
+
+.stats-grid {
+grid-template-columns: repeat(2, 1fr);
+}
+
+.path-grid {
+grid-template-columns: 1fr;
+}
+
+.path-step {
+border-right: none;
+border-bottom: 1px solid var(--moss);
+}
+
+.path-step:last-child {
+border-bottom: none;
+}
+}
+
+@media (max-width: 600px) {
+.stats-grid {
+grid-template-columns: 1fr;
+}
+
+.tag::before, .tag::after {
+display: none;
+}
+}
+
+/* === SCROLL REVEAL === */
+.reveal {
+opacity: 0;
+transform: translateY(40px);
+transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.reveal.active {
+opacity: 1;
+transform: translateY(0);
+}
+</style>
 </head>
 <body>
-    <!-- Spore Particles -->
-    <div class="spores" id="spores"></div>
 
-    <!-- Hero -->
-    <section class="hero">
-        <div class="glow-orb"></div>
-        <div class="hero-content">
-            <span class="tag">Platform for Psychedelic Integration</span>
-            <h1>FELTSHIFT</h1>
-            <p class="hero-sub">The trip is <strong>10%</strong>. Integration is <strong>90%</strong>.<br>AI-guided journaling. Verified retreats. The full journey.</p>
-            <div class="cta-group">
-                <a href="#waitlist" class="btn btn-primary">Join Waitlist</a>
-                <a href="#learn" class="btn btn-ghost">Explore</a>
-            </div>
-        </div>
-    </section>
+<!-- Organic Background Canvas -->
+<canvas class="organic-canvas" id="canvas"></canvas>
 
-    <!-- Organic Transition -->
-    <div class="organics"><div class="organic-shape"></div></div>
+<!-- Hero -->
+<section class="hero">
+<div class="hero-glow"></div>
+<div class="hero-content">
+<span class="tag">Psychedelic Integration Platform</span>
+<h1>FELTSHIFT</h1>
+<p class="hero-sub">
+The ceremony is <em>10%</em>.<br>
+Integration is <em>90%</em>.<br>
+Most people skip the part that matters.
+</p>
+<div class="cta-group">
+<a href="#join" class="btn btn-primary">Get Early Access</a>
+<a href="#platform" class="btn btn-ghost">Explore</a>
+</div>
+</div>
+</section>
 
-    <!-- Features -->
-    <section class="features" id="learn">
-        <div class="container">
-            <div class="section-header">
-                <h2>Two Pillars</h2>
-                <p>Everything that comes after. Nothing else matters.</p>
-            </div>
-            <div class="feature-grid">
-                <div class="feature-card">
-                    <div class="feature-icon">01</div>
-                    <h3>The Integration Journal</h3>
-                    <p>AI-guided journaling that doesn't ask "how do you feel?" Multi-week protocols: Day 0, 1, 3, 7, 14, 30. Your patterns revealed. Your growth tracked.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">02</div>
-                    <h3>The Retreat Directory</h3>
-                    <p>The only verified directory of legal retreats. Blue badge verification. Gold standard curation. Trust before you go.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">03</div>
-                    <h3>30-Day Protocols</h3>
-                    <p>Not generic journaling. Structured flows that adapt to YOU. Day 0 grounding through Day 30 synthesis. Nobody else does this.</p>
-                </div>
-            </div>
-        </div>
-    </section>
+<!-- Organic Divider -->
+<div class="organic-divider">
+<svg viewBox="0 0 1440 150" preserveAspectRatio="none">
+<path fill="#0d1f15" d="M0,64L48,69.3C96,75,192,85,288,80C384,75,480,53,576,48C672,43,768,53,864,64C960,75,1056,85,1152,80C1248,75,1344,53,1392,42.7L1440,32L1440,150L1392,150C1344,150,1248,150,1152,150C1056,150,960,150,864,150C768,150,672,150,576,150C480,150,384,150,288,150C192,150,96,150,48,150L0,150Z"></path>
+</svg>
+</div>
 
-    <!-- Mushroom/Mycelium Visual -->
-    <section class="mushroom-section">
-        <div class="mushroom-bg"></div>
-        <div class="mushroom-content">
-            <div class="mushroom-visual">
-                <div class="mushroom-ring"></div>
-                <div class="mushroom-ring"></div>
-                <div class="mushroom-ring"></div>
-                <div class="mushroom-core"></div>
-            </div>
-            <div class="mushroom-text">
-                <h2>What happens <span>after</span> matters more than what happens <span>during</span>.</h2>
-                <p>We're building infrastructure for consciousness exploration — the gap between ceremony and change. Most people get dropped after the retreat ends. We pick up where they leave off.</p>
-                <a href="#" class="btn btn-primary">Start Integration</a>
-            </div>
-        </div>
-    </section>
+<!-- Truth Section -->
+<section class="truth-section">
+<div class="truth-content reveal">
+<p class="truth-label">The Unspoken Reality</p>
+<blockquote class="truth-quote">
+"Most people go to ceremony unprepared and leave unsupported. The real work starts when the ceremony ends. That's where <span>we're different</span>."
+</blockquote>
+<p class="truth-attribution">— The problem we exist to solve</p>
+</div>
+</section>
 
-    <!-- Stats -->
-    <div class="stats-bar">
-        <div class="stat">
-            <span class="stat-value">$485K</span>
-            <span class="stat-label">Year 1 Target</span>
-        </div>
-        <div class="stat">
-            <span class="stat-value">2,000</span>
-            <span class="stat-label">Premium Users</span>
-        </div>
-        <div class="stat">
-            <span class="stat-value">50+</span>
-            <span class="stat-label">Verified Retreats</span>
-        </div>
-        <div class="stat">
-            <span class="stat-value">14.99</span>
-            <span class="stat-label">Per Month</span>
-        </div>
-    </div>
+<!-- Mycelium Visual Section -->
+<section class="mycelium-section" id="platform">
+<div class="mycelium-bg"></div>
+<div class="mycelium-content">
+<div class="mycelium-visual">
+<div class="mycelium-structure">
+<div class="spore-ring"></div>
+<div class="spore-ring"></div>
+<div class="spore-ring"></div>
+<div class="spore-ring"></div>
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+<div class="orb orb-3"></div>
+<div class="orb orb-4"></div>
+</div>
+<div class="central-cap"></div>
+</div>
+<div class="mycelium-text reveal">
+<h2>Your journey doesn't end when the ceremony ends. That's where <span>ours begins</span>.</h2>
+<p>Feltshift is built for the 30 days after. The weird liminal space where visions fade but integration hasn't begun. Where most people get dropped.</p>
+<p>We don't sell ceremony. We sell what comes after — the infrastructure for actual transformation.</p>
+<a href="#join" class="btn btn-primary">Start Integration</a>
+</div>
+</div>
+</section>
 
-    <!-- Three Pillars -->
-    <section class="pillars">
-        <div class="pillars-grid">
-            <div class="pillar">
-                <span class="pillar-num">01</span>
-                <h3>Preparation</h3>
-                <p>Before you go in. Set and setting. Intention setting. Finding the right guide. Safety protocols.</p>
-            </div>
-            <div class="pillar">
-                <span class="pillar-num">02</span>
-                <h3>Experience</h3>
-                <p>The ceremony. The journey. The opening. We don't sell this. We prepare you for it.</p>
-            </div>
-            <div class="pillar">
-                <span class="pillar-num">03</span>
-                <h3>Integration</h3>
-                <p>Where 90% of the value lives. Our focus. Our mission. The 30 days after.</p>
-            </div>
-        </div>
-    </section>
+<!-- Features -->
+<section class="features-section">
+<div class="section-header reveal">
+<h2>The Platform</h2>
+<p>Three core systems. Built for one purpose.</p>
+</div>
+<div class="feature-cards">
+<div class="feature-card reveal">
+<div class="card-glow"></div>
+<p class="card-number">01 / Integration</p>
+<h3>The Integration Journal</h3>
+<p>AI-guided journaling that doesn't ask "how do you feel?" Structured protocols: Day 0, 1, 3, 7, 14, 30. Pattern recognition. Your growth, mapped.</p>
+</div>
+<div class="feature-card reveal">
+<div class="card-glow"></div>
+<p class="card-number">02 / Discovery</p>
+<h3>The Retreat Directory</h3>
+<p>Verified legal retreats only. Blue badge = vetted. Not another listing site — a trust network of practitioners who actually care.</p>
+</div>
+<div class="feature-card reveal">
+<div class="card-glow"></div>
+<p class="card-number">03 / Preparation</p>
+<h3>30-Day Protocols</h3>
+<p>Not generic journaling. Structured flows that adapt to YOU. Day 0 grounding through Day 30 synthesis. Nobody else does this.</p>
+</div>
+</div>
+</section>
 
-    <!-- CTA -->
-    <section class="cta-section" id="waitlist">
-        <div class="cta-content">
-            <h2>Your inner journey<br>deserves better than a notes app.</h2>
-            <p>Join 500+ people building the future of consciousness exploration.</p>
-            <a href="#" class="btn btn-primary">Get Early Access</a>
-        </div>
-    </section>
+<!-- Stats -->
+<section class="stats-section">
+<div class="stats-grid reveal">
+<div class="stat-card">
+<span class="stat-number">$485k</span>
+<span class="stat-label">Year 1 Target</span>
+</div>
+<div class="stat-card">
+<span class="stat-number">2,000</span>
+<span class="stat-label">Premium Members</span>
+</div>
+<div class="stat-card">
+<span class="stat-number">50+</span>
+<span class="stat-label">Verified Retreats</span>
+</div>
+<div class="stat-card">
+<span class="stat-number">$14.99</span>
+<span class="stat-label">Per Month</span>
+</div>
+</div>
+</section>
 
-    <!-- Footer -->
-    <footer>
-        <div class="footer-brand">FELTSHIFT</div>
-        <div class="footer-tag">What Happens After // feltshift.me</div>
-    </footer>
+<!-- The Path -->
+<section class="path-section">
+<div class="section-header reveal">
+<h2>The Full Journey</h2>
+<p>Not just ceremony. Before, during, after.</p>
+</div>
+<div class="path-grid reveal">
+<div class="path-step">
+<span class="step-number">01</span>
+<div class="step-icon">◈</div>
+<h3>Preparation</h3>
+<p>Set and setting. Intention setting. Finding the right guide. Safety protocols. We prep you for the work.</p>
+</div>
+<div class="path-step">
+<span class="step-number">02</span>
+<div class="step-icon">◉</div>
+<h3>Experience</h3>
+<p>The ceremony. The opening. The medicine. We don't sell this — we prepare you for it.</p>
+</div>
+<div class="path-step">
+<span class="step-number">03</span>
+<div class="step-icon">◈</div>
+<h3>Integration</h3>
+<p>Where 90% of the value lives. Our focus. Our reason for existing. The 30 days after.</p>
+</div>
+</div>
+</section>
 
-    <script>
-        // Generate floating spores
-        const sporesContainer = document.getElementById('spores');
-        for (let i = 0; i < 50; i++) {
-            const spore = document.createElement('div');
-            spore.className = 'spore';
-            spore.style.left = Math.random() * 100 + '%';
-            spore.style.animationDelay = Math.random() * 15 + 's';
-            spore.style.animationDuration = (10 + Math.random() * 10) + 's';
-            sporesContainer.appendChild(spore);
-        }
-    </script>
+<!-- Final CTA -->
+<section class="final-cta" id="join">
+<div class="reveal">
+<h2>Your inner journey<br>deserves structure.</h2>
+<p>Join 500+ people building the future of consciousness exploration.</p>
+<a href="#" class="btn btn-primary">Get Early Access</a>
+</div>
+</section>
+
+<!-- Footer -->
+<footer>
+<div class="footer-logo">FELTSHIFT</div>
+<div class="footer-tag">What Happens After // feltshift.me</div>
+</footer>
+
+<script>
+// Organic Canvas Animation
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+
+function resizeCanvas() {
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+}
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+
+// Organic blob particles
+class Blob {
+constructor() {
+this.x = Math.random() * canvas.width;
+this.y = Math.random() * canvas.height;
+this.size = Math.random() * 150 + 50;
+this.speedX = (Math.random() - 0.5) * 0.3;
+this.speedY = (Math.random() - 0.5) * 0.3;
+this.opacity = Math.random() * 0.05 + 0.02;
+}
+
+update() {
+this.x += this.speedX;
+this.y += this.speedY;
+
+if (this.x < -this.size) this.x = canvas.width + this.size;
+if (this.x > canvas.width + this.size) this.x = -this.size;
+if (this.y < -this.size) this.y = canvas.height + this.size;
+if (this.y > canvas.height + this.size) this.y = -this.size;
+}
+
+draw() {
+const gradient = ctx.createRadialGradient(
+this.x, this.y, 0,
+this.x, this.y, this.size
+);
+gradient.addColorStop(0, `rgba(122, 232, 122, ${this.opacity})`);
+gradient.addColorStop(0.5, `rgba(26, 61, 46, ${this.opacity * 0.5})`);
+gradient.addColorStop(1, 'transparent');
+
+ctx.fillStyle = gradient;
+ctx.beginPath();
+ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+ctx.fill();
+}
+}
+
+const blobs = Array(8).fill(null).map(() => new Blob());
+
+function animate() {
+ctx.clearRect(0, 0, canvas.width, canvas.height);
+blobs.forEach(blob => {
+blob.update();
+blob.draw();
+});
+requestAnimationFrame(animate);
+}
+animate();
+
+// Scroll Reveal
+const observerOptions = {
+threshold: 0.1,
+rootMargin: '0px 0px -50px 0px'
+};
+
+const observer = new IntersectionObserver((entries) => {
+entries.forEach(entry => {
+if (entry.isIntersecting) {
+entry.target.classList.add('active');
+}
+});
+}, observerOptions);
+
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+
 </body>
 </html>
