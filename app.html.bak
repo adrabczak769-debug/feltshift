@@ -1,0 +1,1807 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feltshift — Prepare. Experience. Integrate.</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600&family=DM+Sans:opsz,wght@9..40,300;400;500&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0 }
+        :root {
+            --bg: #050705;
+            --s1: #0B0E0A;
+            --s2: #10140F;
+            --s3: #161B14;
+            --bdr: #1C231A;
+            --bdr2: #2A3326;
+            --tx: #E0DBCC;
+            --tx2: #AAA598;
+            --tx3: #6E695E;
+            --g: #7EA066;
+            --gl: #9CBC80;
+            --gd: #556E40;
+            --a: #BF9B55;
+            --al: #D4B472;
+        }
+        body {
+            background: var(--bg);
+            color: var(--tx);
+            font-family: 'DM Sans', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Animations */
+        @keyframes morphA {
+            0%, 100% { border-radius: 40% 60% 60% 40%/60% 30% 70% 40%; transform: rotate(0deg) scale(1) }
+            25% { border-radius: 50% 50% 30% 70%/50% 60% 40% 50%; transform: rotate(90deg) scale(1.05) }
+            50% { border-radius: 30% 70% 50% 50%/40% 50% 60% 50%; transform: rotate(180deg) scale(0.97) }
+            75% { border-radius: 60% 40% 40% 60%/70% 40% 60% 30%; transform: rotate(270deg) scale(1.03) }
+        }
+        @keyframes morphB {
+            0%, 100% { border-radius: 60% 40% 30% 70%/50% 60% 40% 50%; transform: rotate(0deg) }
+            33% { border-radius: 40% 60% 70% 30%/60% 40% 50% 60%; transform: rotate(-120deg) }
+            66% { border-radius: 70% 30% 50% 50%/30% 70% 40% 60%; transform: rotate(-240deg) }
+        }
+        @keyframes enterUp {
+            from { opacity: 0; transform: translateY(24px) }
+            to { opacity: 1; transform: translateY(0) }
+        }
+        @keyframes enterFade {
+            from { opacity: 0 }
+            to { opacity: 1 }
+        }
+        @keyframes enterScale {
+            from { opacity: 0; transform: scale(0.92) }
+            to { opacity: 1; transform: scale(1) }
+        }
+        @keyframes floatSlow {
+            0%, 100% { transform: translateY(0) }
+            50% { transform: translateY(-10px) }
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1) }
+            50% { transform: scale(1.3) }
+        }
+        @keyframes shimmer {
+            0%, 100% { background-position: 0% 50% }
+            50% { background-position: 100% 50% }
+        }
+        @keyframes screenOut {
+            to { opacity: 0; transform: translateY(10px) }
+        }
+        @keyframes screenIn {
+            from { opacity: 0; transform: translateY(16px) }
+            to { opacity: 1; transform: translateY(0) }
+        }
+        @keyframes scanline {
+            0% { transform: translateY(-100%) }
+            100% { transform: translateY(100vh) }
+        }
+        @keyframes conicRotate {
+            from { transform: rotate(0deg) }
+            to { transform: rotate(360deg) }
+        }
+
+        .ani-enter { animation: enterFade .4s cubic-bezier(.22,1,.36,1) forwards }
+        .ani-up { animation: enterUp .65s cubic-bezier(.22,1,.36,1) forwards }
+        .ani-scale { animation: enterScale .5s cubic-bezier(.22,1,.36,1) forwards }
+
+        /* Scanline effect */
+        .scanlines::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 4px,
+                rgba(126, 160, 102, 0.015) 4px,
+                rgba(126, 160, 102, 0.015) 4.5px
+            );
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        /* Conic gradient overlay */
+        .conic-overlay {
+            position: fixed;
+            inset: -50%;
+            background: conic-gradient(from 0deg, transparent 0%, var(--g)02 25%, transparent 50%, var(--a)02 75%, transparent 100%);
+            animation: conicRotate 60s linear infinite;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* Three.js Canvas */
+        #hero-canvas, #breath-canvas {
+            display: block;
+            margin: 0 auto;
+        }
+        #hero-canvas { width: 140px !important; height: 140px !important; cursor: pointer; }
+        #breath-canvas { width: 260px !important; height: 260px !important; }
+
+        /* Layout */
+        .app { display: flex; min-height: 100vh; }
+        .sidebar {
+            width: 72px;
+            background: var(--s2);
+            border-right: 1px solid var(--bdr);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 24px 0;
+            position: fixed;
+            height: 100vh;
+            z-index: 100;
+        }
+        .sidebar-logo {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--g), var(--a));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 18px;
+            color: var(--bg);
+            margin-bottom: 32px;
+            animation: floatSlow 4s ease-in-out infinite;
+        }
+        .nav-item {
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: all .2s ease;
+            color: var(--tx2);
+            font-size: 20px;
+            position: relative;
+        }
+        .nav-item:hover, .nav-item.active {
+            background: var(--s3);
+            color: var(--g);
+        }
+        .nav-item::after {
+            content: attr(data-label);
+            position: absolute;
+            left: 56px;
+            background: var(--s3);
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            color: var(--tx);
+            opacity: 0;
+            transform: translateX(-8px);
+            transition: all .2s;
+            pointer-events: none;
+            white-space: nowrap;
+            border: 1px solid var(--bdr);
+        }
+        .nav-item:hover::after {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .main { flex: 1; margin-left: 72px; padding: 48px 32px; max-width: 900px; }
+
+        /* Screens with transitions */
+        .screen {
+            display: none;
+            animation: screenIn .4s cubic-bezier(.22,1,.36,1);
+        }
+        .screen.active { display: block }
+        .screen.exiting { animation: screenOut .2s ease forwards }
+
+        /* Welcome Screen */
+        .welcome-container { text-align: center; padding: 40px 0; }
+        .hero-sphere { margin-bottom: 32px; }
+        .hero-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 52px;
+            font-weight: 300;
+            background: linear-gradient(135deg, var(--g), var(--gl), var(--a), var(--al), var(--g));
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shimmer 6s ease infinite;
+            margin-bottom: 12px;
+            letter-spacing: -0.02em;
+        }
+        .hero-subtitle {
+            color: var(--tx2);
+            font-size: 16px;
+            margin-bottom: 48px;
+            font-weight: 300;
+        }
+        .stage-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            max-width: 600px;
+            margin: 0 auto 32px;
+        }
+        .stage-card {
+            background: var(--s2);
+            border: 1px solid var(--bdr);
+            border-radius: 16px;
+            padding: 24px 16px;
+            cursor: pointer;
+            transition: all .35s cubic-bezier(.22,1,.36,1);
+            text-align: center;
+            opacity: 0;
+            transform: translateY(16px);
+        }
+        .stage-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+            transition: all .35s cubic-bezier(.22,1,.36,1);
+        }
+        .stage-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--g);
+            box-shadow: inset 0 0 40px var(--g)08, 0 8px 32px rgba(0,0,0,0.3);
+        }
+        .stage-card.selected {
+            border-color: var(--g);
+            background: var(--s3);
+            transform: scale(1.02);
+            box-shadow: 0 0 30px var(--g)15;
+        }
+        .stage-card .icon { font-size: 28px; margin-bottom: 12px; display: block; }
+        .stage-card h3 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 18px;
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+        .stage-card p {
+            font-size: 12px;
+            color: var(--tx2);
+            line-height: 1.4;
+        }
+
+        /* Buttons */
+        .btn-primary {
+            background: linear-gradient(135deg, var(--g), var(--gl));
+            border: none;
+            border-radius: 12px;
+            padding: 16px 32px;
+            color: var(--bg);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all .2s ease;
+        }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 24px var(--g)30; }
+        .btn-primary:active { transform: translateY(0) scale(0.98); }
+        .btn-secondary {
+            background: transparent;
+            border: 1px solid var(--bdr);
+            border-radius: 12px;
+            padding: 16px 32px;
+            color: var(--tx);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all .2s ease;
+        }
+        .btn-secondary:hover { border-color: var(--g); }
+        .btn-secondary:active { transform: scale(0.98); }
+
+        /* Journal */
+        .journal-prompt {
+            background: var(--s2);
+            border: 1px solid var(--bdr);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
+            transition: all .35s cubic-bezier(.22,1,.36,1);
+        }
+        .journal-prompt:hover {
+            transform: translateY(-2px);
+            border-color: var(--g)50;
+            box-shadow: inset 0 0 30px var(--g)08;
+        }
+        .journal-prompt h3 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 22px;
+            color: var(--gl);
+            margin-bottom: 8px;
+            font-weight: 400;
+        }
+        .journal-prompt p { color: var(--tx2); font-size: 14px; }
+        .journal-textarea {
+            width: 100%;
+            min-height: 200px;
+            background: var(--s1);
+            border: 1px solid var(--bdr);
+            border-radius: 12px;
+            padding: 20px;
+            color: var(--tx);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 15px;
+            line-height: 1.7;
+            resize: vertical;
+            transition: all .2s;
+        }
+        .journal-textarea:focus {
+            outline: none;
+            border-color: var(--g);
+            box-shadow: inset 0 0 20px var(--g)05;
+        }
+        .journal-textarea::placeholder { color: var(--tx3); }
+        .ai-response {
+            background: var(--s2);
+            border: 1px solid var(--bdr);
+            border-radius: 16px;
+            padding: 24px;
+            margin-top: 20px;
+            display: none;
+        }
+        .ai-response.visible {
+            display: block;
+            animation: enterUp .5s cubic-bezier(.22,1,.36,1);
+        }
+        .ai-response h4 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 16px;
+            color: var(--gl);
+            margin-bottom: 12px;
+            font-weight: 500;
+        }
+        .ai-response p {
+            color: var(--tx);
+            line-height: 1.8;
+            font-size: 15px;
+        }
+        .cursor {
+            display: inline-block;
+            width: 2px;
+            height: 1.2em;
+            background: var(--g);
+            margin-left: 2px;
+            animation: blink 1s step-end infinite;
+            vertical-align: middle;
+        }
+        @keyframes blink { 50% { opacity: 0 } }
+        .cursor.hidden {
+            opacity: 0;
+            animation: fadeOutCursor .5s ease forwards;
+        }
+        @keyframes fadeOutCursor {
+            to { opacity: 0 }
+        }
+
+        /* Breathwork */
+        .breath-container { text-align: center; padding: 20px 0; }
+        .breath-circle-container {
+            position: relative;
+            margin: 20px auto;
+            width: 260px;
+            height: 260px;
+        }
+        .breath-countdown {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 56px;
+            font-weight: 300;
+            color: var(--tx);
+            pointer-events: none;
+            font-family: 'DM Sans', sans-serif;
+        }
+        .breath-instruction {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 28px;
+            color: var(--gl);
+            margin-top: 24px;
+            min-height: 36px;
+        }
+        .breath-controls {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin-top: 32px;
+        }
+        .breath-techniques {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+            margin-top: 40px;
+        }
+        .breath-technique {
+            background: var(--s2);
+            border: 1px solid var(--bdr);
+            border-radius: 12px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all .35s cubic-bezier(.22,1,.36,1);
+            text-align: left;
+        }
+        .breath-technique:hover {
+            border-color: var(--g);
+            transform: translateY(-2px);
+            box-shadow: inset 0 0 20px var(--g)08;
+        }
+        .breath-technique.selected {
+            border-color: var(--g);
+            background: var(--s3);
+            box-shadow: 0 0 20px var(--g)10;
+        }
+        .breath-technique h4 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 17px;
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+        .breath-technique .meta {
+            font-size: 11px;
+            color: var(--tx3);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+        .breath-technique p {
+            font-size: 13px;
+            color: var(--tx2);
+            line-height: 1.5;
+        }
+
+        /* Mood Tracker */
+        .mood-card {
+            background: var(--s2);
+            border: 1px solid var(--bdr);
+            border-radius: 16px;
+            padding: 28px;
+            margin-bottom: 20px;
+            transition: all .35s cubic-bezier(.22,1,.36,1);
+        }
+        .mood-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--g)50;
+            box-shadow: inset 0 0 30px var(--g)08;
+        }
+        .mood-card h3 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 22px;
+            margin-bottom: 24px;
+            font-weight: 400;
+        }
+        .mood-slider {
+            margin: 32px 0;
+        }
+        .mood-slider input[type="range"] {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: var(--bdr);
+            outline: none;
+            -webkit-appearance: none;
+        }
+        .mood-slider input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--g);
+            cursor: pointer;
+            box-shadow: 0 0 16px var(--g)60;
+            transition: transform .2s;
+        }
+        .mood-slider input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+        .mood-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 16px;
+            font-size: 11px;
+            color: var(--tx3);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .mood-current {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .mood-current .label {
+            font-size: 14px;
+            color: var(--tx2);
+        }
+        .mood-current .value {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 32px;
+            color: var(--g);
+            margin-top: 4px;
+        }
+        .chart-container {
+            background: var(--s2);
+            border: 1px solid var(--bdr);
+            border-radius: 16px;
+            padding: 24px;
+            margin-top: 24px;
+            height: 320px;
+            position: relative;
+        }
+
+        /* Microdose */
+        .protocol-card {
+            background: var(--s2);
+            border: 1px solid var(--bdr);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 16px;
+            cursor: pointer;
+            transition: all .35s cubic-bezier(.22,1,.36,1);
+        }
+        .protocol-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--g)50;
+            box-shadow: inset 0 0 30px var(--g)08;
+        }
+        .protocol-card.active {
+            border-color: var(--g);
+            background: var(--s3);
+            box-shadow: 0 0 30px var(--g)10;
+        }
+        .protocol-card h4 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 20px;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+        .protocol-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            font-size: 12px;
+            color: var(--tx3);
+            margin-bottom: 12px;
+        }
+        .protocol-meta span {
+            background: var(--s1);
+            padding: 4px 10px;
+            border-radius: 20px;
+        }
+        .protocol-desc {
+            font-size: 14px;
+            color: var(--tx2);
+            line-height: 1.6;
+        }
+        .dose-tracker {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+            margin-top: 24px;
+        }
+        .dose-day {
+            aspect-ratio: 1;
+            background: var(--s1);
+            border: 1px solid var(--bdr);
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            cursor: pointer;
+            transition: all .2s;
+        }
+        .dose-day:hover { border-color: var(--g); }
+        .dose-day.dosed {
+            background: var(--g);
+            border-color: var(--g);
+            color: var(--bg);
+        }
+        .dose-day.today {
+            border-color: var(--a);
+            box-shadow: 0 0 10px var(--a)30;
+        }
+        .dose-day .day-name { font-size: 10px; color: var(--tx3); margin-bottom: 2px; }
+        .dose-day .day-num { font-weight: 500; }
+
+        /* Timeline */
+        .timeline { position: relative; padding-left: 40px; }
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 11px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--bdr);
+            box-shadow: 0 0 10px var(--g)20;
+        }
+        .timeline-line {
+            position: absolute;
+            left: 11px;
+            top: 0;
+            width: 2px;
+            background: linear-gradient(to bottom, var(--g), var(--a));
+            height: 0;
+            box-shadow: 0 0 15px var(--g)40;
+        }
+        .timeline-item {
+            position: relative;
+            padding: 24px 0;
+            opacity: 0;
+            transform: translateY(16px);
+        }
+        .timeline-item.visible {
+            opacity: 1;
+            transform: translateY(0);
+            transition: all .5s cubic-bezier(.22,1,.36,1);
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -33px;
+            top: 28px;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: var(--g);
+            border: 3px solid var(--bg);
+            box-shadow: 0 0 15px var(--g)50;
+        }
+        .timeline-item.pulse::before {
+            animation: pulse .6s ease;
+        }
+        .timeline-content {
+            background: var(--s2);
+            border: 1px solid var(--bdr);
+            border-radius: 12px;
+            padding: 20px;
+            transition: all .2s;
+        }
+        .timeline-content:hover {
+            border-color: var(--g)50;
+            box-shadow: inset 0 0 20px var(--g)06;
+        }
+        .timeline-date { font-size: 12px; color: var(--tx3); margin-bottom: 8px; }
+        .timeline-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 18px;
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+        .timeline-type {
+            font-size: 11px;
+            color: var(--g);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Background Blobs */
+        .bg-blob {
+            position: fixed;
+            pointer-events: none;
+            z-index: -1;
+        }
+        .blob-1 {
+            top: -15%;
+            right: -10%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(ellipse at 30% 40%, var(--g)08, var(--gd)04, transparent 70%);
+            animation: morphA 25s ease-in-out infinite;
+        }
+        .blob-2 {
+            bottom: -20%;
+            left: -15%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(ellipse at 60% 50%, var(--a)06, var(--al)03, transparent 70%);
+            animation: morphB 30s ease-in-out infinite;
+        }
+        .blob-3 {
+            top: 50%;
+            left: 40%;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(ellipse at 50% 50%, var(--g)04, transparent 60%);
+            animation: morphA 20s ease-in-out infinite reverse;
+        }
+
+        /* Section headers */
+        .section-header { margin-bottom: 32px; }
+        .section-header h1 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 38px;
+            font-weight: 300;
+            margin-bottom: 10px;
+        }
+        .section-header p {
+            color: var(--tx2);
+            font-size: 15px;
+        }
+
+        /* Entry list */
+        .entry-list { margin-top: 40px; }
+        .entry-list h3 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 22px;
+            margin-bottom: 20px;
+            font-weight: 400;
+        }
+        .entry-item {
+            background: var(--s2);
+            border: 1px solid var(--bdr);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all .2s;
+            opacity: 0;
+            transform: translateY(12px);
+        }
+        .entry-item.visible {
+            opacity: 1;
+            transform: translateY(0);
+            transition: all .4s cubic-bezier(.22,1,.36,1);
+        }
+        .entry-item:hover {
+            border-color: var(--g)50;
+            transform: translateX(4px);
+        }
+        .entry-date { font-size: 12px; color: var(--tx3); margin-bottom: 8px; }
+        .entry-preview {
+            color: var(--tx2);
+            font-size: 14px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            line-height: 1.5;
+        }
+
+        /* Input */
+        input[type="text"], input[type="email"] {
+            width: 100%;
+            background: var(--s1);
+            border: 1px solid var(--bdr);
+            border-radius: 10px;
+            padding: 14px 16px;
+            color: var(--tx);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 14px;
+            transition: all .2s;
+        }
+        input:focus {
+            outline: none;
+            border-color: var(--g);
+            box-shadow: inset 0 0 15px var(--g)05;
+        }
+        input::placeholder { color: var(--tx3); }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--bdr); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--bdr2); }
+
+        /* Selection */
+        ::selection { background: var(--g)40; color: var(--tx); }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar { width: 60px; }
+            .sidebar .nav-item::after { display: none; }
+            .main { margin-left: 60px; padding: 24px 16px; }
+            .stage-grid { grid-template-columns: 1fr; }
+            .hero-title { font-size: 36px; }
+            .breath-techniques { grid-template-columns: 1fr; }
+        }
+
+        /* Reduced motion */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+<body class="scanlines">
+    <div class="conic-overlay"></div>
+
+    <!-- Background Blobs -->
+    <div class="bg-blob blob-1"></div>
+    <div class="bg-blob blob-2"></div>
+    <div class="bg-blob blob-3"></div>
+
+    <div class="app">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="sidebar-logo">✦</div>
+            <div class="nav-item active" data-tab="welcome" data-label="Welcome" title="Welcome">◈</div>
+            <div class="nav-item" data-tab="journal" data-label="Journal" title="Journal">◉</div>
+            <div class="nav-item" data-tab="breath" data-label="Breathwork" title="Breathwork">◆</div>
+            <div class="nav-item" data-tab="mood" data-label="Mood" title="Mood">◊</div>
+            <div class="nav-item" data-tab="dose" data-label="Microdose" title="Microdose">✶</div>
+            <div class="nav-item" data-tab="timeline" data-label="Timeline" title="Timeline">✧</div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main">
+            <!-- Welcome Screen -->
+            <div id="welcome" class="screen active">
+                <div class="welcome-container">
+                    <div class="hero-sphere">
+                        <canvas id="hero-canvas"></canvas>
+                    </div>
+                    <h1 class="hero-title">Feltshift</h1>
+                    <p class="hero-subtitle">Prepare for what comes. Process what happened. Track what changes.</p>
+
+                    <div class="section-header" style="text-align: left; max-width: 600px; margin: 48px auto;">
+                        <p style="color: var(--tx2); font-size: 15px; line-height: 1.7;">Where are you in your journey?</p>
+                    </div>
+
+                    <div class="stage-grid" id="stage-grid">
+                        <div class="stage-card" data-stage="curious">
+                            <span class="icon">◉</span>
+                            <h3>Curious</h3>
+                            <p>Learning, considering, preparing</p>
+                        </div>
+                        <div class="stage-card" data-stage="preparing">
+                            <span class="icon">◈</span>
+                            <h3>Preparing</h3>
+                            <p>Days or weeks before an experience</p>
+                        </div>
+                        <div class="stage-card" data-stage="recent">
+                            <span class="icon">◆</span>
+                            <h3>Recent</h3>
+                            <p>Hours or days since</p>
+                        </div>
+                        <div class="stage-card" data-stage="integrating">
+                            <span class="icon">◊</span>
+                            <h3>Integrating</h3>
+                            <p>Weeks or months of unfolding</p>
+                        </div>
+                        <div class="stage-card" data-stage="practicing">
+                            <span class="icon">✶</span>
+                            <h3>Practicing</h3>
+                            <p>Ongoing work, microdosing</p>
+                        </div>
+                        <div class="stage-card" data-stage="supporting">
+                            <span class="icon">✧</span>
+                            <h3>Supporting</h3>
+                            <p>Holding space for others</p>
+                        </div>
+                    </div>
+
+                    <button class="btn-primary" id="continue-btn" style="margin-top: 8px; opacity: 0; pointer-events: none; transition: all .3s;">Continue</button>
+                </div>
+            </div>
+
+            <!-- Journal Tab -->
+            <div id="journal" class="screen">
+                <div class="section-header">
+                    <h1>Integration Journal</h1>
+                    <p>Write freely. The patterns emerge when you return.</p>
+                </div>
+
+                <div class="journal-prompt">
+                    <h3 id="prompt-title">What are you integrating right now?</h3>
+                    <p id="prompt-subtitle">Don't analyze — just let the words come.</p>
+                </div>
+
+                <textarea class="journal-textarea" id="journal-input" placeholder="Start writing..."></textarea>
+
+                <div style="margin-top: 20px; display: flex; gap: 12px;">
+                    <button class="btn-primary" id="journal-submit">Reflect</button>
+                    <button class="btn-secondary" id="journal-random">New prompt</button>
+                </div>
+
+                <div class="ai-response" id="ai-response">
+                    <h4>Insight</h4>
+                    <p id="ai-text"></p><span class="cursor" id="ai-cursor"></span>
+                </div>
+
+                <div class="entry-list" id="entry-list"></div>
+            </div>
+
+            <!-- Breathwork Tab -->
+            <div id="breath" class="screen">
+                <div class="section-header">
+                    <h1>Breathwork</h1>
+                    <p>Conscious breathing for shifting states.</p>
+                </div>
+
+                <div class="breath-container">
+                    <div class="breath-circle-container">
+                        <canvas id="breath-canvas"></canvas>
+                        <div class="breath-countdown" id="breath-timer"></div>
+                    </div>
+                    <div class="breath-instruction" id="breath-instruction">Ready to begin</div>
+
+                    <div class="breath-controls">
+                        <button class="btn-primary" id="breath-start">Start Session</button>
+                        <button class="btn-secondary" id="breath-stop" style="display:none;">End Session</button>
+                    </div>
+                </div>
+
+                <div class="breath-techniques" id="techniques">
+                    <div class="breath-technique selected" data-tech="calm">
+                        <h4>4-7-8 Reset</h4>
+                        <div class="meta">~4 min • 6 cycles</div>
+                        <p>Extended exhale activates your vagus nerve — shifting from fight-or-flight to rest.</p>
+                    </div>
+                    <div class="breath-technique" data-tech="box">
+                        <h4>Box Breathing</h4>
+                        <div class="meta">~6 min • 8 cycles</div>
+                        <p>Equal-ratio breathing entrains heart-lung-brain coherence. Used under extreme pressure.</p>
+                    </div>
+                    <div class="breath-technique" data-tech="deep">
+                        <h4>Deep Exploration</h4>
+                        <div class="meta">~10 min • 30 cycles</div>
+                        <p>Sustained connected breathing for altered states and emotional release. Not for beginners.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mood Tab -->
+            <div id="mood" class="screen">
+                <div class="section-header">
+                    <h1>Mood Tracker</h1>
+                    <p>Patterns emerge from consistent logging.</p>
+                </div>
+
+                <div class="mood-card">
+                    <h3>How are you right now?</h3>
+                    <div class="mood-slider">
+                        <input type="range" id="mood-range" min="1" max="10" value="5">
+                        <div class="mood-labels">
+                            <span>Shattered</span>
+                            <span>Heavy</span>
+                            <span>Low</span>
+                            <span>Foggy</span>
+                            <span>Neutral</span>
+                            <span>Settling</span>
+                            <span>Clear</span>
+                            <span>Open</span>
+                            <span>Flowing</span>
+                            <span>Luminous</span>
+                        </div>
+                    </div>
+                    <div class="mood-current">
+                        <div class="label">Current state</div>
+                        <div class="value" id="mood-value">Neutral</div>
+                    </div>
+                    <div style="margin-top: 20px;">
+                        <input type="text" id="mood-note" placeholder="What's contributing to this state? (optional)">
+                    </div>
+                    <button class="btn-primary" id="mood-submit" style="margin-top: 20px;">Log Mood</button>
+                </div>
+
+                <div class="chart-container">
+                    <canvas id="mood-chart"></canvas>
+                </div>
+            </div>
+
+            <!-- Microdose Tab -->
+            <div id="dose" class="screen">
+                <div class="section-header">
+                    <h1>Microdose Protocol</h1>
+                    <p>Structured, intentional, tracked.</p>
+                </div>
+
+                <div id="protocols">
+                    <div class="protocol-card active" data-protocol="fadiman">
+                        <h4>Fadiman Protocol</h4>
+                        <div class="protocol-meta">
+                            <span>1 on → 2 off</span>
+                            <span>0.1-0.3g psilocybin</span>
+                            <span>4-8 weeks</span>
+                        </div>
+                        <p class="protocol-desc">The original protocol. Rest days prevent tolerance and let you observe residual effects. Best for newcomers.</p>
+                    </div>
+                    <div class="protocol-card" data-protocol="stamets">
+                        <h4>Stamets Stack</h4>
+                        <div class="protocol-meta">
+                            <span>4 on → 3 off</span>
+                            <span>+ Lion's Mane + Niacin</span>
+                            <span>Cycled</span>
+                        </div>
+                        <p class="protocol-desc">Psilocybin creates neural connections. Lion's Mane supports nerve growth factor. Niacin distributes peripherally.</p>
+                    </div>
+                    <div class="protocol-card" data-protocol="intuitive">
+                        <h4>Intuitive</h4>
+                        <div class="protocol-meta">
+                            <span>When called</span>
+                            <span>Min 2 day gap</span>
+                            <span>Ongoing</span>
+                        </div>
+                        <p class="protocol-desc">No fixed schedule. Requires honest self-monitoring to avoid habitual use. For experienced practitioners.</p>
+                    </div>
+                </div>
+
+                <div class="mood-card" style="margin-top: 32px;">
+                    <h3>This Week</h3>
+                    <div class="dose-tracker" id="dose-tracker"></div>
+                </div>
+            </div>
+
+            <!-- Timeline Tab -->
+            <div id="timeline" class="screen">
+                <div class="section-header">
+                    <h1>Experience Timeline</h1>
+                    <p>Your journey, mapped.</p>
+                </div>
+
+                <button class="btn-primary" id="add-experience">+ Log Experience</button>
+
+                <div class="timeline" id="timeline-container" style="margin-top: 32px;">
+                    <div class="timeline-line" id="timeline-line"></div>
+                    <div id="timeline-list"></div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // ========== STATE ==========
+        const state = {
+            tab: 'welcome',
+            stage: null,
+            journalEntries: JSON.parse(localStorage.getItem('fs_entries') || '[]'),
+            moodData: JSON.parse(localStorage.getItem('fs_moods') || '[]'),
+            selectedProtocol: 'fadiman',
+            doseDays: JSON.parse(localStorage.getItem('fs_doses') || '[]'),
+            breathTechnique: 'calm',
+            breathing: false,
+            breathPhase: 'idle',
+            breathSeconds: 0,
+            timeline: JSON.parse(localStorage.getItem('fs_timeline') || '[]')
+        };
+
+        const prompts = [
+            { title: "What are you integrating right now?", subtitle: "Don't analyze — just let the words come." },
+            { title: "What's one thing the experience made undeniable?", subtitle: "Something you can't unsee." },
+            { title: "If your body could speak, what would it say?", subtitle: "Notice sensations, tensions, openness." },
+            { title: "What old pattern showed itself?", subtitle: "Awareness is the first step to change." },
+            { title: "Write a letter to the version of you from before.", subtitle: "What would you tell them?" },
+            { title: "What are you avoiding feeling?", subtitle: " gentle inquiry." },
+            { title: "What would it mean to be fully seen?", subtitle: "Explore the fear or desire." }
+        ];
+
+        const moods = ['Shattered', 'Heavy', 'Low', 'Foggy', 'Neutral', 'Settling', 'Clear', 'Open', 'Flowing', 'Luminous'];
+
+        const breathTechniques = {
+            calm: { name: "4-7-8 Reset", inhale: 4, hold1: 7, exhale: 8, hold2: 0, cycles: 6 },
+            box: { name: "Box Breathing", inhale: 4, hold1: 4, exhale: 4, hold2: 4, cycles: 8 },
+            deep: { name: "Deep Exploration", inhale: 3, hold1: 0, exhale: 3, hold2: 0, cycles: 30 }
+        };
+
+        // ========== NAVIGATION ==========
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const tab = item.dataset.tab;
+                if (!tab || tab === state.tab) return;
+
+                // Animate out current screen
+                const currentScreen = document.querySelector('.screen.active');
+                if (currentScreen) {
+                    currentScreen.classList.add('exiting');
+                    setTimeout(() => {
+                        currentScreen.classList.remove('active', 'exiting');
+                    }, 200);
+                }
+
+                // Update nav
+                document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+                item.classList.add('active');
+
+                // Show new screen after brief delay
+                setTimeout(() => {
+                    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+                    const newScreen = document.getElementById(tab);
+                    newScreen.classList.add('active');
+                    state.tab = tab;
+
+                    // Init tab features
+                    if (tab === 'welcome') initHeroSphere();
+                    if (tab === 'breath') initBreathThree();
+                    if (tab === 'mood') renderMoodChart();
+                }, 200);
+            });
+        });
+
+        // ========== WELCOME / ONBOARDING ==========
+        const stageCards = document.querySelectorAll('.stage-card');
+        const continueBtn = document.getElementById('continue-btn');
+
+        // Animate cards in with stagger
+        setTimeout(() => {
+            stageCards.forEach((card, i) => {
+                setTimeout(() => {
+                    card.classList.add('visible');
+                }, i * 80);
+            });
+        }, 300);
+
+        stageCards.forEach(card => {
+            card.addEventListener('click', () => {
+                stageCards.forEach(c => c.classList.remove('selected'));
+                card.classList.add('selected');
+                state.stage = card.dataset.stage;
+
+                // Flash border then show continue
+                card.style.borderColor = 'var(--g)';
+                setTimeout(() => {
+                    continueBtn.style.opacity = '1';
+                    continueBtn.style.pointerEvents = 'auto';
+                }, 300);
+            });
+        });
+
+        continueBtn.addEventListener('click', () => {
+            // Slide animation would go here - for now just switch to journal
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            document.querySelector('[data-tab="journal"]').classList.add('active');
+
+            const welcomeScreen = document.getElementById('welcome');
+            welcomeScreen.classList.add('exiting');
+            setTimeout(() => {
+                welcomeScreen.classList.remove('active', 'exiting');
+                document.getElementById('journal').classList.add('active');
+                state.tab = 'journal';
+            }, 200);
+        });
+
+        // ========== HERO PARTICLE SPHERE THREE.JS ==========
+        let heroScene, heroCamera, heroRenderer, heroParticles;
+        let heroInitialized = false;
+
+        function initHeroSphere() {
+            if (heroInitialized) return;
+
+            const canvas = document.getElementById('hero-canvas');
+            if (!canvas) return;
+
+            heroScene = new THREE.Scene();
+            heroCamera = new THREE.PerspectiveCamera(60, 1, 0.1, 1000);
+            heroCamera.position.z = 4;
+
+            heroRenderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+            heroRenderer.setSize(140, 140);
+            heroRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+            // Particle sphere - ~200 particles
+            const geometry = new THREE.BufferGeometry();
+            const positions = [];
+            const colors = [];
+
+            for (let i = 0; i < 200; i++) {
+                const phi = Math.random() * Math.PI * 2;
+                const theta = Math.random() * Math.PI;
+                const r = 1 + (Math.random() - 0.5) * 0.3;
+
+                positions.push(
+                    r * Math.sin(theta) * Math.cos(phi),
+                    r * Math.sin(theta) * Math.sin(phi),
+                    r * Math.cos(theta)
+                );
+
+                // Mix green (#7EA066) and amber (#BF9B55) with varying opacity
+                const isGreen = Math.random() > 0.35;
+                const opacity = 0.4 + Math.random() * 0.4;
+                if (isGreen) {
+                    colors.push(0.49 * opacity, 0.63 * opacity, 0.4 * opacity);
+                } else {
+                    colors.push(0.75 * opacity, 0.61 * opacity, 0.33 * opacity);
+                }
+            }
+
+            geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+            geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+
+            const material = new THREE.PointsMaterial({
+                size: 0.06,
+                vertexColors: true,
+                transparent: true,
+                opacity: 0.85
+            });
+
+            heroParticles = new THREE.Points(geometry, material);
+            heroScene.add(heroParticles);
+
+            // Hover effect - particles scatter then reform
+            let hovered = false;
+            let originalPositions = [...positions];
+            canvas.addEventListener('mouseenter', () => { hovered = true; });
+            canvas.addEventListener('mouseleave', () => { hovered = false; });
+            canvas.addEventListener('touchstart', () => { hovered = true; });
+            canvas.addEventListener('touchend', () => { setTimeout(() => hovered = false, 500); });
+
+            // Animation
+            let time = 0;
+            function animateHero() {
+                if (!heroRenderer) return;
+
+                time += 0.005;
+
+                // Auto rotation
+                heroParticles.rotation.y = time * 0.5;
+                heroParticles.rotation.z = time * 0.2;
+
+                // Breathe (scale 0.95 - 1.05)
+                const scale = 0.95 + Math.sin(time * 2) * 0.05;
+                heroParticles.scale.setScalar(hovered ? scale * 1.1 : scale);
+
+                // Scatter on hover
+                const positions = heroParticles.geometry.attributes.position.array;
+                for (let i = 0; i < positions.length; i += 3) {
+                    if (hovered) {
+                        positions[i] *= 1.002;
+                        positions[i+1] *= 1.002;
+                        positions[i+2] *= 1.002;
+                    } else {
+                        // Gently return
+                        const target = originalPositions[i];
+                        positions[i] += (target - positions[i]) * 0.01;
+                        positions[i+1] += (originalPositions[i+1] - positions[i+1]) * 0.01;
+                        positions[i+2] += (originalPositions[i+2] - positions[i+2]) * 0.01;
+                    }
+                }
+                heroParticles.geometry.attributes.position.needsUpdate = true;
+
+                heroRenderer.render(heroScene, heroCamera);
+                requestAnimationFrame(animateHero);
+            }
+
+            heroInitialized = true;
+            animateHero();
+        }
+
+        // ========== JOURNAL ==========
+        document.getElementById('journal-random').addEventListener('click', () => {
+            const prompt = prompts[Math.floor(Math.random() * prompts.length)];
+            const title = document.getElementById('prompt-title');
+            const subtitle = document.getElementById('prompt-subtitle');
+
+            title.style.opacity = 0;
+            setTimeout(() => {
+                title.textContent = prompt.title;
+                subtitle.textContent = prompt.subtitle;
+                title.style.opacity = 1;
+            }, 150);
+        });
+
+        document.getElementById('journal-submit').addEventListener('click', async () => {
+            const text = document.getElementById('journal-input').value.trim();
+            if (!text) return;
+
+            // Save entry
+            const entry = {
+                date: new Date().toISOString(),
+                text,
+                preview: text.slice(0, 120)
+            };
+            state.journalEntries.unshift(entry);
+            localStorage.setItem('fs_entries', JSON.stringify(state.journalEntries));
+
+            const aiResponses = [
+                "You mentioned feeling 'stuck' — that's appeared in 3 of your last 5 entries. What if stuck isn't the problem, but a signal?",
+                "The pattern I'm noticing: you journal most when something feels incomplete. What would it mean to feel complete?",
+                "Three days ago you wrote about restlessness. Today there's more acceptance. Something shifted.",
+                "You keep circling back to control. What would happen if you let one thing go uncontrolled?",
+                "This entry has a different rhythm — less explaining, more feeling. That's growth.",
+                "The word 'should' appears four times. What wants to happen instead?",
+                "You're describing the same pattern with different words. Let's look closer at what's actually changing."
+            ];
+            const response = aiResponses[Math.floor(Math.random() * aiResponses.length)];
+
+            const aiContainer = document.getElementById('ai-response');
+            const aiText = document.getElementById('ai-text');
+            const cursor = document.getElementById('ai-cursor');
+
+            aiContainer.classList.add('visible');
+            aiText.textContent = '';
+            cursor.classList.remove('hidden');
+
+            // Typewriter effect (~30ms per character)
+            for (let i = 0; i < response.length; i++) {
+                aiText.textContent += response[i];
+                await new Promise(r => setTimeout(r, 28));
+            }
+
+            // Fade out cursor
+            cursor.classList.add('hidden');
+
+            renderEntries();
+            document.getElementById('journal-input').value = '';
+        });
+
+        function renderEntries() {
+            const container = document.getElementById('entry-list');
+            if (state.journalEntries.length === 0) {
+                container.innerHTML = '';
+                return;
+            }
+
+            container.innerHTML = '<h3>Recent Entries</h3>';
+            state.journalEntries.slice(0, 5).forEach((entry, i) => {
+                const date = new Date(entry.date);
+                const div = document.createElement('div');
+                div.className = 'entry-item';
+                div.innerHTML = `
+                    <div class="entry-date">${date.toLocaleDateString()} · ${date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
+                    <div class="entry-preview">${entry.preview}...</div>
+                `;
+                container.appendChild(div);
+
+                // Staggered reveal
+                setTimeout(() => div.classList.add('visible'), i * 80);
+            });
+        }
+
+        // ========== BREATHWORK THREE.JS TORUS ==========
+        let breathScene, breathCamera, breathRenderer, breathTorus, breathParticleMesh;
+        let breathInitialized = false;
+        let breathTime = 0;
+
+        function initBreathThree() {
+            if (breathInitialized) return;
+
+            const canvas = document.getElementById('breath-canvas');
+            if (!canvas) return;
+
+            breathScene = new THREE.Scene();
+            breathCamera = new THREE.PerspectiveCamera(60, 1, 0.1, 1000);
+            breathCamera.position.z = 5;
+
+            breathRenderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+            breathRenderer.setSize(260, 260);
+            breathRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+            // Glowing torus
+            const geometry = new THREE.TorusGeometry(1.2, 0.12, 8, 40);
+            const material = new THREE.MeshBasicMaterial({
+                color: 0x7EA066,
+                transparent: true,
+                opacity: 0.7,
+                wireframe: false
+            });
+            breathTorus = new THREE.Mesh(geometry, material);
+            breathScene.add(breathTorus);
+
+            // Inner glow ring
+            const glowGeo = new THREE.TorusGeometry(1.2, 0.3, 8, 40);
+            const glowMat = new THREE.MeshBasicMaterial({
+                color: 0x7EA066,
+                transparent: true,
+                opacity: 0.15
+            });
+            const glowRing = new THREE.Mesh(glowGeo, glowMat);
+            breathScene.add(glowRing);
+
+            // Particles inside torus (~50 particles)
+            const particleGeo = new THREE.BufferGeometry();
+            const positions = [];
+            for (let i = 0; i < 50; i++) {
+                const theta = Math.random() * Math.PI * 2;
+                const phi = Math.random() * Math.PI;
+                const r = 0.4 + Math.random() * 0.6;
+                positions.push(
+                    r * Math.sin(phi) * Math.cos(theta),
+                    r * Math.sin(phi) * Math.sin(theta),
+                    r * Math.cos(phi)
+                );
+            }
+            particleGeo.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+            const particleMat = new THREE.PointsMaterial({
+                color: 0xBF9B55,
+                size: 0.04,
+                transparent: true,
+                opacity: 0.6
+            });
+            breathParticleMesh = new THREE.Points(particleGeo, particleMat);
+            breathScene.add(breathParticleMesh);
+
+            breathInitialized = true;
+            animateBreath();
+        }
+
+        let targetTorusScale = 1;
+        let currentTorusScale = 1;
+        let particleExpansion = 1;
+
+        function animateBreath() {
+            if (!breathRenderer) return;
+
+            breathTime += 0.02;
+
+            // Smooth scale interpolation
+            currentTorusScale += (targetTorusScale - currentTorusScale) * 0.05;
+            breathTorus.scale.setScalar(currentTorusScale);
+
+            // Rotate slowly
+            breathTorus.rotation.x = Math.sin(breathTime * 0.5) * 0.1;
+            breathTorus.rotation.y += 0.003;
+
+            // Particle animation
+            if (breathParticleMesh) {
+                breathParticleMesh.rotation.y -= 0.002;
+
+                // Expand/contract particles based on breath phase
+                const positions = breathParticleMesh.geometry.attributes.position.array;
+                const originalExpansion = particleExpansion;
+
+                if (state.breathPhase === 'inhale') {
+                    particleExpansion = Math.min(particleExpansion * 1.001, 1.3);
+                } else if (state.breathPhase === 'exhale') {
+                    particleExpansion = Math.max(particleExpansion * 0.999, 0.9);
+                }
+
+                if (particleExpansion !== originalExpansion) {
+                    for (let i = 0; i < positions.length; i++) {
+                        positions[i] *= particleExpansion / originalExpansion;
+                    }
+                    breathParticleMesh.geometry.attributes.position.needsUpdate = true;
+                }
+            }
+
+            // Glow intensity based on hold
+            if (state.breathPhase === 'hold') {
+                breathTorus.material.opacity = 0.9 + Math.sin(breathTime * 4) * 0.1;
+            } else {
+                breathTorus.material.opacity = 0.7;
+            }
+
+            breathRenderer.render(breathScene, breathCamera);
+            requestAnimationFrame(animateBreath);
+        }
+
+        // Breath controls
+        document.querySelectorAll('.breath-technique').forEach(t => {
+            t.addEventListener('click', () => {
+                if (state.breathing) return;
+                document.querySelectorAll('.breath-technique').forEach(x => x.classList.remove('selected'));
+                t.classList.add('selected');
+                state.breathTechnique = t.dataset.tech;
+            });
+        });
+
+        let breathInterval;
+        document.getElementById('breath-start').addEventListener('click', () => {
+            state.breathing = true;
+            document.getElementById('breath-start').style.display = 'none';
+            document.getElementById('breath-stop').style.display = 'inline-block';
+
+            // Expand torus
+            targetTorusScale = 1.3;
+
+            runBreathCycle();
+        });
+
+        document.getElementById('breath-stop').addEventListener('click', () => {
+            state.breathing = false;
+            clearInterval(breathInterval);
+            document.getElementById('breath-start').style.display = 'inline-block';
+            document.getElementById('breath-stop').style.display = 'none';
+            document.getElementById('breath-instruction').textContent = 'Ready to begin';
+            document.getElementById('breath-timer').textContent = '';
+
+            // Reset torus
+            targetTorusScale = 1;
+            state.breathPhase = 'idle';
+        });
+
+        async function runBreathCycle() {
+            const tech = breathTechniques[state.breathTechnique];
+            let cycle = 0;
+
+            while (state.breathing && cycle < tech.cycles) {
+                // Inhale - expand
+                if (!state.breathing) break;
+                state.breathPhase = 'inhale';
+                targetTorusScale = 1.3;
+                document.getElementById('breath-instruction').textContent = 'Breathe In';
+                await breathePhase(tech.inhale);
+
+                // Hold 1 - pulse
+                if (!state.breathing || tech.hold1 === 0) break;
+                state.breathPhase = 'hold';
+                document.getElementById('breath-instruction').textContent = 'Hold';
+                await breathePhase(tech.hold1);
+
+                // Exhale - contract
+                if (!state.breathing) break;
+                state.breathPhase = 'exhale';
+                targetTorusScale = 0.9;
+                document.getElementById('breath-instruction').textContent = 'Release';
+                await breathePhase(tech.exhale);
+
+                // Hold 2
+                if (!state.breathing || tech.hold2 === 0) break;
+                state.breathPhase = 'hold';
+                document.getElementById('breath-instruction').textContent = 'Hold';
+                await breathePhase(tech.hold2);
+
+                cycle++;
+            }
+
+            if (state.breathing) {
+                state.breathPhase = 'idle';
+                targetTorusScale = 1;
+                document.getElementById('breath-instruction').textContent = 'Complete';
+                document.getElementById('breath-timer').textContent = '';
+                setTimeout(() => {
+                    document.getElementById('breath-start').style.display = 'inline-block';
+                    document.getElementById('breath-stop').style.display = 'none';
+                    document.getElementById('breath-instruction').textContent = 'Ready to begin';
+                    state.breathing = false;
+                }, 2000);
+            }
+        }
+
+        function breathePhase(seconds) {
+            return new Promise(resolve => {
+                let remaining = seconds;
+                const timerEl = document.getElementById('breath-timer');
+                timerEl.textContent = remaining > 0 ? remaining : '';
+
+                if (seconds === 0) {
+                    resolve();
+                    return;
+                }
+
+                breathInterval = setInterval(() => {
+                    remaining--;
+                    timerEl.textContent = remaining > 0 ? remaining : '';
+                    if (remaining <= 0) {
+                        clearInterval(breathInterval);
+                        resolve();
+                    }
+                }, 1000);
+            });
+        }
+
+        // ========== MOOD ==========
+        const moodRange = document.getElementById('mood-range');
+        const moodValue = document.getElementById('mood-value');
+
+        moodRange.addEventListener('input', () => {
+            const val = parseInt(moodRange.value);
+            moodValue.textContent = moods[val - 1];
+
+            // Color based on mood
+            if (val <= 4) moodValue.style.color = 'var(--r)';
+            else if (val <= 6) moodValue.style.color = 'var(--tx)';
+            else moodValue.style.color = 'var(--g)';
+        });
+
+        document.getElementById('mood-submit').addEventListener('click', () => {
+            const value = parseInt(moodRange.value);
+            const note = document.getElementById('mood-note').value;
+            const entry = {
+                date: new Date().toISOString(),
+                value,
+                note
+            };
+            state.moodData.push(entry);
+            localStorage.setItem('fs_moods', JSON.stringify(state.moodData));
+            document.getElementById('mood-note').value = '';
+
+            // Button feedback
+            const btn = document.getElementById('mood-submit');
+            const originalText = btn.textContent;
+            btn.textContent = 'Logged ✓';
+            setTimeout(() => btn.textContent = originalText, 1500);
+
+            renderMoodChart();
+        });
+
+        let moodChartInstance = null;
+        function renderMoodChart() {
+            const ctx = document.getElementById('mood-chart');
+            if (!ctx) return;
+
+            const data = state.moodData.slice(-14);
+            const labels = data.map(d => {
+                const date = new Date(d.date);
+                return `${date.getMonth()+1}/${date.getDate()}`;
+            });
+            const values = data.map(d => d.value);
+
+            if (moodChartInstance) {
+                moodChartInstance.destroy();
+            }
+
+            // Determine color based on recent mood
+            const recentMood = values[values.length - 1] || 5;
+            const borderColor = recentMood <= 4 ? '#A06060' : '#7EA066';
+            const bgColor = recentMood <= 4 ? 'rgba(160, 96, 96, 0.1)' : 'rgba(126, 160, 102, 0.1)';
+
+            moodChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels,
+                    datasets: [{
+                        label: 'Mood',
+                        data: values,
+                        borderColor,
+                        backgroundColor: bgColor,
+                        borderWidth: 2,
+                        tension: 0.4,
+                        fill: true,
+                        pointBackgroundColor: recentMood <= 4 ? '#A06060' : '#BF9B55',
+                        pointBorderColor: recentMood <= 4 ? '#A06060' : '#BF9B55',
+                        pointRadius: 5
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: {
+                            min: 1,
+                            max: 10,
+                            grid: { color: 'var(--bdr)' },
+                            ticks: { color: 'var(--tx3)', stepSize: 2 }
+                        },
+                        x: {
+                            grid: { display: false },
+                            ticks: { color: 'var(--tx3)' }
+                        }
+                    },
+                    animation: {
+                        duration: 800,
+                        easing: 'easeOutQuart'
+                    }
+                }
+            });
+        }
+
+        // ========== MICRODOSE ==========
+        document.querySelectorAll('.protocol-card').forEach(card => {
+            card.addEventListener('click', () => {
+                document.querySelectorAll('.protocol-card').forEach(c => c.classList.remove('active'));
+                card.classList.add('active');
+                state.selectedProtocol = card.dataset.protocol;
+                renderDoseTracker();
+            });
+        });
+
+        function renderDoseTracker() {
+            const container = document.getElementById('dose-tracker');
+            container.innerHTML = '';
+
+            const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            const today = new Date();
+            const currentWeekStart = new Date(today);
+            currentWeekStart.setDate(today.getDate() - today.getDay());
+
+            for (let i = 0; i < 7; i++) {
+                const dayDate = new Date(currentWeekStart);
+                dayDate.setDate(currentWeekStart.getDate() + i);
+                const dayNum = dayDate.getDate();
+                const isToday = dayDate.toDateString() === today.toDateString();
+
+                // Simple hash to determine if dosed for demo
+                const dateKey = dayDate.toISOString().split('T')[0];
+                const isDosed = state.doseDays.includes(dateKey);
+
+                const div = document.createElement('div');
+                div.className = 'dose-day' + (isToday ? ' today' : '') + (isDosed ? ' dosed' : '');
+                div.innerHTML = `<span class="day-name">${days[i][0]}</span><span class="day-num">${dayNum}</span>`;
+
+                div.addEventListener('click', () => {
+                    if (state.doseDays.includes(dateKey)) {
+                        state.doseDays = state.doseDays.filter(d => d !== dateKey);
+                    } else {
+                        state.doseDays.push(dateKey);
+                    }
+                    localStorage.setItem('fs_doses', JSON.stringify(state.doseDays));
+                    renderDoseTracker();
+                });
+
+                container.appendChild(div);
+            }
+        }
+
+        // ========== TIMELINE ==========
+        document.getElementById('add-experience').addEventListener('click', () => {
+            const types = ['Ceremony', 'Journey', 'Breathwork', 'Meditation', 'Microdose'];
+            const type = types[Math.floor(Math.random() * types.length)];
+            const entry = {
+                date: new Date().toISOString(),
+                title: `${type}`,
+                type,
+                id: Date.now()
+            };
+            state.timeline.unshift(entry);
+            localStorage.setItem('fs_timeline', JSON.stringify(state.timeline));
+            renderTimeline();
+        });
+
+        function renderTimeline() {
+            const container = document.getElementById('timeline-list');
+            const lineEl = document.getElementById('timeline-line');
+            container.innerHTML = '';
+
+            // Add starter
+            const starter = document.createElement('div');
+            starter.className = 'timeline-item';
+            starter.innerHTML = `
+                <div class="timeline-content">
+                    <div class="timeline-date">${new Date().toLocaleDateString()}</div>
+                    <div class="timeline-title">Started with Feltshift</div>
+                    <div class="timeline-type">Beginning</div>
+                </div>
+            `;
+            container.appendChild(starter);
+
+            // Add timeline items
+            state.timeline.forEach((item, i) => {
+                const div = document.createElement('div');
+                div.className = 'timeline-item';
+                div.innerHTML = `
+                    <div class="timeline-content">
+                        <div class="timeline-date">${new Date(item.date).toLocaleDateString()}</div>
+                        <div class="timeline-title">${item.title}</div>
+                        <div class="timeline-type">${item.type}</div>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+
+            // Animate line growing
+            setTimeout(() => {
+                if (lineEl) {
+                    lineEl.style.height = '100%';
+                    lineEl.style.transition = 'height 600ms ease';
+                }
+
+                // Stagger items
+                const items = container.querySelectorAll('.timeline-item');
+                items.forEach((item, i) => {
+                    setTimeout(() => {
+                        item.classList.add('visible');
+                        if (i > 0) item.classList.add('pulse'); // pulse dots
+                    }, i * 100);
+                });
+            }, 100);
+        }
+
+        // ========== SCROLL REVEAL ==========
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    revealObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
+
+        // ========== INIT ==========
+        function init() {
+            renderEntries();
+            renderDoseTracker();
+            renderTimeline();
+            initHeroSphere();
+
+            // Initial reveals
+            setTimeout(() => {
+                document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+            }, 500);
+        }
+
+        init();
+    </script>
+</body>
+</html>
