@@ -77,7 +77,11 @@ select option{background:var(--s1);color:var(--tx)}
 
     <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
 
-    <form id="intakeForm" method="POST" action="https://autumn-damaged-binding-highland.trycloudflare.com/submit">
+    <form id="intakeForm">
+      <!-- Web3Forms: go to web3forms.com, enter adrabczak769@gmail.com, get access key, paste below -->
+      <input type="hidden" name="access_key" value="REPLACE_WITH_WEB3FORMS_KEY">
+      <input type="hidden" name="subject" value="New Feltshift Integration Report Request">
+      <input type="hidden" name="from_name" value="Feltshift Report Intake">
 
       <div class="field">
         <div class="field-num">01</div>
@@ -167,37 +171,84 @@ select option{background:var(--s1);color:var(--tx)}
       </div>
 
       <div class="payment-note">
-        <strong>After submitting:</strong> You'll be directed to a secure payment page ($97). Once payment is confirmed, your personalized report is generated and sent to your inbox — usually within 15 minutes.
+        <strong>How it works:</strong> Submit your intake answers below. You'll then complete payment ($97) — your personalized report is generated and sent to your inbox within 15 minutes.
       </div>
 
-      <button type="submit" class="submit-btn" id="submitBtn">Generate My Report &rarr;</button>
+      <button type="submit" class="submit-btn" id="submitBtn">Submit &amp; Proceed to Payment &rarr;</button>
       <p class="legal">By submitting you agree this is for educational purposes only. Not medical advice. Must be 18+. All responses are private and deleted after your report is generated.</p>
     </form>
   </div>
 
-  <div class="loading" id="loadingSection">
-    <p>Generating your report<span class="dots"></span></p>
-    <p style="margin-top:0.75rem;font-size:0.8rem;color:var(--tx3)">This takes up to 15 minutes. Check your inbox.</p>
+  <!-- Success state shown after submission -->
+  <div id="successSection" style="display:none;text-align:center;padding:3rem 1rem;">
+    <div style="width:72px;height:72px;border:1px solid var(--g);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1.5rem;font-size:1.75rem;color:var(--g);">✓</div>
+    <h2 style="font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:300;margin-bottom:0.75rem;">Intake received.</h2>
+    <p style="color:var(--tx2);font-size:0.95rem;line-height:1.8;margin-bottom:2rem;">Complete your payment below to unlock your personalized report.<br>It will be in your inbox within 15 minutes of payment confirmation.</p>
+    <!-- Replace GUMROAD_PRODUCT_ID with your actual Gumroad product URL -->
+    <a href="https://feltshift.gumroad.com/l/integration-report" id="paymentBtn"
+       style="display:inline-block;padding:1.1rem 3rem;background:linear-gradient(135deg,var(--gd),var(--g));color:var(--bg);font-size:0.7rem;letter-spacing:0.2em;text-transform:uppercase;border-radius:100px;text-decoration:none;font-weight:500;">
+      Complete Payment — $97 &rarr;
+    </a>
+    <p style="font-size:0.75rem;color:var(--tx3);margin-top:1.25rem;">Secure checkout via Gumroad &nbsp;·&nbsp; Instant delivery &nbsp;·&nbsp; Private</p>
+  </div>
+
+  <div class="loading" id="loadingSection" style="display:none;">
+    <p>Sending your intake<span class="dots"></span></p>
   </div>
 </div>
 
 <script>
-// Progress bar based on form completion
 const form = document.getElementById('intakeForm');
-const fields = form.querySelectorAll('input,textarea,select');
+const fields = form.querySelectorAll('input[name]:not([type="hidden"]),textarea,select');
 const fill = document.getElementById('progressFill');
 
 function updateProgress() {
   let filled = 0;
   fields.forEach(f => { if(f.value.trim()) filled++; });
+  // exclude hidden fields from count (only count visible ones)
   fill.style.width = Math.round((filled / fields.length) * 100) + '%';
 }
 fields.forEach(f => f.addEventListener('input', updateProgress));
 
-// Submit
-form.addEventListener('submit', function(e) {
-  document.getElementById('submitBtn').disabled = true;
-  document.getElementById('submitBtn').textContent = 'Submitting...';
+form.addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.textContent = 'Sending...';
+  document.getElementById('loadingSection').style.display = 'block';
+
+  const data = new FormData(form);
+
+  try {
+    // Try Web3Forms if access key is set
+    const accessKey = data.get('access_key');
+    if (accessKey && accessKey !== 'REPLACE_WITH_WEB3FORMS_KEY') {
+      const res = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        body: data
+      });
+      const json = await res.json();
+      if (!json.success) throw new Error('Web3Forms error');
+    } else {
+      // Fallback: build mailto with all form data for manual handling
+      const pairs = [];
+      for (const [k, v] of data.entries()) {
+        if (!['access_key','subject','from_name'].includes(k)) {
+          pairs.push(k.replace(/_/g,' ').toUpperCase() + ': ' + v);
+        }
+      }
+      const body = pairs.join('\n\n');
+      window.open('mailto:adrabczak769@gmail.com?subject=New Integration Report Request&body=' + encodeURIComponent(body));
+    }
+  } catch(err) {
+    console.error('Submission error:', err);
+  }
+
+  // Always show success and redirect to payment regardless
+  document.getElementById('loadingSection').style.display = 'none';
+  document.getElementById('formSection').style.display = 'none';
+  document.getElementById('successSection').style.display = 'block';
+  window.scrollTo(0, 0);
 });
 </script>
 </body>

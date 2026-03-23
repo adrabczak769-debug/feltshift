@@ -913,10 +913,10 @@ margin-bottom: 1rem;
 <h1>The experience is the beginning. The work is what comes next.</h1>
 <p>AI-powered integration journal, mood tracking, breathwork, microdose protocols, and verified retreats. Built for people doing real inner work.</p>
 <div class="hero-btns">
-<button class="btn btn-primary" onclick="openModal('signup')">Start Integration</button>
+<a href="report.html" class="btn btn-primary" style="text-decoration:none;">Get Your Integration Report — $97</a>
 <button class="btn btn-secondary" onclick="document.getElementById('science').scrollIntoView({behavior:'smooth'})">See the Research</button>
 </div>
-<p class="hero-trust">Free forever. No credit card. Your journal stays encrypted.</p>
+<p class="hero-trust">One-time &nbsp;·&nbsp; 20-page personalized PDF &nbsp;·&nbsp; Delivered in 15 min &nbsp;·&nbsp; Private</p>
 </div>
 </section>
 
@@ -1216,47 +1216,40 @@ margin-bottom: 1rem;
 
 <section id="pricing">
 <div class="section-header text-center" style="margin:0 auto 3rem;text-align:center;">
-<h2>Simple pricing. No hidden fees.</h2>
+<h2>Start here. Go deeper as you grow.</h2>
 </div>
-<div class="pricing-grid">
-<div class="pricing-card">
-<h3>Free</h3>
-<div class="pricing-price">$0<span>/mo</span></div>
-<p class="pricing-desc">Start here.</p>
-<ul class="pricing-features">
-<li>3 journal entries per week</li>
-<li>Daily mood check-in</li>
-<li>1 breathwork session per day</li>
-<li>Browse retreat directory</li>
-</ul>
-<button class="btn btn-amber" style="width:100%;" onclick="openModal('signup')">Start Free</button>
-</div>
+<div class="pricing-grid" style="grid-template-columns:1fr 1fr;">
 <div class="pricing-card featured">
-<div class="pricing-badge">Recommended</div>
-<h3>Premium</h3>
-<div class="pricing-price">$14<span>/mo</span></div>
-<p class="pricing-desc">Full toolkit.</p>
+<div class="pricing-badge">Available Now</div>
+<h3>AI Integration Report</h3>
+<div class="pricing-price">$97<span> one-time</span></div>
+<p class="pricing-desc">Your personalized 20-page integration guide — written for your specific experience. Not a template.</p>
 <ul class="pricing-features">
-<li>Unlimited AI journaling</li>
-<li>Full integration protocols</li>
-<li>Microdose tracker with insights</li>
-<li>Full breathwork library</li>
-<li>Mood analytics & reports</li>
+<li>Your experience reflected back</li>
+<li>Your key themes decoded</li>
+<li>30-day personalized protocol</li>
+<li>10 custom journal prompts</li>
+<li>Somatic &amp; breathwork practices</li>
+<li>Delivered to your inbox in 15 min</li>
 </ul>
-<button class="btn btn-primary" style="width:100%;" onclick="openModal('trial')">Start Free Trial</button>
-<p style="font-size:0.65rem;color:var(--text-muted);margin-top:1rem;text-align:center;">7-day free trial. Cancel anytime.</p>
+<a href="report.html" class="btn btn-primary" style="display:block;width:100%;text-align:center;text-decoration:none;padding:1rem 2rem;">Get Your Report →</a>
+<p style="font-size:0.65rem;color:var(--text-muted);margin-top:1rem;text-align:center;">One-time. No account needed. Private. 18+</p>
 </div>
 <div class="pricing-card">
-<h3>Facilitator</h3>
-<div class="pricing-price">$49<span>/mo</span></div>
-<p class="pricing-desc">For coaches & clinics.</p>
+<div class="pricing-badge" style="background:transparent;color:var(--amber);border:1px solid var(--amber-dark);">Coming Q2 2026</div>
+<h3>Full Platform</h3>
+<div class="pricing-price">$14<span>/mo</span></div>
+<p class="pricing-desc">The complete integration toolkit — journal, protocols, retreat directory, and AI guidance. All in one place.</p>
 <ul class="pricing-features">
-<li>Everything in Premium</li>
-<li>Client dashboard</li>
-<li>Integration monitoring</li>
-<li>Session notes & tracking</li>
+<li>AI-powered integration journal</li>
+<li>Multi-week adaptive protocols</li>
+<li>Microdose tracker with insights</li>
+<li>Verified retreat directory</li>
+<li>Breathwork library</li>
+<li>Mood analytics &amp; trends</li>
 </ul>
-<button class="btn btn-amber" style="width:100%;" onclick="openModal('contact')">Contact Us</button>
+<button class="btn btn-amber" style="width:100%;" onclick="openModal('signup')">Join the Waitlist</button>
+<p style="font-size:0.65rem;color:var(--text-muted);margin-top:1rem;text-align:center;">Get early access + founding member pricing.</p>
 </div>
 </div>
 </section>
@@ -1837,14 +1830,41 @@ document.getElementById('modal-content').innerHTML = `
 // AI CHAT BOT
 // ============================================
 const aiResponses = [
+// Reflective
 "What part of you is saying that?",
-"Where do you feel that in your body?",
-"What does this tell you about what you value?",
-"That pattern you mentioned — how long has it been showing up?",
-"What would it look like to hold that with more compassion?",
-"Integration isn't about fixing. It's about listening.",
-"The window of neuroplasticity is 2-4 weeks. What practices support you during that time?",
-"That's a common experience after ceremony. The mind needs time to make meaning."
+"Where do you feel that in your body right now?",
+"What does this tell you about what you most deeply value?",
+"That pattern — how long has it been showing up in your life?",
+"What would it look like to hold that with genuine compassion?",
+"If that insight could speak directly to you, what would it say?",
+"What's the difference between what you experienced and how you're interpreting it?",
+"What does your wisest self think about this?",
+"What do you most want to remember about what you went through?",
+"Is this feeling familiar, or is it something you've never felt before?",
+// Integration wisdom
+"Integration isn't about fixing anything. It's about listening more deeply.",
+"The window of neuroplasticity after a psychedelic experience is real — typically 2–4 weeks. How are you using that time?",
+"That's a common experience after ceremony. The mind takes time to build new meaning from what it encountered.",
+"What you're feeling isn't confusion — it's the gap between the experience and the language to hold it.",
+"Some insights aren't meant to be understood immediately. They unfold over weeks and months.",
+"The goal of integration isn't to 'complete' the experience. It's to slowly bring it into your daily life.",
+"Your nervous system processed something significant. Give it the same care you'd give a physical recovery.",
+"Resistance is often a sign you're close to something important. What are you avoiding looking at?",
+// Grounding & practical
+"How's your sleep been since the experience? That matters more than most people realize.",
+"Are you spending time in nature? The integration process benefits enormously from that.",
+"What does your body need right now — movement, rest, nourishment, quiet?",
+"Even 10 minutes of journaling each morning this week could unlock a lot of what you're sitting with.",
+"Have you spoken about this with anyone you trust? Sometimes saying it out loud changes everything.",
+"Consider what practices still serve you, and which ones you might be ready to release.",
+// Gentle care
+"There's no timeline for integration. Give yourself permission to be in the process without rushing the outcome.",
+"It's okay if meaning hasn't arrived yet. Some of the most important work happens quietly, beneath awareness.",
+"You're doing the real work by showing up to this. That matters.",
+"What you're navigating deserves care and structure. You don't have to figure it all out at once.",
+// Bridge to the report
+"If you want a personalized integration guide built around your specific experience, our AI Integration Report might be exactly what you need — 20 pages written just for you.",
+"The most powerful integration support is specific, not generic. That's what our personalized report is designed to do."
 ];
 
 function toggleAIChat() {
@@ -1995,8 +2015,8 @@ calendar.innerHTML = html;
 // MODALS
 // ============================================
 const MODAL_TEMPLATES = {
-signup: `<div style="max-width:400px;"><h3 style="font-family:'Cormorant Garamond',serif;font-size:1.8rem;margin-bottom:1rem;color:var(--amber);">Start Your Integration</h3><p style="color:var(--text-secondary);margin-bottom:1.5rem;">Create your free account to begin the journey.</p><form onsubmit="event.preventDefault(); handleSignup(this);"><input type="email" name="email" placeholder="Your email" required style="width:100%;padding:1rem;margin-bottom:1rem;background:var(--bg-surface);border:1px solid var(--border);color:var(--text-primary);border-radius:8px;"><input type="password" name="password" placeholder="Choose password" required style="width:100%;padding:1rem;margin-bottom:1.5rem;background:var(--bg-surface);border:1px solid var(--border);color:var(--text-primary);border-radius:8px;"><button type="submit" class="btn btn-primary" style="width:100%;">Create Account</button></form><p style="margin-top:1.5rem;text-align:center;"><a href="/app" style="color:var(--green);">Already have an account? Open App →</a></p></div>`,
-trial: `<div style="max-width:400px;"><h3 style="font-family:'Cormorant Garamond',serif;font-size:1.8rem;margin-bottom:1rem;color:var(--green);">Start Free Trial</h3><p style="color:var(--text-secondary);margin-bottom:1.5rem;">7 days full access. Cancel anytime.</p><form onsubmit="event.preventDefault(); handleTrial(this);"><input type="email" name="email" placeholder="Your email" required style="width:100%;padding:1rem;margin-bottom:1rem;background:var(--bg-surface);border:1px solid var(--border);color:var(--text-primary);border-radius:8px;"><input type="text" name="business" placeholder="Business name" style="width:100%;padding:1rem;margin-bottom:1.5rem;background:var(--bg-surface);border:1px solid var(--border);color:var(--text-primary);border-radius:8px;"><button type="submit" class="btn btn-primary" style="width:100%;">Start 7-Day Trial</button></form></div>`,
+signup: `<div style="max-width:400px;"><h3 style="font-family:'Cormorant Garamond',serif;font-size:1.8rem;margin-bottom:1rem;color:var(--amber);">Join the Waitlist</h3><p style="color:var(--text-secondary);margin-bottom:1.5rem;">The full platform launches Q2 2026. Join the waitlist for early access and founding member pricing.</p><form onsubmit="event.preventDefault(); handleSignup(this);"><input type="email" name="email" placeholder="Your email" required style="width:100%;padding:1rem;margin-bottom:1.5rem;background:var(--bg-surface);border:1px solid var(--border);color:var(--text-primary);border-radius:8px;"><button type="submit" class="btn btn-primary" style="width:100%;">Join the Waitlist</button></form><p style="margin-top:1.5rem;text-align:center;font-size:0.8rem;color:var(--text-muted);">Want something now? <a href="report.html" style="color:var(--green);">Get your AI Integration Report →</a></p></div>`,
+trial: `<div style="max-width:400px;"><h3 style="font-family:'Cormorant Garamond',serif;font-size:1.8rem;margin-bottom:1rem;color:var(--green);">Join the Waitlist</h3><p style="color:var(--text-secondary);margin-bottom:1.5rem;">Full platform coming Q2 2026. Early access, founding member pricing. Be first in.</p><form onsubmit="event.preventDefault(); handleTrial(this);"><input type="email" name="email" placeholder="Your email" required style="width:100%;padding:1rem;margin-bottom:1.5rem;background:var(--bg-surface);border:1px solid var(--border);color:var(--text-primary);border-radius:8px;"><button type="submit" class="btn btn-primary" style="width:100%;">Reserve My Spot</button></form><p style="margin-top:1.5rem;text-align:center;font-size:0.8rem;color:var(--text-muted);">Available now: <a href="report.html" style="color:var(--amber);">AI Integration Report — $97 →</a></p></div>`,
 contact: `<div style="max-width:400px;"><h3 style="font-family:'Cormorant Garamond',serif;font-size:1.8rem;margin-bottom:1rem;color:var(--amber);">Contact Us</h3><p style="color:var(--text-secondary);margin-bottom:1.5rem;">We'll respond within 24 hours.</p><form onsubmit="event.preventDefault(); handleContact(this);"><input type="text" name="name" placeholder="Your name" required style="width:100%;padding:1rem;margin-bottom:1rem;background:var(--bg-surface);border:1px solid var(--border);color:var(--text-primary);border-radius:8px;"><input type="email" name="email" placeholder="Your email" required style="width:100%;padding:1rem;margin-bottom:1rem;background:var(--bg-surface);border:1px solid var(--border);color:var(--text-primary);border-radius:8px;"><textarea name="message" placeholder="How can we help?" rows="4" required style="width:100%;padding:1rem;margin-bottom:1.5rem;background:var(--bg-surface);border:1px solid var(--border);color:var(--text-primary);border-radius:8px;resize:vertical;"></textarea><button type="submit" class="btn btn-primary" style="width:100%;">Send Message</button></form></div>`
 };
 
@@ -2014,22 +2034,23 @@ document.body.style.overflow = 'hidden';
 
 function handleSignup(form) {
 const email = form.email.value;
-const password = form.password.value;
-// Store in localStorage for demo
-localStorage.setItem('feltshift_user', JSON.stringify({email, created: new Date().toISOString()}));
-modalContent.innerHTML = `<div style="text-align:center;padding:2rem;"><div style="font-size:4rem;margin-bottom:1rem;">✓</div><h3 style="font-family:'Cormorant Garamond',serif;font-size:1.8rem;margin-bottom:1rem;color:var(--green);">Welcome!</h3><p style="color:var(--text-secondary);margin-bottom:1.5rem;">Your account is ready.</p><a href="/app" class="btn btn-primary">Open the App →</a></div>`;
+localStorage.setItem('feltshift_waitlist', JSON.stringify({email, joined: new Date().toISOString()}));
+document.getElementById('modal-content').innerHTML = `<div style="text-align:center;padding:2rem;"><div style="width:64px;height:64px;border:1px solid var(--green);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1.5rem;font-size:1.5rem;color:var(--green);">✓</div><h3 style="font-family:'Cormorant Garamond',serif;font-size:1.8rem;margin-bottom:1rem;color:var(--green);">You're on the list.</h3><p style="color:var(--text-secondary);margin-bottom:1.5rem;">We'll reach out before launch with early access and founding member pricing.</p><p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:1.5rem;">While you wait — get your personalized AI Integration Report today.</p><a href="report.html" class="btn btn-primary" style="text-decoration:none;">Get Your Integration Report — $97</a></div>`;
 }
 
 function handleTrial(form) {
 const email = form.email.value;
-localStorage.setItem('feltshift_trial', JSON.stringify({email, started: new Date().toISOString()}));
-openModal(`<div style="text-align:center;padding:2rem;"><div style="font-size:4rem;margin-bottom:1rem;">🎉</div><h3 style="font-family:'Cormorant Garamond',serif;font-size:1.8rem;margin-bottom:1rem;color:var(--green);">Trial Started!</h3><p style="color:var(--text-secondary);margin-bottom:1.5rem;">Check your email for next steps.</p><button class="btn btn-primary" onclick="closeModal(); window.location.href='/app'">Go to App →</button></div>`);
+localStorage.setItem('feltshift_waitlist', JSON.stringify({email, joined: new Date().toISOString()}));
+document.getElementById('modal-content').innerHTML = `<div style="text-align:center;padding:2rem;"><div style="width:64px;height:64px;border:1px solid var(--green);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1.5rem;font-size:1.5rem;color:var(--green);">✓</div><h3 style="font-family:'Cormorant Garamond',serif;font-size:1.8rem;margin-bottom:1rem;color:var(--green);">Spot reserved.</h3><p style="color:var(--text-secondary);margin-bottom:1.5rem;">You'll hear from us before launch.</p><a href="report.html" class="btn btn-primary" style="text-decoration:none;">Get Your Integration Report — $97</a></div>`;
 }
 
 function handleContact(form) {
-const data = {name: form.name.value, email: form.email.value, message: form.message.value, sent: new Date().toISOString()};
-localStorage.setItem('feltshift_contact_' + Date.now(), JSON.stringify(data));
-openModal(`<div style="text-align:center;padding:2rem;"><div style="font-size:4rem;margin-bottom:1rem;">✓</div><h3 style="font-family:'Cormorant Garamond',serif;font-size:1.8rem;margin-bottom:1rem;color:var(--green);">Message Sent!</h3><p style="color:var(--text-secondary);">We'll respond within 24 hours.</p></div>`);
+const name = form.name.value;
+const email = form.email.value;
+const message = form.message.value;
+const body = 'Name: ' + name + '\nEmail: ' + email + '\n\nMessage:\n' + message;
+window.open('mailto:adrabczak769@gmail.com?subject=Feltshift Contact: ' + encodeURIComponent(name) + '&body=' + encodeURIComponent(body));
+document.getElementById('modal-content').innerHTML = `<div style="text-align:center;padding:2rem;"><div style="width:64px;height:64px;border:1px solid var(--green);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1.5rem;font-size:1.5rem;color:var(--green);">✓</div><h3 style="font-family:'Cormorant Garamond',serif;font-size:1.8rem;margin-bottom:1rem;color:var(--green);">Message sent.</h3><p style="color:var(--text-secondary);">We'll respond within 24 hours.</p></div>`;
 }
 
 function closeModal(e) {
