@@ -868,7 +868,8 @@
             <div class="nav-item" data-tab="mood" data-label="Mood" title="Mood">◊</div>
             <div class="nav-item" data-tab="dose" data-label="Microdose" title="Microdose">✶</div>
             <div class="nav-item" data-tab="timeline" data-label="Timeline" title="Timeline">✧</div>
-        </nav>
+        <div class="nav-item" data-tab="learn" data-label="Learn" title="Learn">✦</div>
+ </nav>
 
         <!-- Main Content -->
         <main class="main">
@@ -1084,11 +1085,135 @@
                     <div id="timeline-list"></div>
                 </div>
             </div>
-        </main>
+        
+ <!-- Learn Tab -->
+ <div id="learn" class="screen">
+ <div class="section-header">
+ <h1>Learn</h1>
+ <p>Substances, supplements, breathwork, and expert guidance.</p>
+ </div>
+
+ <div class="learn-nav">
+ <button class="learn-tab active" data-learn="substances">Substances</button>
+ <button class="learn-tab" data-learn="supplements">Supplements</button>
+ <button class="learn-tab" data-learn="breathwork">Breathwork</button>
+ <button class="learn-tab" data-learn="expert">Ask Expert</button>
+ </div>
+
+ <div id="learn-substances" class="learn-panel active">
+ <div class="substance-card">
+ <div class="sub-header">
+ <span class="sub-icon">🍄</span>
+ <div>
+ <h3>Psilocybin Mushrooms</h3>
+ <p class="sub-aka">Shrooms, caps, magic mushrooms</p>
+ </div>
+ </div>
+ <div class="sub-meta">
+ <span class="sub-cat">Classic Psychedelic</span>
+ <span class="sub-dur">4-6 hours</span>
+ </div>
+ <p class="sub-desc">Psilocybin is a prodrug — your body converts it to psilocin, which binds to 5-HT2A serotonin receptors. This temporarily disrupts the Default Mode Network (DMN), the brain system responsible for your sense of self.</p>
+ <details class="sub-details">
+ <summary>Full Details</summary>
+ <div class="sub-full">
+ <p><strong>Onset:</strong> 20-60 min</p>
+ <p><strong>Peak:</strong> 1.5-2.5 hours</p>
+ <p><strong>Doses:</strong> Micro 0.1-0.3g | Moderate 1.5-2.5g | Heroic 5g+</p>
+ </div>
+ </details>
+ </div>
+
+ <div class="substance-card">
+ <div class="sub-header">
+ <span class="sub-icon">🌿</span>
+ <div>
+ <h3>Ayahuasca</h3>
+ <p class="sub-aka">Daime, yagé</p>
+ </div>
+ </div>
+ <div class="sub-meta">
+ <span class="sub-cat">Entheogenic Brew</span>
+ <span class="sub-dur">4-8 hours</span>
+ </div>
+ <p class="sub-desc">Traditional Amazonian brew combining DMT-containing plants with MAOI-containing plants. Used for thousands of years in ceremonial contexts.</p>
+ </div>
+ </div>
+
+ <div id="learn-supplements" class="learn-panel">
+ <div class="supp-card">
+ <div class="supp-header">
+ <span class="supp-icon">🍄</span>
+ <div>
+ <h3>Lion's Mane</h3>
+ <p class="supp-sub">Hericium erinaceus</p>
+ </div>
+ </div>
+ <p class="supp-why">Stimulates Nerve Growth Factor (NGF) synthesis. Supports neuroplasticity.</p>
+ <p class="supp-dose"><strong>Dose:</strong> 500-3000mg daily</p>
+ </div>
+
+ <div class="supp-card">
+ <div class="supp-header">
+ <span class="supp-icon">🧠</span>
+ <div>
+ <h3>Magnesium L-Threonate</h3>
+ <p class="supp-sub">Magtein</p>
+ </div>
+ </div>
+ <p class="supp-why">The ONLY magnesium form proven to cross the blood-brain barrier. Supports synaptic density.</p>
+ <p class="supp-dose"><strong>Dose:</strong> 1000-2000mg daily</p>
+ </div>
+ </div>
+
+ <div id="learn-breathwork" class="learn-panel">
+ <div class="breath-history-card">
+ <h3>Holotropic Breathwork</h3>
+ <p class="breath-origin">Stanislav & Christina Grof, 1970s</p>
+ <p class="breath-desc">Sustained accelerated breathing (2-3 hours) with evocative music. Developed after LSD was banned.</p>
+ </div>
+
+ <div class="breath-history-card">
+ <h3>Box Breathing</h3>
+ <p class="breath-origin">US Navy SEALs</p>
+ <p class="breath-desc">Equal inhale-hold-exhale-hold (4-4-4-4). Used under stress to activate parasympathetic nervous system.</p>
+ </div>
+ </div>
+
+ <div id="learn-expert" class="learn-panel">
+ <div class="expert-intro">
+ <p>Ask anything about psychedelics, neuroscience, integration, or consciousness.</p>
+ <p class="expert-disclaimer">Not medical advice. Educational purposes only.</p>
+ </div>
+ <div class="expert-chat" id="expert-chat"></div>
+ <div class="expert-input">
+ <textarea id="expert-question" placeholder="What do you want to know?"></textarea>
+ <button id="expert-send" class="btn-primary">Ask</button>
+ </div>
+ </div>
+ </div>
+
+ </main>
     </div>
 
     <script>
-        // ========== STATE ==========
+        
+// ========== LEARN TAB ==========
+const learnTabs = document.querySelectorAll('.learn-tab');
+const learnPanels = document.querySelectorAll('.learn-panel');
+
+learnTabs.forEach(tab => {
+ tab.addEventListener('click', () => {
+ const target = tab.dataset.learn;
+ learnTabs.forEach(t => t.classList.remove('active'));
+ learnPanels.forEach(p => p.classList.remove('active'));
+ tab.classList.add('active');
+ document.getElementById('learn-' + target).classList.add('active');
+ });
+});
+
+// ========== STATE
+ ==========
         const state = {
             tab: 'welcome',
             stage: null,
