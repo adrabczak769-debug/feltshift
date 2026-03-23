@@ -1,938 +1,2005 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
- <meta charset="UTF-8">
- <meta name="viewport" content="width=device-width, initial-scale=1.0">
- <title>Feltshift — Your Brain on Psychedelics</title>
- <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;500&display=swap" rel="stylesheet">
- <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
- <style>
- :root {
- --void: #020302;
- --deep: #0a0f0a;
- --root: #141814;
- --bark: #1a231a;
- --moss: #2d3d2a;
- --fern: #3d5a35;
- --sprout: #6b9e5a;
- --bone: #e8e2d5;
- --clay: #c4b8a5;
- --soil: #8b7d6b;
- --gold: #c9a84c;
- --ember: #8b5a3c;
- --spore: rgba(107, 158, 90, 0.4);
- }
- * { margin: 0; padding: 0; box-sizing: border-box; }
- html { scroll-behavior: smooth; }
- body { font-family: 'DM Sans', sans-serif; background: var(--void); color: var(--bone); line-height: 1.7; overflow-x: hidden; }
- body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.6' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E"); pointer-events: none; z-index: 1000; opacity: 0.5; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Feltshift — Psychedelic Integration Journal & Retreat Directory</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.2/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.2/dist/ScrollTrigger.min.js"></script>
+<style>
+:root {
+--bg-deep: #050705;
+--bg-surface: #0B0E0A;
+--bg-elevated: #10140F;
+--border: #1C231A;
+--border-active: #2A3326;
+--text-primary: #E0DBCC;
+--text-secondary: #AAA598;
+--text-muted: #6E695E;
+--green: #7EA066;
+--green-light: #9CBC80;
+--green-dark: #556E40;
+--amber: #BF9B55;
+--amber-light: #D4B472;
+--amber-dark: #8B7355;
+--rose: #A06060;
+--blue: #608CA0;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+font-family: 'DM Sans', sans-serif;
+background: var(--bg-deep);
+color: var(--text-primary);
+line-height: 1.75;
+font-weight: 300;
+overflow-x: hidden;
+}
 
- /* Navigation */
- .nav { position: fixed; top: 0; left: 0; right: 0; padding: 1.5rem 2.5rem; display: flex; justify-content: space-between; align-items: center; z-index: 100; background: linear-gradient(to bottom, rgba(2,3,2,0.95), transparent); backdrop-filter: blur(10px); }
- .nav-logo { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; letter-spacing: 0.2em; color: var(--bone); text-decoration: none; position: relative; }
- .nav-logo::after { content: ''; position: absolute; bottom: -4px; left: 0; width: 100%; height: 1px; background: var(--sprout); opacity: 0.5; }
- .nav-links { display: flex; gap: 2.5rem; }
- .nav-links a { color: var(--clay); text-decoration: none; font-size: 0.7rem; letter-spacing: 0.15em; text-transform: lowercase; transition: color .3s; position: relative; }
- .nav-links a:hover { color: var(--bone); }
+.nav {
+position: fixed;
+top: 0; left: 0; right: 0;
+padding: 1.5rem 4rem;
+display: flex;
+justify-content: space-between;
+align-items: center;
+z-index: 1000;
+background: linear-gradient(to bottom, rgba(5,7,5,0.98), transparent);
+backdrop-filter: blur(20px);
+transition: all 0.35s cubic-bezier(.22, 1, .36, 1);
+}
+.nav-scrolled { background: rgba(5,7,5,0.95); padding: 1rem 4rem; }
+.nav-logo {
+font-family: 'Cormorant Garamond', serif;
+font-size: 1.4rem;
+letter-spacing: 0.12em;
+color: var(--text-primary);
+text-decoration: none;
+}
+.nav-links { display: flex; gap: 3.5rem; }
+.nav-links a {
+color: var(--text-secondary);
+text-decoration: none;
+font-size: 0.7rem;
+letter-spacing: 0.22em;
+text-transform: uppercase;
+transition: all 0.35s;
+}
+.nav-links a:hover { color: var(--green); }
 
- /* Hero Section */
- .hero { min-height: 100vh; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
- .hero-content { text-align: center; z-index: 10; padding: 2rem; }
- .hero h1 { font-family: 'Cormorant Garamond', serif; font-size: clamp(2.5rem, 6vw, 5rem); font-weight: 300; line-height: 1.1; margin-bottom: 1.5rem; opacity: 0; animation: fadeUp 1.2s ease forwards; }
- .hero-subtitle { font-size: 1.1rem; color: var(--clay); max-width: 550px; margin: 0 auto 2.5rem; line-height: 1.8; opacity: 0; animation: fadeUp 1.2s ease 0.3s forwards; }
- .hero-disclaimer { font-size: 0.65rem; color: var(--soil); letter-spacing: 0.1em; text-transform: uppercase; opacity: 0; animation: fadeUp 1.2s ease 0.6s forwards; }
+.hero {
+min-height: 100vh;
+display: flex;
+align-items: center;
+position: relative;
+overflow: hidden;
+}
+.hero-content {
+position: relative;
+z-index: 10;
+padding: 10rem 6rem;
+width: 50%;
+}
+.hero-label {
+font-size: 0.6rem;
+letter-spacing: 0.35em;
+text-transform: uppercase;
+color: var(--green);
+margin-bottom: 2rem;
+}
+.hero h1 {
+font-family: 'Cormorant Garamond', serif;
+font-size: clamp(2rem, 4vw, 3.2rem);
+font-weight: 300;
+line-height: 1.15;
+margin-bottom: 1.5rem;
+}
+.hero p {
+font-size: 0.95rem;
+color: var(--text-secondary);
+max-width: 460px;
+margin-bottom: 2.5rem;
+line-height: 1.9;
+}
+.hero-btns { display: flex; gap: 1rem; margin-bottom: 1.5rem; }
+.btn {
+padding: 1rem 2.5rem;
+border: none;
+font-family: 'DM Sans', sans-serif;
+font-size: 0.65rem;
+letter-spacing: 0.2em;
+text-transform: uppercase;
+cursor: pointer;
+transition: all 0.35s cubic-bezier(.22, 1, .36, 1);
+font-weight: 400;
+background: transparent;
+border-radius: 100px;
+}
+.btn-primary {
+background: linear-gradient(135deg, var(--green-dark), var(--green));
+color: var(--bg-deep);
+}
+.btn-primary:hover {
+transform: translateY(-2px);
+box-shadow: 0 10px 40px rgba(126, 160, 102, 0.3);
+}
+.btn-secondary {
+border: 1px solid var(--green);
+color: var(--green);
+}
+.btn-secondary:hover { background: rgba(126, 160, 102, 0.1); transform: translateY(-2px); }
+.btn-amber {
+border: 1px solid var(--amber);
+color: var(--amber);
+}
+.btn-amber:hover { background: rgba(191, 155, 85, 0.1); transform: translateY(-2px); }
+.hero-trust {
+font-size: 0.65rem;
+color: var(--text-muted);
+letter-spacing: 0.08em;
+}
 
- /* Canvas Container */
- #mushroom-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
+#hero-canvas {
+position: absolute;
+top: 0; right: 0;
+width: 55%;
+height: 100%;
+}
 
- /* Brain Science Section */
- .science-section { padding: 8rem 2rem; position: relative; }
- .section-header { text-align: center; margin-bottom: 5rem; }
- .section-header h2 { font-family: 'Cormorant Garamond', serif; font-size: clamp(2rem, 4vw, 3rem); font-weight: 300; margin-bottom: 1rem; }
- .section-header p { color: var(--clay); max-width: 600px; margin: 0 auto; font-size: 0.95rem; line-height: 1.8; }
+section { padding: 6rem 4rem; }
+.section-header { max-width: 640px; margin-bottom: 3.5rem; }
+.section-header h2 {
+font-family: 'Cormorant Garamond', serif;
+font-size: clamp(1.6rem, 3.5vw, 2.25rem);
+font-weight: 300;
+margin-bottom: 1rem;
+}
+.section-header p { font-size: 0.95rem; color: var(--text-secondary); line-height: 1.9; }
 
- /* Brain Visualization */
- .brain-visual { display: grid; grid-template-columns: repeat(2, 1fr); gap: 4rem; max-width: 1000px; margin: 0 auto 4rem; }
- @media (max-width: 768px) { .brain-visual { grid-template-columns: 1fr; gap: 2rem; } }
- .brain-state { background: var(--root); border: 1px solid var(--bark); border-radius: 20px; padding: 2rem; position: relative; overflow: hidden; }
- .brain-state h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; margin-bottom: 1rem; color: var(--clay); }
- .brain-state p { font-size: 0.85rem; color: var(--soil); line-height: 1.6; }
- #brain-normal, #brain-psychedelic { width: 100%; height: 250px; }
+/* BRAIN COMPARISON - THE HIGHLIGHT */
+.brain-theater {
+background: var(--bg-surface);
+border: 1px solid var(--border);
+border-radius: 4px;
+margin: 3rem 0;
+position: relative;
+display: grid;
+grid-template-columns: 1fr 1fr;
+height: 550px;
+}
+.brain-stage-label {
+position: absolute;
+top: 1.5rem;
+padding: 0.5rem 1rem;
+font-size: 0.6rem;
+letter-spacing: 0.25em;
+text-transform: uppercase;
+z-index: 10;
+background: rgba(5,7,5,0.8);
+border: 1px solid var(--border);
+}
+.bsl-left { left: 1.5rem; color: var(--text-muted); border-right: 2px solid var(--green); }
+.bsl-right { right: 1.5rem; color: var(--green); border-left: 2px solid var(--green); }
+#brain-canvas-left, #brain-canvas-right { position: relative; overflow: hidden; }
+#brain-canvas-left { border-right: 1px solid var(--border); }
 
- /* Research Stats */
- .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; max-width: 1200px; margin: 0 auto; }
- .stat-card { background: var(--root); border: 1px solid var(--bark); border-radius: 16px; padding: 2rem; transition: all 0.35s ease; }
- .stat-card:hover { transform: translateY(-4px); border-color: var(--fern); box-shadow: 0 0 40px rgba(107, 158, 90, 0.1); }
- .stat-number { font-family: 'Cormorant Garamond', serif; font-size: 3.5rem; font-weight: 300; color: var(--sprout); line-height: 1; }
- .stat-number::after { content: '%'; font-size: 1.5rem; }
- .stat-number.months::after { content: ' months'; font-size: 1rem; color: var(--clay); }
- .stat-desc { font-size: 0.9rem; color: var(--clay); margin-top: 0.75rem; line-height: 1.6; }
- .stat-source { font-size: 0.7rem; color: var(--soil); margin-top: 1rem; font-style: italic; }
+.brain-explanation {
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 3rem;
+margin-top: 2rem;
+}
+.brain-state-title {
+font-family: 'Cormorant Garamond', serif;
+font-size: 1.1rem;
+margin-bottom: 1rem;
+padding-bottom: 0.75rem;
+border-bottom: 1px solid var(--border);
+}
+.bs-baseline { color: var(--text-muted); }
+.bs-enhanced { color: var(--green); }
+.brain-state-desc { font-size: 0.85rem; color: var(--text-secondary); line-height: 2; }
+.brain-state-desc strong { color: var(--text-primary); font-weight: 400; }
 
- /* Retreat Directory */
- .retreats-section { padding: 6rem 2rem; }
- .filter-bar { display: flex; gap: 1rem; flex-wrap: wrap; max-width: 1200px; margin: 0 auto 3rem; padding: 1.5rem; background: var(--root); border: 1px solid var(--bark); border-radius: 50px; backdrop-filter: blur(10px); }
- .filter-select { flex: 1; min-width: 150px; padding: 0.75rem 1rem; background: var(--void); border: 1px solid var(--bark); border-radius: 25px; color: var(--bone); font-family: 'DM Sans', sans-serif; font-size: 0.85rem; cursor: pointer; transition: all 0.3s; }
- .filter-select:focus { outline: none; border-color: var(--fern); }
+/* STATS */
+.stats-grid {
+display: grid;
+grid-template-columns: repeat(4, 1fr);
+gap: 1px;
+background: var(--border);
+margin-top: 4rem;
+}
+.stat-item { background: var(--bg-surface); padding: 2rem; text-align: center; }
+.stat-number {
+font-family: 'Cormorant Garamond', serif;
+font-size: 3rem;
+color: var(--green);
+margin-bottom: 0.5rem;
+}
+.stat-label {
+font-size: 0.6rem;
+letter-spacing: 0.15em;
+text-transform: uppercase;
+color: var(--text-secondary);
+}
+.stat-source { font-size: 0.55rem; color: var(--text-muted); font-style: italic; }
 
- /* Retreat Cards */
- .retreats-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 1.5rem; max-width: 1400px; margin: 0 auto; }
- .retreat-card { background: var(--root); border: 1px solid var(--bark); border-radius: 20px; overflow: hidden; transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1); cursor: pointer; }
- .retreat-card:hover { transform: translateY(-8px); border-color: var(--fern); box-shadow: 0 20px 60px rgba(0,0,0,0.4), 0 0 40px rgba(107, 158, 90, 0.15); }
- .retreat-image { height: 180px; background: linear-gradient(135deg, var(--moss), var(--fern)); position: relative; }
- .retreat-verified { position: absolute; top: 1rem; left: 1rem; background: rgba(107, 158, 90, 0.2); backdrop-filter: blur(10px); border: 1px solid var(--fern); color: var(--sprout); padding: 0.4rem 0.8rem; border-radius: 20px; font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase; }
- .retreat-content { padding: 1.5rem; }
- .retreat-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.75rem; }
- .retreat-name { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; font-weight: 500; }
- .retreat-meta { font-size: 0.8rem; color: var(--soil); }
- .retreat-price { font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; color: var(--gold); margin-top: 1rem; }
- .retreat-price span { font-size: 0.75rem; color: var(--clay); }
- .retreat-tags { display: flex; gap: 0.5rem; margin-top: 1rem; flex-wrap: wrap; }
- .retreat-tag { background: var(--deep); border: 1px solid var(--bark); padding: 0.35rem 0.7rem; border-radius: 15px; font-size: 0.7rem; color: var(--clay); }
- .retreat-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-top: 1.25rem; }
- .btn-primary { padding: 0.85rem 1.5rem; background: linear-gradient(135deg, var(--fern), var(--sprout)); border: none; border-radius: 25px; color: var(--void); font-family: 'DM Sans', sans-serif; font-size: 0.75rem; font-weight: 500; letter-spacing: 0.05em; cursor: pointer; transition: all 0.3s ease; }
- .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 4px 20px rgba(107, 158, 90, 0.3); }
- .btn-secondary { padding: 0.85rem 1.5rem; background: transparent; border: 1px solid var(--bark); border-radius: 25px; color: var(--clay); font-family: 'DM Sans', sans-serif; font-size: 0.75rem; cursor: pointer; transition: all 0.3s ease; }
- .btn-secondary:hover { border-color: var(--clay); color: var(--bone); }
+/* CLINICAL GRID */
+.clinical-grid {
+display: grid;
+grid-template-columns: repeat(3, 1fr);
+gap: 1px;
+background: var(--border);
+margin-top: 3rem;
+}
+.clinical-card { background: var(--bg-surface); padding: 2rem; position: relative; }
+.clinical-card:hover { background: var(--bg-elevated); }
+.clinical-stat {
+font-family: 'Cormorant Garamond', serif;
+font-size: 2.5rem;
+color: var(--amber);
+margin-bottom: 1rem;
+}
+.clinical-text { font-size: 0.8rem; color: var(--text-secondary); line-height: 1.9; margin-bottom: 3rem; }
+.clinical-cite {
+position: absolute;
+bottom: 1.25rem;
+left: 2rem;
+right: 2rem;
+font-size: 0.6rem;
+color: var(--text-muted);
+font-style: italic;
+border-top: 1px solid var(--border);
+padding-top: 0.75rem;
+}
 
- /* Booking Modal */
- .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(20px); z-index: 1000; display: none; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s; }
- .modal-overlay.active { display: flex; opacity: 1; }
- .modal { background: var(--deep); border: 1px solid var(--bark); border-radius: 24px; max-width: 600px; width: 90%; max-height: 90vh; overflow-y: auto; transform: scale(0.95); transition: transform 0.3s; }
- .modal-overlay.active .modal { transform: scale(1); }
- .modal-header { padding: 2rem; border-bottom: 1px solid var(--bark); }
- .modal-header h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; }
- .modal-body { padding: 2rem; }
- .form-group { margin-bottom: 1.5rem; }
- .form-label { display: block; font-size: 0.75rem; color: var(--clay); margin-bottom: 0.5rem; letter-spacing: 0.05em; text-transform: uppercase; }
- .form-input { width: 100%; padding: 1rem; background: var(--void); border: 1px solid var(--bark); border-radius: 12px; color: var(--bone); font-family: 'DM Sans', sans-serif; font-size: 0.9rem; transition: all 0.3s; }
- .form-input:focus { outline: none; border-color: var(--fern); }
- .form-select { width: 100%; padding: 1rem; background: var(--void); border: 1px solid var(--bark); border-radius: 12px; color: var(--bone); font-family: 'DM Sans', sans-serif; font-size: 0.9rem; cursor: pointer; }
- .checkbox-group { display: flex; flex-direction: column; gap: 0.75rem; }
- .checkbox-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem; background: var(--void); border: 1px solid var(--bark); border-radius: 10px; cursor: pointer; transition: all 0.3s; }
- .checkbox-item:hover { border-color: var(--fern); }
- .checkbox-item input { width: 18px; height: 18px; accent-color: var(--sprout); }
- .checkbox-item label { font-size: 0.85rem; color: var(--clay); cursor: pointer; }
- .screening-warning { background: rgba(139, 90, 60, 0.1); border: 1px solid var(--ember); border-radius: 12px; padding: 1.25rem; margin-top: 1.5rem; display: none; }
- .screening-warning.active { display: block; animation: shake 0.5s ease; }
- .screening-warning p { font-size: 0.85rem; color: var(--ember); }
+/* FIGURES */
+.figures-scroll {
+display: flex;
+gap: 1.25rem;
+overflow-x: auto;
+padding: 1rem 0 2rem;
+scrollbar-width: none;
+}
+.figures-scroll::-webkit-scrollbar { display: none; }
+.figure-card {
+flex: 0 0 300px;
+background: var(--bg-surface);
+border: 1px solid var(--border);
+padding: 1.5rem;
+cursor: pointer;
+transition: all 0.35s;
+}
+.figure-card:hover { border-color: var(--amber); }
+.figure-initials {
+font-family: 'Cormorant Garamond', serif;
+font-size: 2rem;
+color: var(--amber);
+margin-bottom: 0.75rem;
+}
+.figure-name { font-size: 0.8rem; color: var(--text-primary); margin-bottom: 0.15rem; }
+.figure-title { font-size: 0.6rem; color: var(--amber); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 1rem; }
+.figure-card p { font-size: 0.75rem; color: var(--text-secondary); line-height: 1.9; }
+.figures-disclaimer {
+margin-top: 2rem;
+padding: 1.5rem;
+background: var(--bg-deep);
+border: 1px solid var(--border);
+text-align: center;
+}
+.figures-disclaimer p { font-size: 0.75rem; color: var(--text-muted); line-height: 1.8; }
 
- /* Animations */
- @keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
- @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
- @keyframes draw { to { stroke-dashoffset: 0; } }
+/* BENEFITS */
+.benefits-triptych {
+display: grid;
+grid-template-columns: repeat(3, 1fr);
+gap: 2px;
+background: var(--border);
+margin-top: 3rem;
+}
+.benefits-col { background: var(--bg-surface); padding: 2rem; }
+.benefits-col-head {
+display: flex;
+align-items: center;
+gap: 1rem;
+margin-bottom: 1.5rem;
+padding-bottom: 1rem;
+border-bottom: 1px solid var(--border);
+}
+.benefits-indicator {
+width: 8px;
+height: 8px;
+border-radius: 50%;
+background: var(--green);
+}
+.benefits-col-head h3 { font-family: 'Cormorant Garamond', serif; font-size: 1rem; font-weight: 400; }
+.benefit-block { margin-bottom: 1.5rem; }
+.benefit-block h4 { font-size: 0.75rem; color: var(--text-primary); margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.1em; }
+.benefit-block p { font-size: 0.75rem; color: var(--text-secondary); line-height: 1.95; }
 
- /* Footer */
- footer { padding: 4rem 2rem; text-align: center; background: var(--void); border-top: 1px solid var(--root); }
- .footer-crisis { margin-bottom: 2rem; padding: 1.5rem; background: var(--deep); border: 1px solid var(--ember); border-radius: 16px; }
- .footer-crisis span { display: block; font-size: 0.8rem; color: var(--ember); margin-bottom: 0.5rem; }
- .footer-crisis strong { font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; color: var(--ember); }
- .footer-links { display: flex; justify-content: center; gap: 2rem; margin-top: 2rem; }
- .footer-links a { color: var(--soil); text-decoration: none; font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; transition: color 0.3s; }
- .footer-links a:hover { color: var(--clay); }
- </style>
+/* RETREATS WITH BOOKING */
+.retreat-filters {
+display: flex;
+gap: 1rem;
+margin-bottom: 2rem;
+flex-wrap: wrap;
+}
+.filter-dropdown {
+padding: 0.75rem 1.25rem;
+background: var(--bg-surface);
+border: 1px solid var(--border);
+color: var(--text-secondary);
+font-size: 0.7rem;
+font-family: 'DM Sans', sans-serif;
+cursor: pointer;
+min-width: 160px;
+}
+.retreat-list { display: flex; flex-direction: column; gap: 1px; background: var(--border); }
+.retreat-item {
+display: grid;
+grid-template-columns: 100px 1fr auto;
+gap: 2rem;
+padding: 1.75rem;
+background: var(--bg-surface);
+align-items: center;
+transition: all 0.35s;
+}
+.retreat-item:hover { background: var(--bg-elevated); cursor: pointer; }
+.retreat-img {
+width: 100px;
+height: 80px;
+background: var(--bg-elevated);
+display: flex;
+align-items: center;
+justify-content: center;
+font-family: 'Cormorant Garamond', serif;
+font-size: 1.8rem;
+color: var(--amber-dark);
+}
+.retreat-meta-row { display: flex; gap: 0.5rem; margin-bottom: 0.5rem; }
+.tag {
+font-size: 0.55rem;
+letter-spacing: 0.15em;
+text-transform: uppercase;
+padding: 0.35rem 0.6rem;
+}
+.tag-verified { background: rgba(126, 160, 102, 0.15); color: var(--green); border: 1px solid rgba(126, 160, 102, 0.3); }
+.tag-type { background: var(--bg-elevated); color: var(--text-muted); border: 1px solid var(--border); }
+.retreat-item h4 { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; font-weight: 400; margin-bottom: 0.25rem; }
+.retreat-location { font-size: 0.7rem; color: var(--text-muted); margin-bottom: 0.75rem; }
+.retreat-item p { font-size: 0.75rem; color: var(--text-secondary); line-height: 1.8; max-width: 400px; }
+.retreat-price { text-align: right; }
+.retreat-price .amount { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; color: var(--amber); }
+.retreat-price .note { font-size: 0.6rem; color: var(--text-muted); }
+
+/* BOOKING MODAL - COMPLETE FLOW */
+.booking-steps { display: flex; margin-bottom: 2rem; }
+.booking-step { flex: 1; padding: 0.75rem; text-align: center; font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); border-bottom: 2px solid var(--border); }
+.booking-step.active { color: var(--green); border-bottom-color: var(--green); }
+.form-group { margin-bottom: 1.25rem; }
+.form-group label {
+display: block;
+font-size: 0.55rem;
+letter-spacing: 0.15em;
+text-transform: uppercase;
+color: var(--text-secondary);
+margin-bottom: 0.5rem;
+}
+.required::after { content: ' *'; color: var(--rose); }
+.form-group input,
+.form-group textarea,
+.form-group select {
+width: 100%;
+padding: 0.9rem 1rem;
+background: var(--bg-elevated);
+border: 1px solid var(--border);
+color: var(--text-primary);
+font-family: 'DM Sans', sans-serif;
+font-size: 0.85rem;
+}
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+outline: none;
+border-color: var(--green);
+}
+.radio-group { display: flex; flex-direction: column; gap: 0.75rem; }
+.radio-option {
+display: flex;
+align-items: center;
+gap: 0.75rem;
+padding: 1rem;
+background: var(--bg-elevated);
+border: 1px solid var(--border);
+cursor: pointer;
+transition: all 0.35s;
+}
+.radio-option:hover { border-color: var(--green); }
+.radio-option.selected {
+border-color: var(--green);
+background: rgba(126, 160, 102, 0.1);
+}
+.radio-option input { margin: 0; accent-color: var(--green); }
+.radio-option label { cursor: pointer; }
+.radio-label { font-size: 0.75rem; color: var(--text-primary); display: block; margin: 0; }
+.radio-sublabel { font-size: 0.65rem; color: var(--text-muted); display: block; margin-top: 0.25rem; }
+
+/* MEDICAL SCREENING */
+.screening-question {
+display: flex;
+justify-content: space-between;
+align-items: center;
+padding: 1rem 0;
+border-bottom: 1px solid var(--border);
+}
+.screening-text { flex: 1; }
+.screening-question p { font-size: 0.8rem; color: var(--text-primary); margin-bottom: 0.25rem; }
+.screening-question small { font-size: 0.65rem; color: var(--text-muted); }
+.toggle-switch {
+width: 50px;
+height: 26px;
+background: var(--border);
+border-radius: 13px;
+position: relative;
+cursor: pointer;
+transition: background 0.3s;
+}
+.toggle-switch::after {
+content: '';
+position: absolute;
+width: 22px;
+height: 22px;
+border-radius: 50%;
+background: var(--text-primary);
+top: 2px;
+left: 2px;
+transition: transform 0.3s;
+}
+.toggle-switch.yes { background: var(--green); }
+.toggle-switch.yes::after { transform: translateX(24px); }
+.toggle-switch.alert { background: var(--rose); }
+.warning-box {
+background: rgba(160, 96, 96, 0.1);
+border: 1px solid rgba(160, 96, 96, 0.3);
+padding: 1rem;
+margin-top: 1rem;
+display: none;
+}
+.warning-box.visible { display: block; }
+.warning-box p { font-size: 0.75rem; color: var(--rose); margin: 0; }
+
+/* PRICING */
+.pricing-grid {
+display: grid;
+grid-template-columns: repeat(3, 1fr);
+gap: 1px;
+background: var(--border);
+}
+.pricing-card {
+background: var(--bg-surface);
+padding: 2.5rem;
+position: relative;
+transition: all 0.35s;
+}
+.pricing-card.featured {
+background: var(--bg-elevated);
+border: 1px solid var(--green);
+box-shadow: 0 0 60px rgba(126, 160, 102, 0.1);
+}
+.pricing-card h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; font-weight: 400; margin-bottom: 0.5rem; }
+.pricing-badge {
+position: absolute;
+top: -1px;
+right: 1.5rem;
+background: var(--green);
+color: var(--bg-deep);
+font-size: 0.55rem;
+letter-spacing: 0.15em;
+text-transform: uppercase;
+padding: 0.35rem 0.75rem;
+}
+.pricing-price {
+font-family: 'Cormorant Garamond', serif;
+font-size: 2.5rem;
+color: var(--amber);
+margin: 1.5rem 0;
+}
+.pricing-price span { font-size: 0.85rem; color: var(--text-secondary); }
+.pricing-desc { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 1.5rem; }
+.pricing-features { list-style: none; margin: 1.5rem 0; }
+.pricing-features li {
+padding: 0.6rem 0;
+font-size: 0.75rem;
+color: var(--text-secondary);
+border-bottom: 1px solid var(--border);
+}
+
+/* AI CHAT BOT - FIXED BOTTOM RIGHT */
+.ai-chat-widget {
+position: fixed;
+bottom: 2rem;
+right: 2rem;
+z-index: 9999;
+}
+.ai-chat-toggle {
+width: 60px;
+height: 60px;
+border-radius: 50%;
+background: linear-gradient(135deg, var(--green-dark), var(--green));
+border: none;
+cursor: pointer;
+display: flex;
+align-items: center;
+justify-content: center;
+box-shadow: 0 10px 40px rgba(126, 160, 102, 0.4);
+transition: transform 0.35s;
+}
+.ai-chat-toggle:hover { transform: scale(1.1); }
+.ai-chat-toggle span {
+color: var(--bg-deep);
+font-family: 'Cormorant Garamond', serif;
+font-size: 1.5rem;
+font-weight: 500;
+}
+.ai-chat-window {
+position: absolute;
+bottom: 70px;
+right: 0;
+width: 380px;
+height: 520px;
+background: var(--bg-surface);
+border: 1px solid var(--border);
+border-radius: 12px;
+display: none;
+flex-direction: column;
+overflow: hidden;
+box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+}
+.ai-chat-window.open { display: flex; }
+.ai-chat-header {
+padding: 1rem 1.25rem;
+background: var(--bg-elevated);
+border-bottom: 1px solid var(--border);
+display: flex;
+justify-content: space-between;
+align-items: center;
+}
+.ai-chat-header h4 {
+font-family: 'Cormorant Garamond', serif;
+font-size: 0.95rem;
+font-weight: 400;
+margin: 0;
+}
+.ai-chat-close {
+background: none;
+border: none;
+color: var(--text-muted);
+cursor: pointer;
+font-size: 1.2rem;
+}
+.ai-chat-messages {
+flex: 1;
+overflow-y: auto;
+padding: 1rem;
+display: flex;
+flex-direction: column;
+gap: 1rem;
+}
+.ai-chat-message {
+max-width: 85%;
+padding: 0.75rem 1rem;
+font-size: 0.8rem;
+line-height: 1.7;
+}
+.ai-message {
+background: var(--bg-elevated);
+border-left: 2px solid var(--green);
+align-self: flex-start;
+color: var(--text-secondary);
+}
+.user-message {
+background: rgba(126, 160, 102, 0.1);
+border-right: 2px solid var(--green);
+align-self: flex-end;
+color: var(--text-primary);
+text-align: right;
+}
+.ai-typing-dots { display: inline-flex; gap: 0.25rem; padding: 0.5rem 1rem; }
+.ai-typing-dots span {
+width: 6px;
+height: 6px;
+background: var(--green);
+border-radius: 50%;
+animation: dotPulse 1.4s infinite;
+}
+.ai-typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+.ai-typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes dotPulse { 0%, 60%, 100% { transform: scale(0.8); opacity: 0.5; } 30% { transform: scale(1.2); opacity: 1; } }
+.ai-chat-input {
+padding: 1rem;
+border-top: 1px solid var(--border);
+display: flex;
+gap: 0.75rem;
+}
+.ai-chat-input input {
+flex: 1;
+padding: 0.75rem;
+background: var(--bg-elevated);
+border: 1px solid var(--border);
+color: var(--text-primary);
+font-family: 'DM Sans', sans-serif;
+font-size: 0.85rem;
+}
+.ai-chat-input input:focus { outline: none; border-color: var(--green); }
+.ai-chat-send {
+padding: 0.75rem 1rem;
+background: var(--green);
+border: none;
+color: var(--bg-deep);
+font-size: 0.65rem;
+letter-spacing: 0.1em;
+text-transform: uppercase;
+cursor: pointer;
+}
+
+/* TOOLS SECTION - FUNCTIONAL */
+.tools-tabs {
+display: flex;
+gap: 1px;
+background: var(--border);
+margin-bottom: 2rem;
+}
+.tool-tab {
+flex: 1;
+padding: 1rem;
+background: var(--bg-elevated);
+border: none;
+color: var(--text-secondary);
+font-size: 0.65rem;
+letter-spacing: 0.15em;
+text-transform: uppercase;
+cursor: pointer;
+transition: all 0.35s;
+}
+.tool-tab.active {
+color: var(--green);
+background: var(--bg-surface);
+border-bottom: 1px solid var(--green);
+}
+.tool-content { display: none; }
+.tool-content.active { display: block; }
+
+/* BREATHWORK VISUALIZER */
+.breath-viz {
+position: relative;
+height: 300px;
+display: flex;
+align-items: center;
+justify-content: center;
+}
+.breath-circle {
+width: 180px;
+height: 180px;
+border: 2px solid var(--green);
+border-radius: 50%;
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+cursor: pointer;
+transition: all 4s ease-in-out;
+}
+.breath-circle.inhaling { transform: scale(1.4); box-shadow: 0 0 80px rgba(126, 160, 102, 0.3); }
+.breath-circle.holding { transform: scale(1.4); box-shadow: 0 0 80px rgba(126, 160, 102, 0.3); }
+.breath-circle.exhaling { transform: scale(1); box-shadow: 0 0 0 rgba(126, 160, 102, 0); }
+.breath-circle span { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; color: var(--green); }
+.breath-circle small { font-size: 0.6rem; color: var(--text-muted); margin-top: 0.5rem; }
+
+/* MOOD TRACKER */
+.mood-grid {
+display: grid;
+grid-template-columns: repeat(3, 1fr);
+gap: 1.5rem;
+}
+.mood-card {
+background: var(--bg-elevated);
+padding: 1.5rem;
+border: 1px solid var(--border);
+}
+.mood-card label {
+display: block;
+font-size: 0.65rem;
+letter-spacing: 0.1em;
+text-transform: uppercase;
+color: var(--text-secondary);
+margin-bottom: 1rem;
+}
+.mood-value {
+font-family: 'Cormorant Garamond', serif;
+font-size: 3rem;
+color: var(--amber);
+text-align: center;
+margin-bottom: 1rem;
+}
+.mood-slider {
+width: 100%;
+height: 4px;
+background: var(--border);
+appearance: none;
+}
+.mood-slider::-webkit-slider-thumb {
+appearance: none;
+width: 20px;
+height: 20px;
+border-radius: 50%;
+background: var(--green);
+cursor: pointer;
+}
+
+/* PROTOCOL CALENDAR */
+.protocol-calendar {
+display: grid;
+grid-template-columns: repeat(14, 1fr);
+gap: 4px;
+margin-top: 2rem;
+}
+.protocol-day {
+aspect-ratio: 1;
+background: var(--bg-elevated);
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 0.65rem;
+color: var(--text-muted);
+cursor: pointer;
+transition: all 0.35s;
+}
+.protocol-day:hover { background: var(--border); }
+.protocol-day.on { background: var(--green); color: var(--bg-deep); }
+.protocol-day.today { border: 2px solid var(--amber); }
+.protocol-selector {
+display: flex;
+gap: 1rem;
+margin-bottom: 2rem;
+}
+.protocol-option {
+padding: 0.75rem 1.5rem;
+background: var(--bg-elevated);
+border: 1px solid var(--border);
+color: var(--text-secondary);
+font-size: 0.7rem;
+cursor: pointer;
+transition: all 0.35s;
+}
+.protocol-option.active {
+border-color: var(--green);
+color: var(--green);
+}
+
+/* FOOTER */
+.footer {
+background: var(--bg-surface);
+border-top: 1px solid var(--border);
+padding: 4rem;
+}
+.crisis-banner {
+background: rgba(160, 96, 96, 0.1);
+border: 1px solid rgba(160, 96, 96, 0.3);
+padding: 1rem 1.5rem;
+text-align: center;
+margin-bottom: 3rem;
+}
+.crisis-banner p { font-size: 0.75rem; color: var(--rose); margin: 0; }
+.footer-bottom {
+display: flex;
+justify-content: space-between;
+align-items: center;
+margin-top: 3rem;
+padding-top: 2rem;
+border-top: 1px solid var(--border);
+}
+.footer-bottom p { font-size: 0.65rem; color: var(--text-muted); margin: 0; }
+
+/* MODAL */
+.modal-overlay {
+position: fixed;
+inset: 0;
+background: rgba(5,7,5,0.97);
+backdrop-filter: blur(25px);
+z-index: 10000;
+display: none;
+opacity: 0;
+transition: opacity 0.4s;
+}
+.modal-overlay.active { display: flex; opacity: 1; }
+.modal {
+width: 90%;
+max-width: 600px;
+max-height: 90vh;
+overflow-y: auto;
+background: var(--bg-surface);
+border: 1px solid var(--border);
+padding: 2.5rem;
+margin: auto;
+position: relative;
+}
+.modal-close {
+position: absolute;
+top: 1rem;
+right: 1rem;
+width: 36px;
+height: 36px;
+background: transparent;
+border: 1px solid var(--border);
+color: var(--text-muted);
+cursor: pointer;
+font-size: 1.5rem;
+line-height: 1;
+}
+.modal-close:hover { border-color: var(--green); color: var(--green); }
+.modal h2 {
+font-family: 'Cormorant Garamond', serif;
+font-size: 1.6rem;
+font-weight: 300;
+margin-bottom: 1.5rem;
+}
+.modal h3 {
+font-family: 'Cormorant Garamond', serif;
+font-size: 1.2rem;
+font-weight: 400;
+margin-bottom: 1rem;
+}
+.modal p { font-size: 0.85rem; color: var(--text-secondary); line-height: 1.9; margin-bottom: 1.5rem; }
+
+.bg-surface { background: var(--bg-surface); }
+.text-center { text-align: center; }
+
+@media (max-width: 768px) {
+.nav { padding: 1rem 1.5rem; }
+.hero { flex-direction: column; }
+.hero-content { width: 100%; padding: 8rem 1.5rem 4rem; }
+#hero-canvas { display: none; }
+.brain-theater { grid-template-columns: 1fr; height: auto; }
+#brain-canvas-left { border-right: none; border-bottom: 1px solid var(--border); height: 350px; }
+#brain-canvas-right { height: 350px; }
+.brain-explanation { grid-template-columns: 1fr; }
+.stats-grid { grid-template-columns: repeat(2, 1fr); }
+.retreat-item { grid-template-columns: 1fr; }
+.retreat-img { width: 100%; height: 120px; }
+.pricing-grid { grid-template-columns: 1fr; }
+.ai-chat-window { width: calc(100vw - 2rem); right: -1rem; }
+}
+</style>
 </head>
 <body>
- <nav class="nav">
- <a href="#" class="nav-logo">FELTSHIFT</a>
- <div class="nav-links">
- <a href="#science">Science</a>
- <a href="#retreats">Find Retreats</a>
- <a href="#app">Start Journaling</a>
- <a href="#pricing">Pricing</a>
- </div>
- </nav>
-
- <section class="hero">
- <canvas id="mushroom-canvas"></canvas>
- <div class="hero-content">
- <h1>Your Brain on Psychedelics</h1>
- <p class="hero-subtitle">This is what happens inside your head. Not metaphor. Not philosophy. Measurable, observable changes in brain structure and function — documented by the world's leading neuroscience labs.</p>
- <p class="hero-disclaimer">Educational content. Not medical advice.</p>
- </div>
- </section>
-
- <section id="science" class="science-section">
- <div class="section-header">
- <h2>This is what happens inside your head.</h2>
- <p>Not metaphor. Not philosophy. Measurable, observable changes in brain structure and function — documented by the world's leading neuroscience labs.</p>
- </div>
-
- <div class="brain-visual">
- <div class="brain-state">
- <h3>Normal State</h3>
- <p>Default Mode Network active — same neural pathways, same thought patterns, same sense of self</p>
- <svg id="brain-normal" viewBox="0 0 300 250">
- <ellipse cx="150" cy="125" rx="120" ry="100" fill="none" stroke="#2d3d2a" stroke-width="2"/>
- <circle cx="150" cy="125" r="30" fill="none" stroke="#3d5a35" stroke-width="2"/>
- <path d="M150 95 L150 155 M120 125 L180 125" stroke="#2d3d2a" stroke-width="2"/>
- </svg>
- </div>
- <div class="brain-state">
- <h3>Psychedelic State</h3>
- <p>DMN temporarily quieted — new connections form between brain regions that rarely communicate. This is neuroplasticity in real time.</p>
- <svg id="brain-psychedelic" viewBox="0 0 300 250">
- <defs>
- <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
- <stop offset="0%" style="stop-color:#6b9e5a;stop-opacity:1" />
- <stop offset="100%" style="stop-color:#c9a84c;stop-opacity:1" />
- </linearGradient>
- </defs>
- <ellipse cx="150" cy="125" rx="120" ry="100" fill="none" stroke="#2d3d2a" stroke-width="2"/>
- <g class="brain-connections">
- <line x1="150" y1="25" x2="150" y2="225" stroke="url(#grad1)" stroke-width="1" opacity="0.6"/>
- <line x1="30" y1="125" x2="270" y2="125" stroke="url(#grad1)" stroke-width="1" opacity="0.6"/>
- <line x1="60" y1="50" x2="240" y2="200" stroke="#6b9e5a" stroke-width="0.8" opacity="0.5"/>
- <line x1="240" y1="50" x2="60" y2="200" stroke="#c9a84c" stroke-width="0.8" opacity="0.5"/>
- <line x1="90" y1="35" x2="210" y2="215" stroke="#6b9e5a" stroke-width="0.5" opacity="0.4"/>
- <line x1="210" y1="35" x2="90" y2="215" stroke="#c9a84c" stroke-width="0.5" opacity="0.4"/>
- <line x1="150" y1="50" x2="200" y2="180" stroke="#6b9e5a" stroke-width="0.6" opacity="0.5"/>
- <line x1="150" y1="50" x2="100" y2="180" stroke="#c9a84c" stroke-width="0.6" opacity="0.5"/>
- </g>
- </svg>
- </div>
- </div>
-
- <div class="stats-grid">
- <div class="stat-card">
- <div class="stat-number" data-target="54">0</div>
- <p class="stat-desc">Complete remission from major depression after just 2 psilocybin sessions. Not 'improvement' — complete remission.</p>
- <p class="stat-source">Johns Hopkins University, JAMA Psychiatry, 2021</p>
- </div>
- <div class="stat-card">
- <div class="stat-number" data-target="71">0</div>
- <p class="stat-desc">Severe PTSD patients no longer met diagnostic criteria after 3 MDMA-assisted therapy sessions. Average 14 years treatment-resistant.</p>
- <p class="stat-source">MAPS Phase 3 Clinical Trial, 2023</p>
- </div>
- <div class="stat-card">
- <div class="stat-number" data-target="80">0</div>
- <p class="stat-desc">Cancer patients experienced significantly reduced anxiety and depression 6+ months after a single psilocybin session.</p>
- <p class="stat-source">Griffiths et al, Johns Hopkins, 2016</p>
- </div>
- <div class="stat-card">
- <div class="stat-number" data-target="80">0</div>
- <p class="stat-desc">Smoking cessation success rate at 6 months. Compare to 35% for the best available pharmaceutical.</p>
- <p class="stat-source">Johnson et al, Johns Hopkins, 2014</p>
- </div>
- <div class="stat-card">
- <div class="stat-number" data-target="67">0</div>
- <p class="stat-desc">Of healthy volunteers rated a single psilocybin experience among the top 5 most meaningful experiences of their entire lives.</p>
- <p class="stat-source">Griffiths, Johns Hopkins, 2006</p>
- </div>
- <div class="stat-card">
- <div class="stat-number months" data-target="12">0</div>
- <p class="stat-desc">Duration of antidepressant effects from just 2 psilocybin sessions without additional treatment.</p>
- <p class="stat-source">Journal of Psychopharmacology, 2022</p>
- </div>
- </div>
- </section>
-
- <section id="proof" class="science-section">
- <div class="section-header">
- <h2>What the research documents.</h2>
- <p>Peer-reviewed findings from accredited research institutions on how consciousness practices affect brain structure and function.</p>
- </div>
-
- <div class="stats-grid">
- <div class="stat-card">
- <div class="stat-number" data-target="54">0</div>
- <p class="stat-desc">Participants in a Johns Hopkins clinical trial experienced complete remission from major depressive disorder following two supervised psilocybin-assisted therapy sessions.</p>
- <p class="stat-source">Davis et al, JAMA Psychiatry, 2021 — Johns Hopkins University</p>
- </div>
- <div class="stat-card">
- <div class="stat-number" data-target="71">0</div>
- <p class="stat-desc">Severe PTSD patients no longer met diagnostic criteria after 3 MDMA-assisted sessions. Average 14 years treatment-resistant.</p>
- <p class="stat-source">Mitchell et al, Nature Medicine, 2021 — Phase 3 Trial</p>
- </div>
- <div class="stat-card">
- <div class="stat-number" data-target="80">0</div>
- <p class="stat-desc">Cancer patients showed significant reductions in existential anxiety 6+ months after a single supervised session.</p>
- <p class="stat-source">Griffiths et al, Journal of Psychopharmacology, 2016</p>
- </div>
- <div class="stat-card">
- <div class="stat-number" data-target="67">0</div>
- <p class="stat-desc">Rated their supervised experience among the five most meaningful experiences of their entire lives.</p>
- <p class="stat-source">Griffiths et al, Psychopharmacology, 2006 — Landmark Study</p>
- </div>
- <div class="stat-card">
- <div class="stat-number months" data-target="12">0</div>
- <p class="stat-desc">Duration of sustained improvement in depression symptoms after treatment, without additional medication.</p>
- <p class="stat-source">Gukasyan et al, Journal of Psychopharmacology, 2022</p>
- </div>
- <div class="stat-card">
- <div class="stat-number" data-target="80">0</div>
- <p class="stat-desc">Smoking cessation success rate at 6 months with psilocybin-assisted therapy vs 35% for pharmaceuticals.</p>
- <p class="stat-source">Johnson et al, Journal of Psychopharmacology, 2014</p>
- </div>
- </div>
-
- <div class="institutions">
- Research institutions: Johns Hopkins · Imperial College London · NYU Langone · MAPS · UCSF · Yale · Usona Institute · COMPASS Pathways
- </div>
- </section>
-
- <section id="voices" class="science-section">
- <div class="section-header">
- <h2>The conversation is changing.</h2>
- <p>Athletes, entrepreneurs, and public figures are speaking openly about consciousness practices. These are their publicly shared perspectives.</p>
- </div>
-
- <div class="carousel-container" style="overflow: hidden; margin: 3rem auto; max-width: 1400px;">
- <div id="carousel-track" style="display: flex; gap: 1.5rem; width: max-content;">
- <div class="testimonial-card" style="width: 340px; background: var(--root); border: 1px solid var(--bark); border-radius: 16px; padding: 2rem; border-left: 2px solid var(--gold);">
- <div style="font-size: 0.75rem; color: var(--gold); margin-bottom: 0.5rem;">AR — NFL Quarterback, 4x MVP</div>
- <p style="font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 1rem; line-height: 1.7; color: var(--clay);">"Profoundly meaningful for mental clarity, emotional resilience, and self-understanding. These experiences contributed to performance and personal growth."</p>
- <p style="font-size: 0.7rem; color: var(--soil); margin-top: 1rem;">Netflix "Enigma" (2024)</p>
- </div>
- <div class="testimonial-card" style="width: 340px; background: var(--root); border: 1px solid var(--bark); border-radius: 16px; padding: 2rem; border-left: 2px solid var(--gold);">
- <div style="font-size: 0.75rem; color: var(--gold); margin-bottom: 0.5rem;">MT — Former Heavyweight Champion</div>
- <p style="font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 1rem; line-height: 1.7; color: var(--clay);">"Described experiences that helped address depression and self-destructive behavior. Credited them with saving his life during a period of suicidal thoughts."</p>
- <p style="font-size: 0.7rem; color: var(--soil); margin-top: 1rem;">Reuters, Joe Rogan Experience</p>
- </div>
- <div class="testimonial-card" style="width: 340px; background: var(--root); border: 1px solid var(--bark); border-radius: 16px; padding: 2rem; border-left: 2px solid var(--gold);">
- <div style="font-size: 0.75rem; color: var(--gold); margin-bottom: 0.5rem;">PH — Duke of Sussex</div>
- <p style="font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 1rem; line-height: 1.7; color: var(--clay);">"Used therapeutically to process grief in ways conventional approaches could not. Helped redefine relationship with loss."</p>
- <p style="font-size: 0.7rem; color: var(--soil); margin-top: 1rem;">Memoir "Spare" (2023)</p>
- </div>
- <div class="testimonial-card" style="width: 340px; background: var(--root); border: 1px solid var(--bark); border-radius: 16px; padding: 2rem; border-left: 2px solid var(--gold);">
- <div style="font-size: 0.75rem; color: var(--gold); margin-bottom: 0.5rem;">PS — Mycologist, Researcher</div>
- <p style="font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 1rem; line-height: 1.7; color: var(--clay);">"A single profound experience resolved a severe stutter he had struggled with his entire life. Developed research protocols now used by hundreds of thousands."</p>
- <p style="font-size: 0.7rem; color: var(--soil); margin-top: 1rem;">Joe Rogan Experience</p>
- </div>
- <div class="testimonial-card" style="width: 340px; background: var(--root); border: 1px solid var(--bark); border-radius: 16px; padding: 2rem; border-left: 2px solid var(--gold);">
- <div style="font-size: 0.75rem; color: var(--gold); margin-bottom: 0.5rem;">SJ — Co-Founder, Apple Inc.</div>
- <p style="font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 1rem; line-height: 1.7; color: var(--clay);">"Described early experiences as among the most important things he ever did, shaping his approach to design and innovation."</p>
- <p style="font-size: 0.7rem; color: var(--soil); margin-top: 1rem;">Walter Isaacson, "Steve Jobs" (2011)</p>
- </div>
- <div class="testimonial-card" style="width: 340px; background: var(--root); border: 1px solid var(--bark); border-radius: 16px; padding: 2rem; border-left: 2px solid var(--gold);">
- <div style="font-size: 0.75rem; color: var(--gold); margin-bottom: 0.5rem;">KB — Actress</div>
- <p style="font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 1rem; line-height: 1.7; color: var(--clay);">"After two decades of managing depression, changed her relationship with her condition through supervised therapeutic practice."</p>
- <p style="font-size: 0.7rem; color: var(--soil); margin-top: 1rem;">Hypochondriactor Podcast</p>
- </div>
- </div>
- </div>
- <p style="text-align: center; font-size: 0.7rem; color: var(--soil); max-width: 800px; margin: 2rem auto;">
- These are public statements made voluntarily in interviews, podcasts, and books. Individual experiences vary. This platform does not encourage illegal activity. Many practices referenced occurred in legal clinical or jurisdictional contexts.
- </p>
- </section>
-
- <section id="retreats" class="retreats-section">
- <div class="section-header">
- <h2>Find your experience.</h2>
- <p>Legal psychedelic retreats verified for safety. Book through us and get a free 30-day integration protocol.</p>
- </div>
-
- <div class="filter-bar">
- <select class="filter-select"><option>All Locations</option><option>Jamaica</option><option>Netherlands</option><option>Costa Rica</option><option>Colorado</option></select>
- <select class="filter-select"><option>All Types</option><option>Psilocybin</option><option>Ayahuasca</option><option>5-MeO-DMT</option></select>
- <select class="filter-select"><option>Any Duration</option><option>1-3 days</option><option>4-7 days</option><option>8-14 days</option></select>
- <select class="filter-select"><option>Any Price</option><option>Under $3,000</option><option>$3,000-$5,000</option><option>$5,000-$8,000</option></select>
- </div>
-
- <div id="retreats-list" class="retreats-grid">
- </div>
- </section>
-
- <footer>
- <div class="footer-crisis">
- <span>In crisis?</span>
- <strong>Fireside Project: 62-FIRESIDE (623-473-7433)</strong>
- <span>Free 24/7 psychedelic peer support</span>
- </div>
- <p style="color: var(--soil); font-size: 0.75rem;">Educational content only. Not medical advice. Not an endorsement of illegal activity.</p>
- <div class="footer-links">
- <a href="#">About</a>
- <a href="#">Privacy</a>
- <a href="#">Terms</a>
- <a href="#">Contact</a>
- </div>
- </footer>
-
- <!-- Booking Modal -->
- <div id="booking-modal" class="modal-overlay">
- <div class="modal">
- <div class="modal-header">
- <h3>Book with Concierge</h3>
- </div>
- <div class="modal-body">
- <form id="booking-form">
- <div class="form-group">
- <span class="form-label">Select Your Dates</span>
- <input type="date" class="form-input" id="booking-date">
- </div>
- <div class="form-group">
- <span class="form-label">Number of Participants</span>
- <select class="form-select" id="participants">
- <option>1</option><option>2</option><option>3</option><option>4</option>
- </select>
- </div>
- <div class="form-group">
- <span class="form-label">Experience Level</span>
- <select class="form-select" id="experience">
- <option>First time</option>
- <option>Explored before</option>
- <option>Regular practice</option>
- </select>
- </div>
- <div class="form-group">
- <span class="form-label">Medical Screening</span>
- <div class="checkbox-group">
- <div class="checkbox-item">
- <input type="checkbox" id="ssri" data-flag="ssri">
- <label for="ssri">Taking SSRIs, SNRIs, or MAOIs</label>
- </div>
- <div class="checkbox-item">
- <input type="checkbox" id="lithium" data-flag="lithium">
- <label for="lithium">Taking lithium</label>
- </div>
- <div class="checkbox-item">
- <input type="checkbox" id="history" data-flag="psychotic">
- <label for="history">Personal/family history of psychotic disorders</label>
- </div>
- <div class="checkbox-item">
- <input type="checkbox" id="pregnant" data-flag="pregnancy">
- <label for="pregnant">Pregnant or breastfeeding</label>
- </div>
- <div class="checkbox-item">
- <input type="checkbox" id="heart" data-flag="heart">
- <label for="heart">Heart conditions</label>
- </div>
- </div>
- <div id="screening-warning" class="screening-warning">
- <p>Based on your responses, some retreats may not be appropriate for your situation. Our concierge will contact you to discuss safer alternatives. This screening protects you — we never share your information.</p>
- </div>
- </div>
- <button type="submit" class="btn-primary" style="width: 100%; margin-top: 1.5rem;">Start Concierge Booking</button>
- </form>
- </div>
- </div>
- </div>
-
- <script>
- // ============================================
- // THREE.JS BIOLOGICAL MUSHROOM
- // ============================================
- const canvas = document.getElementById('mushroom-canvas');
- const scene = new THREE.Scene();
- scene.fog = new THREE.FogExp2(0x020302, 0.02);
-
- const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
- camera.position.z = 18;
-
- const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
- renderer.setSize(window.innerWidth, window.innerHeight);
- renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-
- // Lighting - subtle bioluminescent
- const ambientLight = new THREE.AmbientLight(0x1a231a, 0.5);
- scene.add(ambientLight);
-
- const pointLight = new THREE.PointLight(0x6b9e5a, 0.8, 50);
- pointLight.position.set(5, 5, 5);
- scene.add(pointLight);
-
- const fillLight = new THREE.PointLight(0xc9a84c, 0.3, 30);
- fillLight.position.set(-5, -3, 8);
- scene.add(fillLight);
-
- // Mushroom Group
- const mushroom = new THREE.Group();
- scene.add(mushroom);
-
- // Materials
- const capMaterial = new THREE.MeshStandardMaterial({
- color: 0x3d5a35,
- roughness: 0.7,
- metalness: 0.1,
- emissive: 0x0a0f0a,
- emissiveIntensity: 0.1
- });
-
- const stemMaterial = new THREE.MeshStandardMaterial({
- color: 0x2d3d2a,
- roughness: 0.8,
- metalness: 0,
- emissive: 0x2d3d2a,
- emissiveIntensity: 0.05
- });
-
- const gillMaterial = new THREE.MeshBasicMaterial({
- color: 0x6b9e5a,
- transparent: true,
- opacity: 0.15,
- side: THREE.DoubleSide
- });
-
- const myceliumMaterial = new THREE.MeshBasicMaterial({
- color: 0x6b9e5a,
- transparent: true,
- opacity: 0.3
- });
-
- // Procedural organic stem with curve
- const stemCurve = new THREE.CatmullRomCurve3([
- new THREE.Vector3(0, -6, 0),
- new THREE.Vector3(0.3, -3, 0.2),
- new THREE.Vector3(-0.2, -1, -0.1),
- new THREE.Vector3(0, 0, 0)
- ]);
-
- const stemGeo = new THREE.TubeGeometry(stemCurve, 48, 1, 16, false);
- // Add surface displacement for organic texture
- const stemPositions = stemGeo.attributes.position.array;
- for (let i = 0; i < stemPositions.length; i += 3) {
- const noise = Math.sin(stemPositions[i] * 3) * Math.cos(stemPositions[i + 1] * 2) * 0.08;
- stemPositions[i] += noise;
- stemPositions[i + 1] += noise * 0.5;
- stemPositions[i + 2] += noise;
- }
- stemGeo.attributes.position.needsUpdate = true;
- stemGeo.computeVertexNormals();
-
- const stem = new THREE.Mesh(stemGeo, stemMaterial);
- mushroom.add(stem);
-
- // Cap (different mushroom shapes - umbrella/bell)
- const capGeo = new THREE.SphereGeometry(4.5, 64, 32, 0, Math.PI * 2, 0, Math.PI * 0.55);
- // Deform cap for organic look
- const capPos = capGeo.attributes.position.array;
- for (let i = 0; i < capPos.length; i += 3) {
- const y = capPos[i + 1];
- if (y > 0) {
- const r = Math.sqrt(capPos[i]**2 + capPos[i + 2]**2);
- const bulge = Math.sin(r * 0.8) * 0.3;
- capPos[i + 1] += bulge;
- }
- }
- capGeo.attributes.position.needsUpdate = true;
- capGeo.computeVertexNormals();
-
- const cap = new THREE.Mesh(capGeo, capMaterial);
- cap.position.y = 0.5;
- mushroom.add(cap);
-
- // Cap ridges/variegation (lines on cap surface)
- for (let i = 0; i < 12; i++) {
- const angle = (i / 12) * Math.PI * 2;
- const ridgeCurve = new THREE.CatmullRomCurve3([
- new THREE.Vector3(Math.cos(angle) * 1, 1, Math.sin(angle) * 1),
- new THREE.Vector3(Math.cos(angle) * 2.5, 3.5, Math.sin(angle) * 2.5),
- new THREE.Vector3(Math.cos(angle) * 4.3, 0.5, Math.sin(angle) * 4.3)
- ]);
- const ridgeGeo = new THREE.TubeGeometry(ridgeCurve, 24, 0.08, 8, false);
- const ridge = new THREE.Mesh(ridgeGeo, new THREE.MeshStandardMaterial({
- color: 0x2d3d2a,
- roughness: 0.9
- }));
- mushroom.add(ridge);
- }
-
- // Gills under cap (scaled planes radiating)
- const gillGroup = new THREE.Group();
- gillGroup.position.y = 0;
- for (let i = 0; i < 80; i++) {
- const angle = (i / 80) * Math.PI * 2;
- const gill = new THREE.Mesh(
- new THREE.PlaneGeometry(3.8, 0.15),
- gillMaterial
- );
- gill.position.set(Math.cos(angle) * 2, -0.3, Math.sin(angle) * 2);
- gill.rotation.y = -angle;
- gill.rotation.x = Math.PI / 2 - 0.3;
- gillGroup.add(gill);
- }
- mushroom.add(gillGroup);
-
- // Annulus (ring on stem)
- const ringGeo = new THREE.CylinderGeometry(1.4, 1.2, 0.2, 16, 1, true);
- const ring = new THREE.Mesh(ringGeo, new THREE.MeshStandardMaterial({
- color: 0x3d5a35,
- roughness: 0.6
- }));
- ring.position.y = -0.5;
- mushroom.add(ring);
-
- // Volva (base cup)
- const volvaGeo = new THREE.CylinderGeometry(1.8, 1.2, 0.8, 16, 4, true);
- const volvaPositions = volvaGeo.attributes.position.array;
- for (let i = 0; i < volvaPositions.length; i += 3) {
- const noise = Math.random() * 0.15;
- volvaPositions[i] += noise;
- }
- volvaGeo.attributes.position.needsUpdate = true;
- const volva = new THREE.Mesh(volvaGeo, new THREE.MeshStandardMaterial({
- color: 0x2d3d2a,
- roughness: 0.9
- }));
- volva.position.y = -5.5;
- mushroom.add(volva);
-
- // Mycelium network (root system - the neural network)
- const myceliumGroup = new THREE.Group();
- myceliumGroup.position.y = -6;
- for (let i = 0; i < 35; i++) {
- const rootCurve = new THREE.CatmullRomCurve3([
- new THREE.Vector3(0, 0, 0),
- new THREE.Vector3((Math.random() - 0.5) * 4, -1.5 - Math.random() * 2, (Math.random() - 0.5) * 4),
- new THREE.Vector3((Math.random() - 0.5) * 12, -4 - Math.random() * 4, (Math.random() - 0.5) * 12)
- ]);
- const rootGeo = new THREE.TubeGeometry(rootCurve, 20, 0.12 + Math.random() * 0.08, 6, false);
- const root = new THREE.Mesh(rootGeo, myceliumMaterial);
- myceliumGroup.add(root);
-
- // Hyphal tip (glowing)
- const tip = new THREE.Mesh(
- new THREE.SphereGeometry(0.15, 8, 8),
- new THREE.MeshBasicMaterial({
- color: 0x9CBC80,
- transparent: true,
- opacity: 0.6
- })
- );
- const endPoint = rootCurve.getPoint(1);
- tip.position.copy(endPoint);
- myceliumGroup.add(tip);
- }
- mushroom.add(myceliumGroup);
-
- // Spore particles (constantly floating up)
- const sporesCount = 150;
- const sporesGeo = new THREE.BufferGeometry();
- const sporePositions = new Float32Array(sporesCount * 3);
- const sporeVelocities = [];
-
- for (let i = 0; i < sporesCount; i++) {
- sporePositions[i * 3] = (Math.random() - 0.5) * 8;
- sporePositions[i * 3 + 1] = -2 + Math.random() * 15;
- sporePositions[i * 3 + 2] = (Math.random() - 0.5) * 8;
- sporeVelocities.push({
- y: 0.02 + Math.random() * 0.03,
- x: (Math.random() - 0.5) * 0.01,
- z: (Math.random() - 0.5) * 0.01
- });
- }
- sporesGeo.setAttribute('position', new THREE.BufferAttribute(sporePositions, 3));
-
- const sporesMaterial = new THREE.PointsMaterial({
- color: 0x9CBC80,
- size: 0.12,
- transparent: true,
- opacity: 0.6,
- blending: THREE.AdditiveBlending
- });
-
- const spores = new THREE.Points(sporesGeo, sporesMaterial);
- mushroom.add(spores);
-
- // Background particle field (neural network aesthetic)
- const bgParticlesCount = 200;
- const bgParticlesGeo = new THREE.BufferGeometry();
- const bgPositions = new Float32Array(bgParticlesCount * 3);
- const bgConnections = [];
-
- for (let i = 0; i < bgParticlesCount; i++) {
- bgPositions[i * 3] = (Math.random() - 0.5) * 60;
- bgPositions[i * 3 + 1] = (Math.random() - 0.5) * 40;
- bgPositions[i * 3 + 2] = (Math.random() - 0.5) * 40 - 10;
- }
- bgParticlesGeo.setAttribute('position', new THREE.BufferAttribute(bgPositions, 3));
-
- const bgParticles = new THREE.Points(
- bgParticlesGeo,
- new THREE.PointsMaterial({ color: 0x2d3a2d, size: 0.08, transparent: true, opacity: 0.4 })
- );
- scene.add(bgParticles);
-
- // Interaction state
- let isDragging = false;
- let previousMouseX = 0, previousMouseY = 0;
- let rotationSpeedX = 0, rotationSpeedY = 0;
- let targetRotationX = 0, targetRotationY = 0;
-
- // Mouse/touch events
- canvas.addEventListener('mousedown', (e) => {
- isDragging = true;
- previousMouseX = e.clientX;
- previousMouseY = e.clientY;
- });
-
- canvas.addEventListener('mousemove', (e) => {
- if (isDragging) {
- rotationSpeedY = (e.clientX - previousMouseX) * 0.005;
- rotationSpeedX = (e.clientY - previousMouseY) * 0.005;
- previousMouseX = e.clientX;
- previousMouseY = e.clientY;
- }
- });
-
- canvas.addEventListener('mouseup', () => isDragging = false);
- canvas.addEventListener('mouseleave', () => isDragging = false);
-
- // Touch support
- canvas.addEventListener('touchstart', (e) => {
- isDragging = true;
- previousMouseX = e.touches[0].clientX;
- previousMouseY = e.touches[0].clientY;
- });
-
- canvas.addEventListener('touchmove', (e) => {
- if (isDragging && e.touches.length === 1) {
- rotationSpeedY = (e.touches[0].clientX - previousMouseX) * 0.005;
- rotationSpeedX = (e.touches[0].clientY - previousMouseY) * 0.005;
- previousMouseX = e.touches[0].clientX;
- previousMouseY = e.touches[0].clientY;
- }
- });
-
- canvas.addEventListener('touchend', () => isDragging = false);
-
- // Animation loop
- function animate() {
- requestAnimationFrame(animate);
-
- // Apply rotation momentum with damping
- targetRotationY += rotationSpeedY;
- targetRotationX += rotationSpeedX;
- rotationSpeedY *= 0.95;
- rotationSpeedX *= 0.95;
-
- // Auto-rotate slowly when idle
- if (!isDragging && Math.abs(rotationSpeedY) < 0.001) {
- targetRotationY += 0.002;
- }
-
- mushroom.rotation.y = targetRotationY;
- mushroom.rotation.x = Math.max(-0.5, Math.min(0.5, targetRotationX));
-
- // Float animation
- mushroom.position.y = Math.sin(Date.now() * 0.0008) * 0.3;
-
- // Breathing scale
- const breathScale = 1 + Math.sin(Date.now() * 0.0005) * 0.02;
- gillGroup.scale.set(breathScale, breathScale, breathScale);
-
- // Animate spores
- const positions = spores.geometry.attributes.position.array;
- for (let i = 0; i < sporesCount; i++) {
- const i3 = i * 3;
- positions[i3 + 1] += sporeVelocities[i].y;
- positions[i3] += sporeVelocities[i].x;
- positions[i3 + 2] += sporeVelocities[i].z;
-
- // Reset spores that float too high
- if (positions[i3 + 1] > 12) {
- positions[i3 + 1] = -3;
- positions[i3] = (Math.random() - 0.5) * 6;
- positions[i3 + 2] = (Math.random() - 0.5) * 6;
- }
- }
- spores.geometry.attributes.position.needsUpdate = true;
-
- // Mycelium glow pulse
- myceliumMaterial.opacity = 0.3 + Math.sin(Date.now() * 0.002) * 0.1;
-
- renderer.render(scene, camera);
- }
- animate();
-
- // Resize handler
- window.addEventListener('resize', () => {
- camera.aspect = window.innerWidth / window.innerHeight;
- camera.updateProjectionMatrix();
- renderer.setSize(window.innerWidth, window.innerHeight);
- });
-
- // Scroll zoom
- window.addEventListener('scroll', () => {
- const scrollPercent = window.scrollY / (window.innerHeight * 0.5);
- camera.position.z = Math.max(10, 18 - scrollPercent * 5);
- });
-
- // ============================================
- // STAT COUNTER ANIMATION
- // ============================================
- const observerOptions = { threshold: 0.5 };
- const observer = new IntersectionObserver((entries) => {
- entries.forEach(entry => {
- if (entry.isIntersecting) {
- const target = parseInt(entry.target.dataset.target);
- let current = 0;
- const increment = target / 60;
- const counter = setInterval(() => {
- current += increment;
- if (current >= target) {
- entry.target.textContent = target;
- clearInterval(counter);
- } else {
- entry.target.textContent = Math.floor(current);
- }
- }, 30);
- observer.unobserve(entry.target);
- }
- });
- }, observerOptions);
-
- document.querySelectorAll('.stat-number').forEach(stat => observer.observe(stat));
-
- // ============================================
- // RETREATS DATA
- // ============================================
- const retreats = [
- {
- name: "Beckley Retreats",
- location: "Jamaica",
- type: "Psilocybin",
- duration: "5-7 days",
- price: "$4,500 — $8,000",
- verified: true,
- image: "linear-gradient(135deg, #3d5a35, #2d3d2a)",
- description: "Science-backed psilocybin retreats founded by Amanda Feilding. Rigorous safety protocols, experienced facilitators."
- },
- {
- name: "Synthesis",
- location: "Netherlands",
- type: "Psilocybin Truffles",
- duration: "3-5 days",
- price: "€1,500 — €6,000",
- verified: true,
- image: "linear-gradient(135deg, #2d3d2a, #1a231a)",
- description: "Group psilocybin truffle ceremonies in a professionally curated setting with integration support."
- },
- {
- name: "Ceremonia",
- location: "Colorado, USA",
- type: "Psilocybin",
- duration: "2-4 days",
- price: "$2,500 — $5,000",
- verified: true,
- image: "linear-gradient(135deg, #4d5a3d, #3d5a35)",
- description: "Legal psilocybin retreats under Colorado law. Non-profit. Tax deductible. Money-back guaranteed."
- },
- {
- name: "Soltara Healing Center",
- location: "Costa Rica",
- type: "Ayahuasca",
- duration: "7-12 days",
- price: "$3,000 — $6,500",
- verified: true,
- image: "linear-gradient(135deg, #4d5a45, #3d4a35)",
- description: "Traditional Shipibo ayahuasca ceremonies in the Costa Rican jungle. Medical screening."
- }
- ];
-
- // Render retreats
- const retreatsContainer = document.getElementById('retreats-list');
- retreats.forEach(retreat => {
- const card = document.createElement('div');
- card.className = 'retreat-card';
- card.innerHTML = `
- <div class="retreat-image" style="background: ${retreat.image};">
- ${retreat.verified ? '<span class="retreat-verified">Verified</span>' : ''}
- </div>
- <div class="retreat-content">
- <div class="retreat-header">
- <div>
- <div class="retreat-name">${retreat.name}</div>
- <div class="retreat-meta">${retreat.location} · ${retreat.duration}</div>
- </div>
- </div>
- <div class="retreat-tags">
- <span class="retreat-tag">${retreat.type}</span>
- <span class="retreat-tag">${retreat.duration}</span>
- </div>
- <div class="retreat-price">${retreat.price} <span>per person</span></div>
- <p style="font-size: 0.85rem; color: var(--clay); margin-top: 0.75rem; line-height: 1.5;">${retreat.description}</p>
- <div class="retreat-buttons">
- <button class="btn-primary" onclick="openBooking('${retreat.name}')">Book with Concierge</button>
- <button class="btn-secondary" onclick="openInquiry('${retreat.name}')">Quick Inquiry</button>
- </div>
- </div>
- `;
- retreatsContainer.appendChild(card);
- });
-
- // ============================================
- // BOOKING MODAL
- // ============================================
- const modal = document.getElementById('booking-modal');
- const warning = document.getElementById('screening-warning');
- let currentRetreat = '';
-
- window.openBooking = (retreatName) => {
- currentRetreat = retreatName;
- modal.classList.add('active');
- document.body.style.overflow = 'hidden';
- };
-
- window.openInquiry = (retreatName) => {
- openBooking(retreatName);
- };
-
- modal.addEventListener('click', (e) => {
- if (e.target === modal) {
- modal.classList.remove('active');
- document.body.style.overflow = '';
- }
- });
-
- // Medical screening logic
- const checkboxes = document.querySelectorAll('input[data-flag]');
- checkboxes.forEach(cb => {
- cb.addEventListener('change', () => {
- const lithium = document.getElementById('lithium');
- const ssri = document.getElementById('ssri');
- const history = document.getElementById('history');
-
- const hasRedFlag = lithium.checked || history.checked || (ssri.checked && currentRetreat?.toLowerCase().includes('aya'));
-
- if (hasRedFlag) {
- warning.classList.add('active');
- } else {
- warning.classList.remove('active');
- }
- });
- });
-
- document.getElementById('booking-form').addEventListener('submit', (e) => {
- e.preventDefault();
- alert('Your concierge booking inquiry has been received. We will contact you within 24 hours.');
- modal.classList.remove('active');
- document.body.style.overflow = '';
- });
-
- // Brain SVG animation on scroll
- const brainObserver = new IntersectionObserver((entries) => {
- entries.forEach(entry => {
- if (entry.isIntersecting) {
- const lines = entry.target.querySelectorAll('line');
- lines.forEach((line, i) => {
- line.style.strokeDasharray = line.getTotalLength();
- line.style.strokeDashoffset = line.getTotalLength();
- line.style.animation = `draw 1s ease forwards ${i * 0.05}s`;
- });
- brainObserver.unobserve(entry.target);
- }
- });
- });
- document.querySelectorAll('#brain-psychedelic').forEach(s => brainObserver.observe(s));
-
- // ============================================
- // CAROUSEL AUTO-SCROLL
- // ============================================
- let carouselScroll = 0;
- let carouselPaused = false;
- const carouselTrack = document.getElementById('carousel-track');
- if (carouselTrack) {
- setInterval(() => {
- if (!carouselPaused) {
- carouselScroll += 1;
- if (carouselScroll > carouselTrack.scrollWidth / 2) carouselScroll = 0;
- carouselTrack.style.transform = `translateX(-${carouselScroll}px)`;
- }
- }, 30);
- carouselTrack.addEventListener('mouseenter', () => carouselPaused = true);
- carouselTrack.addEventListener('mouseleave', () => carouselPaused = false);
- }
- </script>
+
+<nav class="nav" id="nav">
+<a href="#" class="nav-logo">FELTSHIFT</a>
+<div class="nav-links">
+<a href="#features">Features</a>
+<a href="#science">Science</a>
+<a href="#retreats">Retreats</a>
+<a href="#tools">Tools</a>
+<a href="#pricing">Pricing</a>
+</div>
+</nav>
+
+<section class="hero" id="hero">
+<canvas id="hero-canvas"></canvas>
+<div class="hero-content">
+<p class="hero-label">Integration & Retreat Discovery</p>
+<h1>The experience is the beginning. The work is what comes next.</h1>
+<p>AI-powered integration journal, mood tracking, breathwork, microdose protocols, and verified retreats. Built for people doing real inner work.</p>
+<div class="hero-btns">
+<button class="btn btn-primary" onclick="openModal('signup')">Start Integration</button>
+<button class="btn btn-secondary" onclick="document.getElementById('science').scrollIntoView({behavior:'smooth'})">See the Research</button>
+</div>
+<p class="hero-trust">Free forever. No credit card. Your journal stays encrypted.</p>
+</div>
+</section>
+
+<section id="science">
+<div class="section-header">
+<h2>This is what happens inside your brain.</h2>
+<p>Not metaphor. Measurable changes in structure and function — documented in peer-reviewed clinical trials.</p>
+</div>
+
+<div class="brain-theater">
+<div class="brain-stage-label bsl-left">Baseline State — Habitual pathways</div>
+<div class="brain-stage-label bsl-right">Enhanced State — Cross-network connectivity</div>
+<div id="brain-canvas-left"></div>
+<div id="brain-canvas-right"></div>
+</div>
+
+<div class="brain-explanation">
+<div>
+<h4 class="brain-state-title bs-baseline">Default Mode Network Activity</h4>
+<p class="brain-state-desc">
+<strong>The Baseline:</strong> Your DMN maintains rigid, repeating neural loops. Brain imaging shows <em>constrained connectivity</em> — regions talk to the same regions they've always talked to. This correlates with rumination, fixed identity, and depression.
+</p>
+</div>
+<div>
+<h4 class="brain-state-title bs-enhanced">Cross-Network Connectivity</h4>
+<p class="brain-state-desc">
+<strong>The Enhancement:</strong> Temporarily reduced DMN activity allows brain regions that <em>do not normally communicate</em> to connect. Visual cortex talks to emotional centers. New perspectives become neurophysiologically possible.
+</p>
+</div>
+</div>
+
+<div class="stats-grid" style="margin-top: 4rem;">
+<div class="stat-item">
+<div class="stat-number" data-target="54">0%</div>
+<div class="stat-label">Complete Remission</div>
+<div class="stat-source">Major depression<br>Johns Hopkins 2021</div>
+</div>
+<div class="stat-item">
+<div class="stat-number" data-target="3">0x</div>
+<div class="stat-label">Connectivity Change</div>
+<div class="stat-source">vs methylphenidate<br>Nature 2024</div>
+</div>
+<div class="stat-item">
+<div class="stat-number" data-target="80">0%</div>
+<div class="stat-label">Cancer Patients</div>
+<div class="stat-source">Anxiety reduction<br>Griffiths 2016</div>
+</div>
+<div class="stat-item">
+<div class="stat-number" data-target="100">0+</div>
+<div class="stat-label">Active Trials</div>
+<div class="stat-source">Clinical research<br>2024</div>
+</div>
+</div>
+</section>
+
+<section id="clinical" class="bg-surface">
+<div class="section-header">
+<h2>What the clinical trials found.</h2>
+<p>Published results from peer-reviewed studies at accredited institutions. Not recreational use.</p>
+</div>
+<div class="clinical-grid">
+<div class="clinical-card">
+<div class="clinical-stat">54%</div>
+<div class="clinical-text">Complete remission from major depressive disorder after two supervised psilocybin-assisted therapy sessions.</div>
+<div class="clinical-cite">Davis et al, JAMA Psychiatry 2021 — Johns Hopkins</div>
+</div>
+<div class="clinical-card">
+<div class="clinical-stat">71%</div>
+<div class="clinical-text">Severe, treatment-resistant PTSD patients no longer met diagnostic criteria after three supervised MDMA-assisted sessions.</div>
+<div class="clinical-cite">Mitchell et al, Nature Medicine 2021 — MAPS</div>
+</div>
+<div class="clinical-card">
+<div class="clinical-stat">80%</div>
+<div class="clinical-text">Cancer patients with existential distress showed significant anxiety and depression reduction 6+ months later.</div>
+<div class="clinical-cite">Griffiths et al, J Psychopharmacology 2016 — Johns Hopkins</div>
+</div>
+<div class="clinical-card">
+<div class="clinical-stat">80%</div>
+<div class="clinical-text">Smoking cessation success rate at 6-month follow-up with psilocybin-assisted CBT vs 35% conventional.</div>
+<div class="clinical-cite">Johnson et al, J Psychopharmacology 2014 — Johns Hopkins</div>
+</div>
+<div class="clinical-card">
+<div class="clinical-stat">67%</div>
+<div class="clinical-text">Participants rated supervised session among the five most personally meaningful experiences of their entire lives.</div>
+<div class="clinical-cite">Griffiths et al, Psychopharmacology 2006 — Johns Hopkins</div>
+</div>
+<div class="clinical-card">
+<div class="clinical-stat">3x</div>
+<div class="clinical-text">Greater functional connectivity changes in cortex vs methylphenidate, with some changes persisting weeks.</div>
+<div class="clinical-cite">Siegel et al, Nature 2024 — UC San Francisco</div>
+</div>
+</div>
+</section>
+
+<section id="figures">
+<div class="section-header">
+<h2>The conversation is changing.</h2>
+<p>Public figures speaking openly about consciousness practices. Personal accounts reported for educational purposes.</p>
+</div>
+<div class="figures-scroll">
+<div class="figure-card">
+<div class="figure-initials">AR</div>
+<div class="figure-name">Aaron Rodgers</div>
+<div class="figure-title">NFL Quarterback, 4x MVP</div>
+<p>Netflix "Enigma" (2024): discussed experiences as profoundly meaningful for mental clarity and emotional resilience.</p>
+</div>
+<div class="figure-card">
+<div class="figure-initials">MT</div>
+<div class="figure-name">Mike Tyson</div>
+<div class="figure-title">Former Heavyweight Champion</div>
+<p>Spoke about consciousness practices helping address depression and addiction — described as transformative, crediting with saving his life.</p>
+</div>
+<div class="figure-card">
+<div class="figure-initials">SJ</div>
+<div class="figure-name">Steve Jobs</div>
+<div class="figure-title">Co-Founder, Apple Inc.</div>
+<p>Authorized biography: "one of the most important things in my life." Said experiences shaped his approach to design and meaningful work.</p>
+</div>
+<div class="figure-card">
+<div class="figure-initials">PH</div>
+<div class="figure-name">Prince Harry</div>
+<div class="figure-title">Duke of Sussex</div>
+<p>Memoir "Spare": used therapeutic plant medicines to process grief after mother's death, per therapist recommendation.</p>
+</div>
+<div class="figure-card">
+<div class="figure-initials">PS</div>
+<div class="figure-name">Paul Stamets</div>
+<div class="figure-title">Mycologist, Researcher</div>
+<p>Single profound experience resolved lifelong severe stutter. Developed research protocols used by hundreds of thousands worldwide.</p>
+</div>
+</div>
+<div class="figures-disclaimer">
+<p>These are personal accounts shared voluntarily in public forums. Individual experiences vary. This platform only reports on public discourse, not endorsement. Not encouraging illegal activity.</p>
+</div>
+</section>
+
+<section id="benefits" class="bg-surface">
+<div class="section-header">
+<h2>What the research documents.</h2>
+<p>Clinical study outcomes. Results documented in research — not guaranteed outcomes.</p>
+</div>
+<div class="benefits-triptych">
+<div class="benefits-col">
+<div class="benefits-col-head"><div class="benefits-indicator"></div><h3>Clinical Mental Health</h3></div>
+<div class="benefit-block"><h4>Depression</h4><p>Trials at Johns Hopkins, Imperial, NYU documented rapid improvements in depressive symptoms. Changes emerged within hours.</p></div>
+<div class="benefit-block"><h4>Anxiety</h4><p>Hopkins cancer study: 80% of terminal patients showed significant anxiety reduction. Reduced self-referential processing removes anticipatory anxiety.</p></div>
+<div class="benefit-block"><h4>Addiction</h4><p>Studies show significant reduction in tobacco, alcohol, opioid use. Perspective shifts allow observing behavioral patterns from new vantage points.</p></div>
+</div>
+<div class="benefits-col">
+<div class="benefits-col-head"><div class="benefits-indicator"></div><h3>Emotional Wellbeing</h3></div>
+<div class="benefit-block"><h4>Self-Compassion</h4><p>Most consistent outcome: increased self-compassion. When inner critic networks quiet, many report experiencing themselves without judgment.</p></div>
+<div class="benefit-block"><h4>Emotional Processing</h4><p>Reduced amygdala activity while prefrontal function maintained. Difficult memories accessible without overwhelming fear response.</p></div>
+<div class="benefit-block"><h4>Relational Improvement</h4><p>Studies document improved empathy and feelings of connection. Relationship quality improvements extend beyond therapy focus.</p></div>
+</div>
+<div class="benefits-col">
+<div class="benefits-col-head"><div class="benefits-indicator"></div><h3>Existential & Spiritual</h3></div>
+<div class="benefit-block"><h4>Meaningful Experience</h4><p>67% rated sessions among five most meaningful experiences of their lives. MEQ scores correlate directly with therapeutic outcomes.</p></div>
+<div class="benefit-block"><h4>Connectedness</h4><p>Most consistent report: increased feelings of connection to others, nature, and meaning. Correlates with lasting personality changes.</p></div>
+<div class="benefit-block"><h4>Relationship with Mortality</h4><p>Hopkins and NYU cancer studies documented significant fear-of-death reduction in terminally ill patients.</p></div>
+</div>
+</div>
+</section>
+
+<section id="retreats">
+<div class="section-header">
+<h2>Find experiences you can trust.</h2>
+<p>Pre-vetted: credential verification, reference checks, medical screening protocols, emergency procedures.</p>
+</div>
+<div class="retreat-filters">
+<select class="filter-dropdown" id="retreat-location">
+<option>All Locations</option>
+<option>Jamaica</option>
+<option>Netherlands</option>
+<option>Costa Rica</option>
+<option>Peru</option>
+</select>
+<select class="filter-dropdown" id="retreat-modality">
+<option>All Types</option>
+<option>Psilocybin</option>
+<option>Ayahuasca</option>
+<option>San Pedro</option>
+<option>5-MeO-DMT</option>
+</select>
+<select class="filter-dropdown" id="retreat-price">
+<option>Any Price</option>
+<option>$0 - $2,000</option>
+<option>$2,000 - $5,000</option>
+<option>$5,000+</option>
+</select>
+<select class="filter-dropdown" id="retreat-duration">
+<option>Any Length</option>
+<option>3-5 days</option>
+<option>6-10 days</option>
+<option>10+ days</option>
+</select>
+</div>
+<div class="retreat-list">
+<div class="retreat-item" onclick="openBooking('beckley')">
+<div class="retreat-img">FS</div>
+<div>
+<div class="retreat-meta-row"><span class="tag tag-verified">Verified</span><span class="tag tag-type">Psilocybin</span></div>
+<h4>Beckley Retreats</h4>
+<div class="retreat-location">Jamaica · 5-7 days · Up to 12 participants</div>
+<p>Science-backed sessions founded by Amanda Feilding. Rigorous safety protocols, experienced facilitators.</p>
+</div>
+<div class="retreat-price"><div class="amount">$4,500 — $8,000</div><div class="note">per person</div><button class="btn btn-primary" style="margin-top:0.75rem;" onclick="event.stopPropagation();openBooking('beckley')">Book</button></div>
+</div>
+<div class="retreat-item" onclick="openBooking('synthesis')">
+<div class="retreat-img">ST</div>
+<div>
+<div class="retreat-meta-row"><span class="tag tag-verified">Verified</span><span class="tag tag-type">Truffles</span></div>
+<h4>Synthesis</h4>
+<div class="retreat-location">Amsterdam, Netherlands · 3-5 days · Up to 16 participants</div>
+<p>Group ceremonies in professionally curated setting. Includes preparation, ceremony, integration support.</p>
+</div>
+<div class="retreat-price"><div class="amount">$2,200 — $4,000</div><div class="note">per person</div><button class="btn btn-primary" style="margin-top:0.75rem;" onclick="event.stopPropagation();openBooking('synthesis')">Book</button></div>
+</div>
+<div class="retreat-item" onclick="openBooking('pangea')">
+<div class="retreat-img">PG</div>
+<div>
+<div class="retreat-meta-row"><span class="tag tag-verified">Verified</span><span class="tag tag-type">Ayahuasca</span></div>
+<h4>Pangea Biomedics</h4>
+<div class="retreat-location">Costa Rica · 7-10 days · Up to 10 participants</div>
+<p>Medical-grade ayahuasca with licensed physicians on site. Pre-screening required. Strict contraindication protocols.</p>
+</div>
+<div class="retreat-price"><div class="amount">$3,500 — $5,500</div><div class="note">per person</div><button class="btn btn-primary" style="margin-top:0.75rem;" onclick="event.stopPropagation();openBooking('pangea')">Book</button></div>
+</div>
+</div>
+</section>
+
+<section id="tools" class="bg-surface">
+<div class="section-header">
+<h2>Integration tools.</h2>
+<p>Try the tools. Your data is stored locally until you choose to sync.</p>
+</div>
+<div class="tools-tabs">
+<button class="tool-tab active" onclick="switchTool('journal', this)">AI Journal</button>
+<button class="tool-tab" onclick="switchTool('breath', this)">Breathwork</button>
+<button class="tool-tab" onclick="switchTool('mood', this)">Mood Tracker</button>
+<button class="tool-tab" onclick="switchTool('protocol', this)">Protocol</button>
+</div>
+
+<div id="tool-journal" class="tool-content active">
+<h3 style="font-family:'Cormorant Garamond',serif;font-size:1.3rem;margin-bottom:1rem;">AI Integration Journal</h3>
+<div class="form-group">
+<textarea id="journal-input" rows="6" style="width:100%;padding:1rem;background:var(--bg-elevated);border:1px solid var(--border);color:var(--text-primary);font-family:'DM Sans',sans-serif;resize:vertical;" placeholder="Write about what's coming up for you..."></textarea>
+</div>
+<button class="btn btn-primary" onclick="saveJournal()">Save Entry & Get AI Response</button>
+<div id="journal-history" style="margin-top:2rem;"></div>
+</div>
+
+<div id="tool-breath" class="tool-content">
+<h3 style="font-family:'Cormorant Garamond',serif;font-size:1.3rem;margin-bottom:1rem;">4-7-8 Breathing</h3>
+<div class="breath-viz">
+<div id="breath-circle" class="breath-circle" onclick="startBreathwork()">
+<span id="breath-text">Start</span>
+<small id="breath-sub">4-7-8 Pattern</small>
+</div>
+</div>
+<p style="text-align:center;color:var(--text-muted);font-size:0.85rem;margin-top:1rem;">Inhale 4 seconds · Hold 7 seconds · Exhale 8 seconds</p>
+<div id="breath-log"></div>
+</div>
+
+<div id="tool-mood" class="tool-content">
+<h3 style="font-family:'Cormorant Garamond',serif;font-size:1.3rem;margin-bottom:1.5rem;">Daily Check-In</h3>
+<div class="mood-grid">
+<div class="mood-card">
+<label>Energy Level</label>
+<div class="mood-value" id="energy-display">5</div>
+<input type="range" min="1" max="10" value="5" class="mood-slider" id="energy-slider" oninput="document.getElementById('energy-display').textContent=this.value">
+</div>
+<div class="mood-card">
+<label>Mood</label>
+<div class="mood-value" id="mood-display">5</div>
+<input type="range" min="1" max="10" value="5" class="mood-slider" id="mood-slider" oninput="document.getElementById('mood-display').textContent=this.value">
+</div>
+<div class="mood-card">
+<label>Focus</label>
+<div class="mood-value" id="focus-display">5</div>
+<input type="range" min="1" max="10" value="5" class="mood-slider" id="focus-slider" oninput="document.getElementById('focus-display').textContent=this.value">
+</div>
+</div>
+<button class="btn btn-primary" style="margin-top:1.5rem;" onclick="saveMood()">Log Check-In</button>
+<div id="mood-history"></div>
+</div>
+
+<div id="tool-protocol" class="tool-content">
+<h3 style="font-family:'Cormorant Garamond',serif;font-size:1.3rem;margin-bottom:1rem;">Protocol Tracker</h3>
+<div class="protocol-selector">
+<button class="protocol-option active" onclick="setProtocol('fadiman', this)">Fadiman (1 on, 2 off)</button>
+<button class="protocol-option" onclick="setProtocol('stamets', this)">Stamets (4 on, 3 off)</button>
+</div>
+<p style="color:var(--text-muted);font-size:0.85rem;margin-bottom:1rem;">Green = Dosing day · Outline = Today</p>
+<div class="protocol-calendar" id="protocol-calendar"></div>
+</div>
+</section>
+
+<section id="pricing">
+<div class="section-header text-center" style="margin:0 auto 3rem;text-align:center;">
+<h2>Simple pricing. No hidden fees.</h2>
+</div>
+<div class="pricing-grid">
+<div class="pricing-card">
+<h3>Free</h3>
+<div class="pricing-price">$0<span>/mo</span></div>
+<p class="pricing-desc">Start here.</p>
+<ul class="pricing-features">
+<li>3 journal entries per week</li>
+<li>Daily mood check-in</li>
+<li>1 breathwork session per day</li>
+<li>Browse retreat directory</li>
+</ul>
+<button class="btn btn-amber" style="width:100%;">Start Free</button>
+</div>
+<div class="pricing-card featured">
+<div class="pricing-badge">Recommended</div>
+<h3>Premium</h3>
+<div class="pricing-price">$14<span>/mo</span></div>
+<p class="pricing-desc">Full toolkit.</p>
+<ul class="pricing-features">
+<li>Unlimited AI journaling</li>
+<li>Full integration protocols</li>
+<li>Microdose tracker with insights</li>
+<li>Full breathwork library</li>
+<li>Mood analytics & reports</li>
+</ul>
+<button class="btn btn-primary" style="width:100%;">Start Free Trial</button>
+<p style="font-size:0.65rem;color:var(--text-muted);margin-top:1rem;text-align:center;">7-day free trial. Cancel anytime.</p>
+</div>
+<div class="pricing-card">
+<h3>Facilitator</h3>
+<div class="pricing-price">$49<span>/mo</span></div>
+<p class="pricing-desc">For coaches & clinics.</p>
+<ul class="pricing-features">
+<li>Everything in Premium</li>
+<li>Client dashboard</li>
+<li>Integration monitoring</li>
+<li>Session notes & tracking</li>
+</ul>
+<button class="btn btn-amber" style="width:100%;">Contact Us</button>
+</div>
+</div>
+</section>
+
+<div class="ai-chat-widget">
+<div class="ai-chat-window" id="ai-chat-window">
+<div class="ai-chat-header">
+<h4>AI Integration Guide</h4>
+<button class="ai-chat-close" onclick="toggleAIChat()">×</button>
+</div>
+<div class="ai-chat-messages" id="ai-chat-messages">
+<div class="ai-chat-message ai-message">
+Hi. I'm here to help with your integration questions. What's coming up for you today?
+</div>
+</div>
+<div class="ai-chat-input">
+<input type="text" id="ai-chat-input" placeholder="Type your message..." onkeypress="if(event.key==='Enter')sendAIMessage()">
+<button class="ai-chat-send" onclick="sendAIMessage()">Send</button>
+</div>
+</div>
+<button class="ai-chat-toggle" onclick="toggleAIChat()"><span>AI</span></button>
+</div>
+
+<div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+<div class="modal" onclick="event.stopPropagation()">
+<button class="modal-close" onclick="closeModal()">×</button>
+<div id="modal-content"></div>
+</div>
+</div>
+
+<footer class="footer">
+<div class="crisis-banner">
+<p><strong>In crisis?</strong> Fireside Project: 62-FIRESIDE (623-473-7433) — free, confidential psychedelic peer support 24/7</p>
+</div>
+<div class="footer-bottom">
+<p>© 2026 Feltshift. Your consciousness, your data, your journey.</p>
+<p>18+ only. Educational purposes. Not medical advice.</p>
+</div>
+</footer>
+
+<script>
+// ============================================
+// HERO PHOTOREALISTIC MUSHROOM
+// ============================================
+const initMushroom = () => {
+const canvas = document.getElementById('hero-canvas');
+if (!canvas) return;
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(45, canvas.clientWidth / canvas.clientHeight, 0.1, 100);
+camera.position.set(0, 2, 12);
+
+const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+// Studio lighting
+const ambient = new THREE.AmbientLight(0x404040, 0.3);
+scene.add(ambient);
+
+const keyLight = new THREE.DirectionalLight(0xfff8e7, 1.2);
+keyLight.position.set(5, 10, 5);
+scene.add(keyLight);
+
+const fillLight = new THREE.DirectionalLight(0x8b7355, 0.4);
+fillLight.position.set(-5, 5, 5);
+scene.add(fillLight);
+
+const rimLight = new THREE.SpotLight(0xffaa44, 0.8);
+rimLight.position.set(0, 5, -10);
+rimLight.lookAt(0, 0, 0);
+scene.add(rimLight);
+
+// Mushroom
+const mushroom = new THREE.Group();
+
+// Stem - organic curve
+const stemPoints = [];
+for (let i = 0; i <= 20; i++) {
+const t = i / 20;
+const x = Math.sin(t * Math.PI * 0.5) * 0.3 + (Math.random() - 0.5) * 0.1;
+const y = t * 4 - 2;
+const z = Math.cos(t * Math.PI * 0.3) * 0.2 + (Math.random() - 0.5) * 0.1;
+stemPoints.push(new THREE.Vector3(x, y, z));
+}
+const stemCurve = new THREE.CatmullRomCurve3(stemPoints);
+const stemGeo = new THREE.TubeGeometry(stemCurve, 64, 0.35, 16, false);
+
+// Taper
+const stemPos = stemGeo.attributes.position;
+for (let i = 0; i < stemPos.count; i++) {
+const y = stemPos.getY(i);
+const taper = 1 - ((y + 2) / 4) * 0.4;
+stemPos.setX(i, stemPos.getX(i) * taper);
+stemPos.setZ(i, stemPos.getZ(i) * taper);
+}
+stemGeo.computeVertexNormals();
+
+const stemMat = new THREE.MeshStandardMaterial({
+color: 0xc9a227,
+roughness: 0.8,
+metalness: 0.1
+});
+const stem = new THREE.Mesh(stemGeo, stemMat);
+mushroom.add(stem);
+
+// Cap
+const capGeo = new THREE.SphereGeometry(2.2, 128, 64, 0, Math.PI * 2, 0, Math.PI * 0.55);
+const pos = capGeo.attributes.position;
+for (let i = 0; i < pos.count; i++) {
+const x = pos.getX(i), y = pos.getY(i), z = pos.getZ(i);
+const noise = Math.sin(x * 2) * Math.cos(z * 2) * 0.15 + Math.sin(y * 3) * 0.1;
+const bulge = Math.pow(Math.abs(x) / 2, 2) * 0.3;
+pos.setY(i, y + noise + bulge);
+}
+capGeo.computeVertexNormals();
+
+const capMat = new THREE.MeshStandardMaterial({
+color: 0x8b5a2b,
+roughness: 0.6,
+metalness: 0.05,
+side: THREE.DoubleSide
+});
+const cap = new THREE.Mesh(capGeo, capMat);
+cap.position.y = 1.8;
+mushroom.add(cap);
+
+// Gills
+const gillsGeo = new THREE.CircleGeometry(2, 64);
+const gillsMat = new THREE.MeshStandardMaterial({
+color: 0x4a3728,
+roughness: 0.9,
+side: THREE.DoubleSide,
+transparent: true,
+opacity: 0.95
+});
+const gills = new THREE.Mesh(gillsGeo, gillsMat);
+gills.rotation.x = -Math.PI / 2;
+gills.position.y = 1.75;
+mushroom.add(gills);
+
+// Spore particles
+const particleCount = 300;
+const particlesGeo = new THREE.BufferGeometry();
+const particlePositions = new Float32Array(particleCount * 3);
+for (let i = 0; i < particleCount * 3; i += 3) {
+const theta = Math.random() * Math.PI * 2;
+const phi = Math.random() * Math.PI;
+const r = 2.5 + Math.random() * 2;
+particlePositions[i] = r * Math.sin(phi) * Math.cos(theta);
+particlePositions[i + 1] = r * Math.sin(phi) * Math.sin(theta) + 2;
+particlePositions[i + 2] = r * Math.cos(phi);
+}
+particlesGeo.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
+const particlesMat = new THREE.PointsMaterial({
+color: 0xc9a227,
+size: 0.03,
+transparent: true,
+opacity: 0.6
+});
+const particles = new THREE.Points(particlesGeo, particlesMat);
+mushroom.add(particles);
+
+mushroom.rotation.z = 0.15;
+mushroom.rotation.x = 0.1;
+scene.add(mushroom);
+
+// Mouse tracking
+let mouseX = 0, mouseY = 0;
+document.addEventListener('mousemove', (e) => {
+mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
+mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
+}, { passive: true });
+
+// Animation
+const animate = () => {
+requestAnimationFrame(animate);
+mushroom.rotation.y += 0.001;
+mushroom.rotation.x = 0.1 + mouseY * 0.1;
+mushroom.rotation.z = 0.15 + mouseX * 0.05;
+
+const positions = particles.geometry.attributes.position.array;
+for (let i = 0; i < particleCount * 3; i += 3) {
+positions[i + 1] += 0.002;
+if (positions[i + 1] > 6) positions[i + 1] = -1;
+}
+particles.geometry.attributes.position.needsUpdate = true;
+
+particles.rotation.y -= 0.0005;
+
+renderer.render(scene, camera);
+};
+animate();
+};
+
+// ============================================
+// BRAIN VISUALIZATION - BASELINE vs ENHANCED
+// ============================================
+const initBrains = () => {
+const createBrain = (containerId, isEnhanced) => {
+const container = document.getElementById(containerId);
+if (!container) return;
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x0B0E0A);
+
+const camera = new THREE.PerspectiveCamera(50, container.clientWidth / container.clientHeight, 0.1, 100);
+camera.position.z = 6;
+
+const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+renderer.setSize(container.clientWidth, container.clientHeight);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+container.appendChild(renderer.domElement);
+
+const ambient = new THREE.AmbientLight(0x404040, 0.2);
+scene.add(ambient);
+
+const keyLight = new THREE.DirectionalLight(isEnhanced ? 0x7EA066 : 0x666666, isEnhanced ? 1.2 : 0.5);
+keyLight.position.set(3, 5, 4);
+scene.add(keyLight);
+
+const fillLight = new THREE.DirectionalLight(0x444444, 0.2);
+fillLight.position.set(-3, 2, 4);
+scene.add(fillLight);
+
+// Brain sphere (wireframe)
+const brainGeo = new THREE.IcosahedronGeometry(1.8, 32);
+const brainMat = new THREE.MeshBasicMaterial({
+color: isEnhanced ? 0x2A3326 : 0x1C231A,
+wireframe: true,
+transparent: true,
+opacity: isEnhanced ? 0.3 : 0.4
+});
+const brain = new THREE.Mesh(brainGeo, brainMat);
+scene.add(brain);
+
+// Neural nodes
+const nodeCount = isEnhanced ? 80 : 20;
+const connections = new THREE.Group();
+const nodes = [];
+
+// Material color
+const nodeColor = isEnhanced ? 0x7EA066 : 0x3A3326;
+const lineColor = isEnhanced ? 0x7EA066 : 0x2A2620;
+
+for (let i = 0; i < nodeCount; i++) {
+let pos;
+const theta = Math.random() * Math.PI * 2;
+const phi = Math.acos(2 * Math.random() - 1);
+const r = 1.85;
+
+if (isEnhanced) {
+// Enhanced: distributed throughout
+pos = new THREE.Vector3(
+r * Math.sin(phi) * Math.cos(theta),
+r * Math.sin(phi) * Math.sin(theta),
+r * Math.cos(phi)
+);
+} else {
+// Baseline: concentrated in DMN (medial prefrontal, posterior cingulate)
+const isTop = Math.random() < 0.5;
+const basePhi = isTop ? 0.2 : Math.PI - 0.2;
+pos = new THREE.Vector3(
+r * Math.sin(basePhi) * Math.cos(theta) * 0.8,
+r * Math.cos(basePhi),
+r * Math.sin(basePhi) * Math.sin(theta) * 0.8
+);
+}
+
+nodes.push(pos);
+
+const nodeGeo = new THREE.SphereGeometry(isEnhanced ? 0.05 : 0.07, 8, 8);
+const nodeMat = new THREE.MeshBasicMaterial({
+color: nodeColor,
+transparent: true,
+opacity: isEnhanced ? 0.9 : 0.5
+});
+const node = new THREE.Mesh(nodeGeo, nodeMat);
+node.position.copy(pos);
+connections.add(node);
+}
+
+// Connections
+const connectionCount = isEnhanced ? 200 : 15;
+let linePositions = [];
+
+for (let i = 0; i < connectionCount; i++) {
+const idx1 = Math.floor(Math.random() * nodes.length);
+let idx2 = Math.floor(Math.random() * nodes.length);
+while (idx2 === idx1) idx2 = Math.floor(Math.random() * nodes.length);
+
+const start = nodes[idx1];
+const end = nodes[idx2];
+
+const mid = start.clone().add(end).multiplyScalar(0.5);
+mid.add(new THREE.Vector3(
+(Math.random() - 0.5) * 0.3,
+(Math.random() - 0.5) * 0.3,
+(Math.random() - 0.5) * 0.3
+));
+
+const curve = new THREE.CatmullRomCurve3([start, mid, end]);
+const points = curve.getPoints(10);
+for (let j = 0; j < points.length - 1; j++) {
+linePositions.push(points[j].x, points[j].y, points[j].z);
+linePositions.push(points[j + 1].x, points[j + 1].y, points[j + 1].z);
+}
+}
+
+const lineGeo = new THREE.BufferGeometry();
+lineGeo.setAttribute('position', new THREE.Float32BufferAttribute(linePositions, 3));
+const lineMat = new THREE.LineBasicMaterial({
+color: lineColor,
+transparent: true,
+opacity: isEnhanced ? 0.5 : 0.15
+});
+const lines = new THREE.LineSegments(lineGeo, lineMat);
+scene.add(lines);
+
+// Animation
+let time = 0;
+const animate = () => {
+requestAnimationFrame(animate);
+time += 0.016;
+
+brain.rotation.y += isEnhanced ? 0.003 : 0.001;
+connections.rotation.y += isEnhanced ? 0.003 : 0.001;
+lines.rotation.y += isEnhanced ? 0.003 : 0.001;
+
+if (isEnhanced) {
+lines.material.opacity = 0.3 + Math.sin(time * 2) * 0.2;
+}
+
+renderer.render(scene, camera);
+};
+animate();
+};
+
+createBrain('brain-canvas-left', false);
+createBrain('brain-canvas-right', true);
+};
+
+// ============================================
+// GSAP ANIMATIONS
+// ============================================
+gsap.registerPlugin(ScrollTrigger);
+gsap.utils.toArray('.stat-number').forEach(stat => {
+const target = parseInt(stat.dataset.target) || 0;
+ScrollTrigger.create({
+trigger: stat,
+start: "top 80%",
+onEnter: () => {
+gsap.to(stat, {
+duration: 2,
+ease: "power2.out",
+onUpdate: function() {
+const current = Math.round(this.progress() * target);
+stat.textContent = current + (stat.textContent.includes('%') ? '%' : stat.textContent.includes('x') ? 'x' : stat.textContent.includes('+') ? '+' : '');
+}
+});
+},
+once: true
+});
+});
+
+// ============================================
+// RETREAT BOOKING SYSTEM
+// ============================================
+const retreatData = {
+beckley: { name: 'Beckley Retreats', location: 'Jamaica', type: 'Psilocybin', price: '$4,500 — $8,000', duration: '5-7 days' },
+synthesis: { name: 'Synthesis', location: 'Netherlands', type: 'Truffles', price: '$2,200 — $4,000', duration: '3-5 days' },
+pangea: { name: 'Pangea Biomedics', location: 'Costa Rica', type: 'Ayahuasca', price: '$3,500 — $5,500', duration: '7-10 days' }
+};
+
+let currentStep = 1;
+let selectedRetreat = null;
+let medicalFlags = [];
+
+function openBooking(retreatId) {
+selectedRetreat = retreatData[retreatId];
+currentStep = 1;
+openModal(generateBookingStep1());
+}
+
+function generateBookingStep1() {
+const r = selectedRetreat;
+return `
+<h2>Book ${r.name}</h2>
+<div class="booking-steps">
+<div class="booking-step active">Experience</div>
+<div class="booking-step">Medical</div>
+<div class="booking-step">Confirm</div>
+</div>
+<div class="form-group">
+<label class="required">Select dates</label>
+<input type="date" id="retreat-date">
+</div>
+<div class="form-group">
+<label class="required">Number of participants</label>
+<select id="participants"><option>1</option><option>2</option><option>3</option><option>4</option></select>
+</div>
+<div class="form-group">
+<label>Experience level</label>
+<div class="radio-group">
+<div class="radio-option" onclick="selectRadio(this, 'first-time')">
+<input type="radio" name="experience" id="first-time">
+<div><span class="radio-label">First time</span><span class="radio-sublabel">Never used psychedelics</span></div>
+</div>
+<div class="radio-option" onclick="selectRadio(this, 'explored')">
+<input type="radio" name="experience" id="explored">
+<div><span class="radio-label">Explored before</span><span class="radio-sublabel">Some experience</span></div>
+</div>
+<div class="radio-option" onclick="selectRadio(this, 'regular')">
+<input type="radio" name="experience" id="regular">
+<div><span class="radio-label">Regular practice</span><span class="radio-sublabel">Experienced practitioner</span></div>
+</div>
+</div>
+</div>
+<div class="form-group">
+<label>Previous experience with ${r.type.toLowerCase()}?</label>
+<div class="radio-group">
+<div class="radio-option" onclick="selectRadio(this, 'substance-yes', true)"><input type="radio" name="substance"><label class="radio-label">Yes</label></div>
+<div class="radio-option" onclick="selectRadio(this, 'substance-no', true)"><input type="radio" name="substance"><label class="radio-label">No</label></div>
+</div>
+</div>
+<div style="display:flex;gap:1rem;margin-top:2rem;">
+<button class="btn btn-secondary" onclick="closeModal()" style="flex:0.5;">Cancel</button>
+<button class="btn btn-primary" onclick="goToStep2()" style="flex:1;">Continue</button>
+</div>
+`;
+}
+
+function selectRadio(el, inputId, simple = false) {
+const parent = el.closest('.radio-group');
+parent.querySelectorAll('.radio-option').forEach(opt => opt.classList.remove('selected'));
+el.classList.add('selected');
+if (simple) el.querySelector('input').checked = true;
+}
+
+function goToStep2() {
+currentStep = 2;
+document.getElementById('modal-content').innerHTML = generateBookingStep2();
+}
+
+function generateBookingStep2() {
+return `
+<h2>Medical Screening</h2>
+<div class="booking-steps">
+<div class="booking-step">Experience</div>
+<div class="booking-step active">Medical</div>
+<div class="booking-step">Confirm</div>
+</div>
+<p style="font-size:0.8rem;color:var(--text-muted);margin-bottom:1.5rem;">This protects you. We share responses with the retreat for safety.</p>
+<div class="screening-question">
+<div class="screening-text">
+<p>Taking SSRIs, SNRIs, or MAOIs?</p>
+<small>Antidepressants or similar medications</small>
+</div>
+<div class="toggle-switch" onclick="toggleMedical(this, 'ssris')"></div>
+</div>
+<div class="screening-question">
+<div class="screening-text">
+<p>Taking lithium?</p>
+<small>Severe contraindication</small>
+</div>
+<div class="toggle-switch" onclick="toggleMedical(this, 'lithium')"></div>
+</div>
+<div class="screening-question">
+<div class="screening-text">
+<p>History of psychotic disorders?</p>
+<small>Schizophrenia, bipolar I, or family history</small>
+</div>
+<div class="toggle-switch" onclick="toggleMedical(this, 'psychotic')"></div>
+</div>
+<div class="screening-question">
+<div class="screening-text">
+<p>Heart conditions?</p>
+<small>Heart disease, arrhythmia, etc.</small>
+</div>
+<div class="toggle-switch" onclick="toggleMedical(this, 'heart')"></div>
+</div>
+<div class="screening-question">
+<div class="screening-text">
+<p>Pregnant or breastfeeding?</p>
+</div>
+<div class="toggle-switch" onclick="toggleMedical(this, 'pregnant')"></div>
+</div>
+<div class="warning-box" id="medical-warning">
+<p><strong>Warning:</strong> Based on your responses, this retreat may not be appropriate. Contact us for alternatives.</p>
+</div>
+<div style="display:flex;gap:1rem;margin-top:2rem;">
+<button class="btn btn-secondary" onclick="currentStep=1;document.getElementById('modal-content').innerHTML=generateBookingStep1()" style="flex:0.5;">Back</button>
+<button class="btn btn-primary" onclick="goToStep3()" style="flex:1;">Continue</button>
+</div>
+`;
+}
+
+function toggleMedical(el, flag) {
+el.classList.toggle('yes');
+const isYes = el.classList.contains('yes');
+if (isYes) {
+medicalFlags.push(flag);
+if (['lithium', 'psychotic'].includes(flag)) {
+el.classList.add('alert');
+document.getElementById('medical-warning').classList.add('visible');
+}
+} else {
+medicalFlags = medicalFlags.filter(f => f !== flag);
+el.classList.remove('alert');
+if (medicalFlags.length === 0) document.getElementById('medical-warning').classList.remove('visible');
+}
+}
+
+function goToStep3() {
+currentStep = 3;
+document.getElementById('modal-content').innerHTML = generateBookingStep3();
+}
+
+function generateBookingStep3() {
+const hasFlags = medicalFlags.length > 0;
+return `
+<h2>Booking Confirmation</h2>
+<div class="booking-steps">
+<div class="booking-step">Experience</div>
+<div class="booking-step">Medical</div>
+<div class="booking-step active">Confirm</div>
+</div>
+${hasFlags ? `
+<div style="background:rgba(160,96,96,0.1);border:1px solid var(--rose);padding:1rem;margin-bottom:1.5rem;">
+<p style="color:var(--rose);font-size:0.8rem;margin:0;"><strong>Medical Review Required:</strong> A concierge will contact you within 24 hours to discuss alternatives appropriate for your situation.</p>
+</div>
+` : ''}
+<div style="background:var(--bg-elevated);padding:1.5rem;margin-bottom:1.5rem;">
+<h3 style="margin-bottom:1rem;">Booking Summary</h3>
+<p style="font-size:0.85rem;margin-bottom:0.5rem;"><strong>${selectedRetreat.name}</strong></p>
+<p style="font-size:0.8rem;color:var(--text-muted);margin-bottom:1rem;">${selectedRetreat.location} · ${selectedRetreat.duration}</p>
+<div style="display:flex;justify-content:space-between;padding:1rem 0;border-top:1px solid var(--border);margin-top:1rem;">
+<span style="font-size:0.8rem;">Retreat price</span>
+<span style="font-size:0.8rem;color:var(--amber);">${selectedRetreat.price}</span>
+</div>
+<div style="display:flex;justify-content:space-between;padding:0.5rem 0;">
+<span style="font-size:0.8rem;">Concierge fee</span>
+<span style="font-size:0.8rem;color:var(--amber);">$150</span>
+</div>
+<div style="display:flex;justify-content:space-between;padding:1rem 0;border-top:1px solid var(--border);">
+<span style="font-size:0.8rem;">Total</span>
+<span style="font-size:1rem;color:var(--amber);font-family:'Cormorant Garamond',serif;">${selectedRetreat.price.includes('—') ? selectedRetreat.price.split('—')[0].replace('$','').trim() + ' — $' + (parseInt(selectedRetreat.price.split('—')[1].replace('$','').trim().replace(',','')) + 150).toLocaleString() : 'Calculating'}</span>
+</div>
+</div>
+<div class="form-group">
+<label class="required">Email</label>
+<input type="email" id="booking-email" placeholder="you@email.com">
+</div>
+<div class="form-group">
+<label>Special needs?</label>
+<textarea id="booking-notes" rows="3" placeholder="Dietary, accessibility, etc."></textarea>
+</div>
+<button class="btn btn-primary" style="width:100%;" onclick="submitBooking()">Complete Booking</button>
+`;
+}
+
+function submitBooking() {
+document.getElementById('modal-content').innerHTML = `
+<h2>Booking Submitted</h2>
+<div style="text-align:center;padding:2rem 0;">
+<div style="width:80px;height:80px;border:2px solid var(--green);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1.5rem;font-size:2rem;color:var(--green);">✓</div>
+<p style="font-size:1rem;margin-bottom:0.5rem;">A concierge will reach out within 24 hours.</p>
+<p style="font-size:0.8rem;color:var(--text-muted);">Pre-retreat preparation protocol will activate automatically.</p>
+</div>
+<div style="background:var(--bg-elevated);padding:1rem;margin-top:1.5rem;">
+<p style="font-size:0.75rem;color:var(--text-muted);margin:0;"><strong>What happens next:</strong> 1) We review your inquiry. 2) Match you to available dates. 3) Coordinate with retreat. 4) Send confirmation + prep protocol.</p>
+</div>
+<button class="btn btn-secondary" style="width:100%;margin-top:1.5rem;" onclick="closeModal()">Close</button>
+`;
+}
+
+// ============================================
+// AI CHAT BOT
+// ============================================
+const aiResponses = [
+"What part of you is saying that?",
+"Where do you feel that in your body?",
+"What does this tell you about what you value?",
+"That pattern you mentioned — how long has it been showing up?",
+"What would it look like to hold that with more compassion?",
+"Integration isn't about fixing. It's about listening.",
+"The window of neuroplasticity is 2-4 weeks. What practices support you during that time?",
+"That's a common experience after ceremony. The mind needs time to make meaning."
+];
+
+function toggleAIChat() {
+const chat = document.getElementById('ai-chat-window');
+chat.classList.toggle('open');
+}
+
+function sendAIMessage() {
+const input = document.getElementById('ai-chat-input');
+const msg = input.value.trim();
+if (!msg) return;
+
+const messages = document.getElementById('ai-chat-messages');
+
+// Add user message
+const userDiv = document.createElement('div');
+userDiv.className = 'ai-chat-message user-message';
+userDiv.textContent = msg;
+messages.appendChild(userDiv);
+
+input.value = '';
+
+// Show typing
+const typingDiv = document.createElement('div');
+typingDiv.className = 'ai-typing-dots';
+typingDiv.innerHTML = '<span></span><span></span><span></span>';
+messages.appendChild(typingDiv);
+messages.scrollTop = messages.scrollHeight;
+
+// Respond
+setTimeout(() => {
+typingDiv.remove();
+const aiDiv = document.createElement('div');
+aiDiv.className = 'ai-chat-message ai-message';
+aiDiv.textContent = aiResponses[Math.floor(Math.random() * aiResponses.length)];
+messages.appendChild(aiDiv);
+messages.scrollTop = messages.scrollHeight;
+}, 1500);
+}
+
+// ============================================
+// TOOLS - FUNCTIONAL
+// ============================================
+function switchTool(toolId, btn) {
+document.querySelectorAll('.tool-tab').forEach(t => t.classList.remove('active'));
+document.querySelectorAll('.tool-content').forEach(c => c.classList.remove('active'));
+btn.classList.add('active');
+document.getElementById('tool-' + toolId).classList.add('active');
+}
+
+// Journal
+const STORAGE = { journal: 'fs_journal', mood: 'fs_mood', breath: 'fs_breath' };
+function getData(key) { return JSON.parse(localStorage.getItem(key) || '[]'); }
+function setData(key, data) { localStorage.setItem(key, JSON.stringify(data)); }
+
+function saveJournal() {
+const text = document.getElementById('journal-input').value.trim();
+if (!text) return;
+
+const entries = getData(STORAGE.journal);
+entries.unshift({ id: Date.now(), text, date: new Date().toISOString() });
+setData(STORAGE.journal, entries);
+
+document.getElementById('journal-input').value = '';
+
+// Show AI response
+const history = document.getElementById('journal-history');
+const aiResponse = aiResponses[Math.floor(Math.random() * aiResponses.length)];
+history.innerHTML = `<div style="padding:1rem;background:var(--bg-elevated);border-left:2px solid var(--green);margin-top:1rem;">
+<p style="font-size:0.8rem;color:var(--text-muted);margin-bottom:0.5rem;">AI Response:</p>
+<p style="font-size:0.85rem;color:var(--text-primary);margin:0;" class="ai-typing">${aiResponse}</p>
+</div>` + history.innerHTML;
+}
+
+// Breathwork
+let breathRunning = false;
+function startBreathwork() {
+if (breathRunning) return;
+breathRunning = true;
+
+const circle = document.getElementById('breath-circle');
+const text = document.getElementById('breath-text');
+const sub = document.getElementById('breath-sub');
+
+function cycle() {
+text.textContent = 'Inhale';
+sub.textContent = '4 seconds';
+circle.className = 'breath-circle inhaling';
+
+setTimeout(() => {
+text.textContent = 'Hold';
+sub.textContent = '7 seconds';
+circle.className = 'breath-circle holding';
+
+setTimeout(() => {
+text.textContent = 'Exhale';
+sub.textContent = '8 seconds';
+circle.className = 'breath-circle exhaling';
+
+setTimeout(() => {
+cycle();
+}, 8000);
+}, 7000);
+}, 4000);
+}
+cycle();
+
+// Log
+const logs = getData(STORAGE.breath);
+logs.unshift({ date: new Date().toISOString() });
+setData(STORAGE.breath, logs);
+}
+
+// Mood
+function saveMood() {
+const data = {
+energy: document.getElementById('energy-slider').value,
+mood: document.getElementById('mood-slider').value,
+focus: document.getElementById('focus-slider').value,
+date: new Date().toISOString()
+};
+const entries = getData(STORAGE.mood);
+entries.unshift(data);
+setData(STORAGE.mood, entries);
+
+const history = document.getElementById('mood-history');
+const date = new Date().toLocaleDateString();
+history.innerHTML = `<div style="display:flex;justify-content:space-between;padding:0.75rem 0;border-bottom:1px solid var(--border);font-size:0.75rem;"><span style="color:var(--text-muted);">${date}</span><span style="color:var(--amber);">E:${data.energy} M:${data.mood} F:${data.focus}</span></div>` + history.innerHTML;
+}
+
+// Protocol
+function setProtocol(type, btn) {
+document.querySelectorAll('.protocol-option').forEach(o => o.classList.remove('active'));
+btn.classList.add('active');
+
+const calendar = document.getElementById('protocol-calendar');
+let html = '';
+for (let i = 1; i <= 14; i++) {
+let isOn = false;
+if (type === 'fadiman') isOn = i % 3 === 1;
+else isOn = i <= 4 || (i > 7 && i <= 11);
+html += `<div class="protocol-day ${isOn ? 'on' : ''} ${i === 3 ? 'today' : ''}">${i}</div>`;
+}
+calendar.innerHTML = html;
+}
+
+// ============================================
+// MODALS
+// ============================================
+function openModal(content) {
+const modal = document.getElementById('modal-overlay');
+document.getElementById('modal-content').innerHTML = content;
+modal.classList.add('active');
+document.body.style.overflow = 'hidden';
+}
+
+function closeModal(e) {
+if (e && e.target !== document.getElementById('modal-overlay')) return;
+document.getElementById('modal-overlay').classList.remove('active');
+document.body.style.overflow = '';
+}
+
+// Nav scroll
+window.addEventListener('scroll', () => {
+const nav = document.getElementById('nav');
+if (window.scrollY > 50) nav.classList.add('nav-scrolled');
+else nav.classList.remove('nav-scrolled');
+}, { passive: true });
+
+// Init
+document.addEventListener('DOMContentLoaded', () => {
+initMushroom();
+initBrains();
+setProtocol('fadiman', document.querySelector('.protocol-option'));
+});
+</script>
 </body>
 </html>
