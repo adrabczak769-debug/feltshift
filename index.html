@@ -4,6 +4,18 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Feltshift — Psychedelic Integration Journal & Retreat Directory</title>
+<meta name="description" content="AI-powered integration journal for psychedelic experiences. Mood tracking, breathwork, microdose protocols, and verified retreat directory. Free forever.">
+<meta name="theme-color" content="#050705">
+<meta property="og:title" content="Feltshift — Psychedelic Integration Journal & Retreat Directory">
+<meta property="og:description" content="AI-powered integration journal for psychedelic experiences. Mood tracking, breathwork, and verified retreats.">
+<meta property="og:image" content="https://feltshift.me/assets/og-image.png">
+<meta property="og:url" content="https://feltshift.me">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Feltshift — Psychedelic Integration Journal & Retreat Directory">
+<meta name="twitter:description" content="AI-powered integration journal for psychedelic experiences. Mood tracking, breathwork, and verified retreats.">
+<link rel="canonical" href="https://feltshift.me">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍄</text></svg>">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.2/dist/gsap.min.js"></script>
@@ -59,6 +71,12 @@ color: var(--text-primary);
 text-decoration: none;
 }
 .nav-links { display: flex; gap: 3.5rem; }
+.nav-mobile-toggle { display: none; background: none; border: none; color: var(--text-primary); font-size: 1.5rem; cursor: pointer; }
+@media (max-width: 768px) {
+  .nav-links { display: none; position: absolute; top: 100%; left: 0; right: 0; background: var(--bg-deep); flex-direction: column; padding: 1rem 2rem; gap: 1rem; border-bottom: 1px solid var(--border); }
+  .nav-links.active { display: flex; }
+  .nav-mobile-toggle { display: block; }
+}
 .nav-links a {
 color: var(--text-secondary);
 text-decoration: none;
@@ -877,13 +895,15 @@ margin-bottom: 1rem;
 
 <nav class="nav" id="nav">
 <a href="#" class="nav-logo">FELTSHIFT</a>
-<div class="nav-links">
+<div class="nav-links" id="nav-links">
 <a href="#features">Features</a>
 <a href="#science">Science</a>
 <a href="#retreats">Retreats</a>
 <a href="#tools">Tools</a>
 <a href="#pricing">Pricing</a>
+<a href="/app" style="color: var(--amber);">Open App</a>
 </div>
+<button class="nav-mobile-toggle" onclick="document.getElementById('nav-links').classList.toggle('active')">☰</button>
 </nav>
 
 <section class="hero" id="hero">
@@ -1094,7 +1114,7 @@ margin-bottom: 1rem;
 </select>
 </div>
 <div class="retreat-list">
-<div class="retreat-item" onclick="openBooking('beckley')">
+<div class="retreat-item" data-location="Jamaica" data-modality="Psilocybin" data-price="4500" data-duration="7" onclick="openBooking('beckley')">
 <div class="retreat-img">FS</div>
 <div>
 <div class="retreat-meta-row"><span class="tag tag-verified">Verified</span><span class="tag tag-type">Psilocybin</span></div>
@@ -1104,7 +1124,7 @@ margin-bottom: 1rem;
 </div>
 <div class="retreat-price"><div class="amount">$4,500 — $8,000</div><div class="note">per person</div><button class="btn btn-primary" style="margin-top:0.75rem;" onclick="event.stopPropagation();openBooking('beckley')">Book</button></div>
 </div>
-<div class="retreat-item" onclick="openBooking('synthesis')">
+<div class="retreat-item" data-location="Netherlands" data-modality="Truffles" data-price="2200" data-duration="4" onclick="openBooking('synthesis')">
 <div class="retreat-img">ST</div>
 <div>
 <div class="retreat-meta-row"><span class="tag tag-verified">Verified</span><span class="tag tag-type">Truffles</span></div>
@@ -1114,7 +1134,7 @@ margin-bottom: 1rem;
 </div>
 <div class="retreat-price"><div class="amount">$2,200 — $4,000</div><div class="note">per person</div><button class="btn btn-primary" style="margin-top:0.75rem;" onclick="event.stopPropagation();openBooking('synthesis')">Book</button></div>
 </div>
-<div class="retreat-item" onclick="openBooking('pangea')">
+<div class="retreat-item" data-location="Costa Rica" data-modality="Ayahuasca" data-price="3500" data-duration="9" onclick="openBooking('pangea')">
 <div class="retreat-img">PG</div>
 <div>
 <div class="retreat-meta-row"><span class="tag tag-verified">Verified</span><span class="tag tag-type">Ayahuasca</span></div>
@@ -1209,7 +1229,7 @@ margin-bottom: 1rem;
 <li>1 breathwork session per day</li>
 <li>Browse retreat directory</li>
 </ul>
-<button class="btn btn-amber" style="width:100%;">Start Free</button>
+<button class="btn btn-amber" style="width:100%;" onclick="openModal('signup')">Start Free</button>
 </div>
 <div class="pricing-card featured">
 <div class="pricing-badge">Recommended</div>
@@ -1223,7 +1243,7 @@ margin-bottom: 1rem;
 <li>Full breathwork library</li>
 <li>Mood analytics & reports</li>
 </ul>
-<button class="btn btn-primary" style="width:100%;">Start Free Trial</button>
+<button class="btn btn-primary" style="width:100%;" onclick="openModal('trial')">Start Free Trial</button>
 <p style="font-size:0.65rem;color:var(--text-muted);margin-top:1rem;text-align:center;">7-day free trial. Cancel anytime.</p>
 </div>
 <div class="pricing-card">
@@ -1236,7 +1256,7 @@ margin-bottom: 1rem;
 <li>Integration monitoring</li>
 <li>Session notes & tracking</li>
 </ul>
-<button class="btn btn-amber" style="width:100%;">Contact Us</button>
+<button class="btn btn-amber" style="width:100%;" onclick="openModal('contact')">Contact Us</button>
 </div>
 </div>
 </section>
@@ -1974,11 +1994,42 @@ calendar.innerHTML = html;
 // ============================================
 // MODALS
 // ============================================
+const MODAL_TEMPLATES = {
+signup: `<div style="max-width:400px;"><h3 style="font-family:'Cormorant Garamond',serif;font-size:1.8rem;margin-bottom:1rem;color:var(--amber);">Start Your Integration</h3><p style="color:var(--text-secondary);margin-bottom:1.5rem;">Create your free account to begin the journey.</p><form onsubmit="event.preventDefault(); handleSignup(this);"><input type="email" name="email" placeholder="Your email" required style="width:100%;padding:1rem;margin-bottom:1rem;background:var(--bg-surface);border:1px solid var(--border);color:var(--text-primary);border-radius:8px;"><input type="password" name="password" placeholder="Choose password" required style="width:100%;padding:1rem;margin-bottom:1.5rem;background:var(--bg-surface);border:1px solid var(--border);color:var(--text-primary);border-radius:8px;"><button type="submit" class="btn btn-primary" style="width:100%;">Create Account</button></form><p style="margin-top:1.5rem;text-align:center;"><a href="/app" style="color:var(--green);">Already have an account? Open App →</a></p></div>`,
+trial: `<div style="max-width:400px;"><h3 style="font-family:'Cormorant Garamond',serif;font-size:1.8rem;margin-bottom:1rem;color:var(--green);">Start Free Trial</h3><p style="color:var(--text-secondary);margin-bottom:1.5rem;">7 days full access. Cancel anytime.</p><form onsubmit="event.preventDefault(); handleTrial(this);"><input type="email" name="email" placeholder="Your email" required style="width:100%;padding:1rem;margin-bottom:1rem;background:var(--bg-surface);border:1px solid var(--border);color:var(--text-primary);border-radius:8px;"><input type="text" name="business" placeholder="Business name" style="width:100%;padding:1rem;margin-bottom:1.5rem;background:var(--bg-surface);border:1px solid var(--border);color:var(--text-primary);border-radius:8px;"><button type="submit" class="btn btn-primary" style="width:100%;">Start 7-Day Trial</button></form></div>`,
+contact: `<div style="max-width:400px;"><h3 style="font-family:'Cormorant Garamond',serif;font-size:1.8rem;margin-bottom:1rem;color:var(--amber);">Contact Us</h3><p style="color:var(--text-secondary);margin-bottom:1.5rem;">We'll respond within 24 hours.</p><form onsubmit="event.preventDefault(); handleContact(this);"><input type="text" name="name" placeholder="Your name" required style="width:100%;padding:1rem;margin-bottom:1rem;background:var(--bg-surface);border:1px solid var(--border);color:var(--text-primary);border-radius:8px;"><input type="email" name="email" placeholder="Your email" required style="width:100%;padding:1rem;margin-bottom:1rem;background:var(--bg-surface);border:1px solid var(--border);color:var(--text-primary);border-radius:8px;"><textarea name="message" placeholder="How can we help?" rows="4" required style="width:100%;padding:1rem;margin-bottom:1.5rem;background:var(--bg-surface);border:1px solid var(--border);color:var(--text-primary);border-radius:8px;resize:vertical;"></textarea><button type="submit" class="btn btn-primary" style="width:100%;">Send Message</button></form></div>`
+};
+
 function openModal(content) {
 const modal = document.getElementById('modal-overlay');
-document.getElementById('modal-content').innerHTML = content;
+const modalContent = document.getElementById('modal-content');
+if (MODAL_TEMPLATES[content]) {
+modalContent.innerHTML = MODAL_TEMPLATES[content];
+} else {
+modalContent.innerHTML = content;
+}
 modal.classList.add('active');
 document.body.style.overflow = 'hidden';
+}
+
+function handleSignup(form) {
+const email = form.email.value;
+const password = form.password.value;
+// Store in localStorage for demo
+localStorage.setItem('feltshift_user', JSON.stringify({email, created: new Date().toISOString()}));
+modalContent.innerHTML = `<div style="text-align:center;padding:2rem;"><div style="font-size:4rem;margin-bottom:1rem;">✓</div><h3 style="font-family:'Cormorant Garamond',serif;font-size:1.8rem;margin-bottom:1rem;color:var(--green);">Welcome!</h3><p style="color:var(--text-secondary);margin-bottom:1.5rem;">Your account is ready.</p><a href="/app" class="btn btn-primary">Open the App →</a></div>`;
+}
+
+function handleTrial(form) {
+const email = form.email.value;
+localStorage.setItem('feltshift_trial', JSON.stringify({email, started: new Date().toISOString()}));
+openModal(`<div style="text-align:center;padding:2rem;"><div style="font-size:4rem;margin-bottom:1rem;">🎉</div><h3 style="font-family:'Cormorant Garamond',serif;font-size:1.8rem;margin-bottom:1rem;color:var(--green);">Trial Started!</h3><p style="color:var(--text-secondary);margin-bottom:1.5rem;">Check your email for next steps.</p><button class="btn btn-primary" onclick="closeModal(); window.location.href='/app'">Go to App →</button></div>`);
+}
+
+function handleContact(form) {
+const data = {name: form.name.value, email: form.email.value, message: form.message.value, sent: new Date().toISOString()};
+localStorage.setItem('feltshift_contact_' + Date.now(), JSON.stringify(data));
+openModal(`<div style="text-align:center;padding:2rem;"><div style="font-size:4rem;margin-bottom:1rem;">✓</div><h3 style="font-family:'Cormorant Garamond',serif;font-size:1.8rem;margin-bottom:1rem;color:var(--green);">Message Sent!</h3><p style="color:var(--text-secondary);">We'll respond within 24 hours.</p></div>`);
 }
 
 function closeModal(e) {
@@ -1999,7 +2050,48 @@ document.addEventListener('DOMContentLoaded', () => {
 initMushroom();
 initBrains();
 setProtocol('fadiman', document.querySelector('.protocol-option'));
+
+// Retreat filter functionality
+document.getElementById('retreat-location').addEventListener('change', filterRetreats);
+document.getElementById('retreat-modality').addEventListener('change', filterRetreats);
+document.getElementById('retreat-price').addEventListener('change', filterRetreats);
+document.getElementById('retreat-duration').addEventListener('change', filterRetreats);
 });
+
+function filterRetreats() {
+const location = document.getElementById('retreat-location').value;
+const modality = document.getElementById('retreat-modality').value;
+const price = document.getElementById('retreat-price').value;
+const duration = document.getElementById('retreat-duration').value;
+
+const items = document.querySelectorAll('.retreat-item');
+
+items.forEach(item => {
+const itemLocation = item.dataset.location;
+const itemModality = item.dataset.modality;
+const itemPrice = parseInt(item.dataset.price);
+const itemDuration = parseInt(item.dataset.duration);
+
+let show = true;
+
+if (location !== 'All Locations' && !itemLocation.includes(location) && location !== itemLocation) show = false;
+if (modality !== 'All Types' && itemModality !== modality) show = false;
+
+if (price !== 'Any Price') {
+if (price.includes('0 - 2')) { if (itemPrice >= 2000) show = false; }
+else if (price.includes('2,000 - 5,000')) { if (itemPrice < 2000 || itemPrice > 5000) show = false; }
+else if (price.includes('5,000+')) { if (itemPrice < 5000) show = false; }
+}
+
+if (duration !== 'Any Length') {
+if (duration.includes('3-5') && itemDuration > 5) show = false;
+if (duration.includes('6-10') && (itemDuration < 6 || itemDuration > 10)) show = false;
+if (duration.includes('10+') && itemDuration < 10) show = false;
+}
+
+item.style.display = show ? '' : 'none';
+});
+}
 </script>
 </body>
 </html>
