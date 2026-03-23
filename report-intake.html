@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Integration Report Intake — Feltshift</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#050705;--s1:#0B0E0A;--s2:#0e120d;
+  --bdr:#1C231A;--bdr2:#2A3326;
+  --tx:#E0DBCC;--tx2:#AAA598;--tx3:#6E695E;
+  --g:#7EA066;--gd:#556E40;
+  --a:#BF9B55;
+}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--tx);min-height:100vh;padding:5rem 1.5rem 4rem}
+.wrap{max-width:660px;margin:0 auto}
+.back{font-size:0.7rem;letter-spacing:0.15em;color:var(--tx3);text-decoration:none;text-transform:uppercase;display:inline-block;margin-bottom:2.5rem}
+.back:hover{color:var(--tx2)}
+.logo{font-family:'Cormorant Garamond',serif;font-size:1.2rem;letter-spacing:0.12em;color:var(--tx);margin-bottom:0.5rem}
+.form-eyebrow{font-size:0.6rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--a);margin-bottom:0.75rem}
+h1{font-family:'Cormorant Garamond',serif;font-size:clamp(1.6rem,4vw,2.2rem);font-weight:300;line-height:1.2;margin-bottom:0.75rem}
+.form-intro{font-size:0.9rem;color:var(--tx2);line-height:1.8;margin-bottom:2.5rem;padding-bottom:2rem;border-bottom:1px solid var(--bdr)}
+
+/* Progress */
+.progress-bar{height:2px;background:var(--bdr);border-radius:2px;margin-bottom:2.5rem;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--gd),var(--g));border-radius:2px;transition:width 0.4s ease;width:0%}
+
+/* Form */
+.field{margin-bottom:1.75rem}
+.field-num{font-size:0.6rem;letter-spacing:0.25em;color:var(--a);margin-bottom:0.3rem}
+label{display:block;font-size:0.9rem;color:var(--tx);margin-bottom:0.5rem;line-height:1.5}
+label .hint{display:block;font-size:0.8rem;color:var(--tx3);margin-top:0.2rem;font-weight:300}
+input[type="text"],input[type="email"],select,textarea{
+  width:100%;background:var(--s1);border:1px solid var(--bdr);color:var(--tx);
+  padding:0.85rem 1rem;font-size:0.9rem;font-family:'DM Sans',sans-serif;
+  border-radius:4px;transition:border-color 0.25s;outline:none;
+  -webkit-appearance:none;
+}
+input:focus,select:focus,textarea:focus{border-color:var(--g)}
+textarea{resize:vertical;min-height:100px;line-height:1.7}
+select option{background:var(--s1);color:var(--tx)}
+::placeholder{color:var(--tx3)}
+
+/* Payment note */
+.payment-note{background:var(--s2);border:1px solid var(--bdr2);border-radius:4px;padding:1.25rem 1.5rem;margin-bottom:2rem;font-size:0.85rem;color:var(--tx2);line-height:1.7}
+.payment-note strong{color:var(--tx)}
+
+.submit-btn{
+  width:100%;padding:1.1rem;background:linear-gradient(135deg,var(--gd),var(--g));
+  color:var(--bg);font-size:0.7rem;letter-spacing:0.2em;text-transform:uppercase;
+  border:none;border-radius:100px;cursor:pointer;font-family:'DM Sans',sans-serif;
+  font-weight:500;transition:all 0.35s;margin-top:0.5rem;
+}
+.submit-btn:hover{transform:translateY(-1px);box-shadow:0 10px 30px rgba(126,160,102,0.3)}
+.submit-btn:disabled{opacity:0.5;cursor:not-allowed;transform:none}
+
+.legal{font-size:0.72rem;color:var(--tx3);line-height:1.7;margin-top:1.25rem;text-align:center}
+
+/* Loading state */
+.loading{display:none;text-align:center;padding:3rem}
+.loading p{color:var(--tx2);font-size:0.9rem}
+.loading .dots::after{content:'';animation:dots 1.5s infinite}
+@keyframes dots{0%{content:'.'}33%{content:'..'}66%{content:'...'}100%{content:'.'}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a href="report.html" class="back">← Back</a>
+  <div class="logo">Feltshift</div>
+
+  <div id="formSection">
+    <div class="form-eyebrow">Integration Report Intake</div>
+    <h1>Tell us about your experience.</h1>
+    <p class="form-intro">Answer honestly. The more you share, the more personal your report will be. This takes 10–15 minutes. Everything you share is private and used only to generate your report.</p>
+
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+
+    <form id="intakeForm" method="POST" action="https://autumn-damaged-binding-highland.trycloudflare.com/submit">
+
+      <div class="field">
+        <div class="field-num">01</div>
+        <label>Your first name
+          <span class="hint">We'll use this throughout your report.</span>
+        </label>
+        <input type="text" name="name" placeholder="First name" required>
+      </div>
+
+      <div class="field">
+        <div class="field-num">02</div>
+        <label>Your email address
+          <span class="hint">Where we'll send your report. Check your spam folder if you don't see it within 15 minutes.</span>
+        </label>
+        <input type="email" name="email" placeholder="you@email.com" required>
+      </div>
+
+      <div class="field">
+        <div class="field-num">03</div>
+        <label>What was the experience?
+          <span class="hint">Substance, setting (solo/retreat/ceremony), approximate timeframe of when it happened.</span>
+        </label>
+        <input type="text" name="experience_type" placeholder="e.g. Psilocybin retreat in Costa Rica, 3 weeks ago" required>
+      </div>
+
+      <div class="field">
+        <div class="field-num">04</div>
+        <label>What were the main themes, visions, emotions, or moments that came up?
+          <span class="hint">Share as much as you're comfortable with. What was most prominent? What surprised you?</span>
+        </label>
+        <textarea name="themes" placeholder="The main things that came up during the experience..." required rows="5"></textarea>
+      </div>
+
+      <div class="field">
+        <div class="field-num">05</div>
+        <label>What insights or realizations did you have?
+          <span class="hint">Even if they felt vague or confusing — write what you remember.</span>
+        </label>
+        <textarea name="insights" placeholder="Things you understood, felt, or realized..." required rows="4"></textarea>
+      </div>
+
+      <div class="field">
+        <div class="field-num">06</div>
+        <label>What are you struggling with since the experience?
+          <span class="hint">Confusion, difficulty returning to normal life, specific emotions, relationships — anything.</span>
+        </label>
+        <textarea name="struggles" placeholder="What's been hard or confusing..." rows="4"></textarea>
+      </div>
+
+      <div class="field">
+        <div class="field-num">07</div>
+        <label>What do you most want to integrate into your life?
+          <span class="hint">The specific insights, changes, or intentions you want to make real.</span>
+        </label>
+        <textarea name="intentions" placeholder="What you want to carry forward..." required rows="4"></textarea>
+      </div>
+
+      <div class="field">
+        <div class="field-num">08</div>
+        <label>Tell us about your life right now.
+          <span class="hint">Work, relationships, what you're dealing with, what you're building or trying to change. Give us context.</span>
+        </label>
+        <textarea name="life_context" placeholder="A brief picture of your life at this moment..." required rows="4"></textarea>
+      </div>
+
+      <div class="field">
+        <div class="field-num">09</div>
+        <label>Have you done integration work before?
+          <span class="hint">Therapy, journaling, meditation, previous experiences — anything relevant.</span>
+        </label>
+        <select name="prior_work">
+          <option value="">Select one</option>
+          <option value="This is my first time doing any integration work">First time — no prior experience</option>
+          <option value="Some journaling or self-reflection but nothing structured">Some journaling / self-reflection</option>
+          <option value="I have a meditation or mindfulness practice">I have a meditation / mindfulness practice</option>
+          <option value="I've worked with a therapist or integration coach before">I've worked with a therapist or integration coach</option>
+          <option value="I have extensive experience with integration and psychedelic work">Extensive experience with psychedelic work</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <div class="field-num">10</div>
+        <label>Anything else you want us to know?
+          <span class="hint">Optional. Mental health context, specific questions, or anything that felt important that didn't fit above.</span>
+        </label>
+        <textarea name="notes" placeholder="Optional — anything else..." rows="3"></textarea>
+      </div>
+
+      <div class="payment-note">
+        <strong>After submitting:</strong> You'll be directed to a secure payment page ($49). Once payment is confirmed, your personalized report is generated and sent to your inbox — usually within 15 minutes.
+      </div>
+
+      <button type="submit" class="submit-btn" id="submitBtn">Generate My Report &rarr;</button>
+      <p class="legal">By submitting you agree this is for educational purposes only. Not medical advice. Must be 18+. All responses are private and deleted after your report is generated.</p>
+    </form>
+  </div>
+
+  <div class="loading" id="loadingSection">
+    <p>Generating your report<span class="dots"></span></p>
+    <p style="margin-top:0.75rem;font-size:0.8rem;color:var(--tx3)">This takes up to 15 minutes. Check your inbox.</p>
+  </div>
+</div>
+
+<script>
+// Progress bar based on form completion
+const form = document.getElementById('intakeForm');
+const fields = form.querySelectorAll('input,textarea,select');
+const fill = document.getElementById('progressFill');
+
+function updateProgress() {
+  let filled = 0;
+  fields.forEach(f => { if(f.value.trim()) filled++; });
+  fill.style.width = Math.round((filled / fields.length) * 100) + '%';
+}
+fields.forEach(f => f.addEventListener('input', updateProgress));
+
+// Submit
+form.addEventListener('submit', function(e) {
+  document.getElementById('submitBtn').disabled = true;
+  document.getElementById('submitBtn').textContent = 'Submitting...';
+});
+</script>
+</body>
+</html>

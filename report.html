@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Integration Report — Feltshift</title>
+<meta name="description" content="A personalized 20-page integration guide written specifically for your experience. Journal prompts, 30-day protocol, and practices designed just for you.">
+<link rel="canonical" href="https://feltshift.me/report">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#050705;--s1:#0B0E0A;--s2:#10140F;
+  --bdr:#1C231A;--bdr2:#2A3326;
+  --tx:#E0DBCC;--tx2:#AAA598;--tx3:#6E695E;
+  --g:#7EA066;--gl:#9CBC80;--gd:#556E40;
+  --a:#BF9B55;--al:#D4B472;
+}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--tx);line-height:1.75;font-weight:300;overflow-x:hidden}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;padding:1.25rem 3rem;display:flex;justify-content:space-between;align-items:center;z-index:100;background:rgba(5,7,5,0.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--bdr)}
+.nav-logo{font-family:'Cormorant Garamond',serif;font-size:1.3rem;letter-spacing:0.12em;color:var(--tx);text-decoration:none}
+nav a.cta{padding:0.6rem 1.5rem;border:1px solid var(--g);color:var(--g);font-size:0.65rem;letter-spacing:0.18em;text-transform:uppercase;text-decoration:none;border-radius:100px;transition:all 0.3s}
+nav a.cta:hover{background:rgba(126,160,102,0.1)}
+
+/* HERO */
+.hero{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:8rem 2rem 5rem;position:relative;overflow:hidden}
+.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 60% 50% at 50% 60%, rgba(26,61,46,0.25) 0%, transparent 70%)}
+.hero-inner{position:relative;z-index:2;max-width:680px}
+.eyebrow{font-size:0.6rem;letter-spacing:0.35em;text-transform:uppercase;color:var(--a);margin-bottom:1.5rem}
+h1{font-family:'Cormorant Garamond',serif;font-size:clamp(2.2rem,5vw,3.5rem);font-weight:300;line-height:1.15;margin-bottom:1.5rem}
+h1 em{color:var(--g);font-style:italic}
+.hero p{font-size:1rem;color:var(--tx2);max-width:500px;margin:0 auto 2.5rem;line-height:1.9}
+.price-block{display:inline-flex;align-items:center;gap:1rem;margin-bottom:2rem;background:var(--s1);border:1px solid var(--bdr2);padding:0.75rem 1.5rem;border-radius:8px}
+.price{font-family:'Cormorant Garamond',serif;font-size:2rem;color:var(--tx)}
+.price-label{font-size:0.7rem;color:var(--tx3);letter-spacing:0.08em;text-align:left;line-height:1.4}
+.btn-primary{display:inline-block;padding:1.1rem 3rem;background:linear-gradient(135deg,var(--gd),var(--g));color:var(--bg);font-size:0.7rem;letter-spacing:0.2em;text-transform:uppercase;border-radius:100px;text-decoration:none;transition:all 0.35s;font-weight:500}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(126,160,102,0.3)}
+.trust{font-size:0.7rem;color:var(--tx3);margin-top:1rem;letter-spacing:0.05em}
+
+/* WHAT YOU GET */
+section{padding:6rem 2rem}
+.container{max-width:900px;margin:0 auto}
+.section-label{font-size:0.6rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--a);margin-bottom:1rem}
+h2{font-family:'Cormorant Garamond',serif;font-size:clamp(1.7rem,3.5vw,2.4rem);font-weight:300;margin-bottom:1rem;line-height:1.2}
+.subtitle{font-size:0.95rem;color:var(--tx2);max-width:520px;line-height:1.9;margin-bottom:3rem}
+.includes-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.5rem}
+.include-card{background:var(--s1);border:1px solid var(--bdr);padding:1.75rem;border-radius:4px;transition:border-color 0.3s}
+.include-card:hover{border-color:var(--bdr2)}
+.include-num{font-size:0.6rem;letter-spacing:0.25em;color:var(--a);margin-bottom:0.75rem}
+.include-title{font-family:'Cormorant Garamond',serif;font-size:1.2rem;color:var(--tx);margin-bottom:0.5rem}
+.include-desc{font-size:0.85rem;color:var(--tx2);line-height:1.8}
+
+/* HOW IT WORKS */
+.how-section{background:var(--s1);border-top:1px solid var(--bdr);border-bottom:1px solid var(--bdr)}
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:2rem;margin-top:2.5rem}
+.step{text-align:center}
+.step-num{width:2.5rem;height:2.5rem;border:1px solid var(--g);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.75rem;color:var(--g);margin:0 auto 1rem}
+.step-title{font-size:0.9rem;color:var(--tx);margin-bottom:0.4rem;font-weight:500}
+.step-desc{font-size:0.8rem;color:var(--tx2);line-height:1.7}
+
+/* FOR WHO */
+.for-section{}
+.for-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1rem;margin-top:2rem}
+.for-card{border-left:2px solid var(--gd);padding:1rem 1.25rem}
+.for-card p{font-size:0.9rem;color:var(--tx2);line-height:1.7}
+.for-card strong{color:var(--tx);font-weight:500}
+
+/* QUOTE */
+.quote-section{text-align:center;padding:5rem 2rem;background:var(--s2);border-top:1px solid var(--bdr);border-bottom:1px solid var(--bdr)}
+blockquote{font-family:'Cormorant Garamond',serif;font-size:clamp(1.4rem,3vw,2rem);font-weight:300;font-style:italic;color:var(--tx);max-width:640px;margin:0 auto;line-height:1.4}
+blockquote::before{content:'"';color:var(--a);font-size:3rem;line-height:0;vertical-align:-0.5rem;margin-right:0.2rem}
+
+/* CTA SECTION */
+.cta-section{text-align:center}
+.cta-section h2{margin-bottom:0.75rem}
+.cta-section p{color:var(--tx2);max-width:400px;margin:0 auto 2rem;font-size:0.95rem;line-height:1.8}
+
+/* FOOTER */
+footer{border-top:1px solid var(--bdr);padding:2rem 3rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
+.footer-logo{font-family:'Cormorant Garamond',serif;font-size:1.1rem;color:var(--tx3);letter-spacing:0.1em}
+footer p{font-size:0.7rem;color:var(--tx3)}
+footer a{color:var(--tx3);text-decoration:none;margin-left:1.5rem}
+
+@media(max-width:600px){
+  nav{padding:1rem 1.5rem}
+  section{padding:4rem 1.5rem}
+  footer{flex-direction:column;text-align:center}
+  footer a{margin:0 0.5rem}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="nav-logo">Feltshift</a>
+  <a href="report-intake.html" class="cta">Get Your Report — $49</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-inner">
+    <div class="eyebrow">Personalized Integration Support</div>
+    <h1>Your experience was <em>profound.</em><br>Now comes the real work.</h1>
+    <p>A personalized 20-page integration guide written specifically for what you went through — not a template, not generic advice. Yours.</p>
+    <div class="price-block">
+      <span class="price">$49</span>
+      <span class="price-label">One-time<br>Delivered in 15 min</span>
+    </div>
+    <br>
+    <a href="report-intake.html" class="btn-primary">Get Your Integration Report</a>
+    <p class="trust">15-minute intake form &nbsp;·&nbsp; PDF delivered to your inbox &nbsp;·&nbsp; 100% private</p>
+  </div>
+</section>
+
+<!-- WHAT YOU GET -->
+<section>
+  <div class="container">
+    <div class="section-label">What's Inside</div>
+    <h2>Everything you need for the next 30 days</h2>
+    <p class="subtitle">Each section is written specifically for your experience — not copy-pasted advice, not a worksheet. A real report built around what you shared.</p>
+    <div class="includes-grid">
+      <div class="include-card">
+        <div class="include-num">01</div>
+        <div class="include-title">Your Experience Reflected Back</div>
+        <div class="include-desc">We name what you went through — the themes, emotions, and moments — so you feel truly seen before any guidance begins.</div>
+      </div>
+      <div class="include-card">
+        <div class="include-num">02</div>
+        <div class="include-title">What Your Themes Are Telling You</div>
+        <div class="include-desc">The symbols, feelings, and visions that came up — decoded in context of your life. What integration work they're inviting.</div>
+      </div>
+      <div class="include-card">
+        <div class="include-num">03</div>
+        <div class="include-title">Your 30-Day Protocol</div>
+        <div class="include-desc">A day-by-day integration structure specific to your experience. What to do in the first week, the second, and beyond.</div>
+      </div>
+      <div class="include-card">
+        <div class="include-num">04</div>
+        <div class="include-title">10 Personalized Journal Prompts</div>
+        <div class="include-desc">Written for exactly what you experienced — not generic questions but prompts that go straight to the heart of your themes.</div>
+      </div>
+      <div class="include-card">
+        <div class="include-num">05</div>
+        <div class="include-title">Body & Somatic Practices</div>
+        <div class="include-desc">Breathwork, movement, and grounding practices matched to your experience type and what you're working to integrate.</div>
+      </div>
+      <div class="include-card">
+        <div class="include-num">06</div>
+        <div class="include-title">What to Watch For</div>
+        <div class="include-desc">Signs that things are integrating well. Signs to seek support. Honest, caring, specific to your situation — not fear-mongering.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how-section">
+  <div class="container">
+    <div class="section-label">How It Works</div>
+    <h2>Simple. Private. Fast.</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-title">Answer 10 questions</div>
+        <div class="step-desc">About your experience, what came up, and what you want to integrate. Takes 10–15 minutes.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-title">Your report is generated</div>
+        <div class="step-desc">AI trained in integration practices writes your personalized report — usually within 15 minutes.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-title">Delivered to your inbox</div>
+        <div class="step-desc">A beautiful PDF, yours to keep. No account needed. No subscriptions. Just your report.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOR WHO -->
+<section class="for-section">
+  <div class="container">
+    <div class="section-label">This Is For You If...</div>
+    <h2>You've been through something real.</h2>
+    <div class="for-grid">
+      <div class="for-card"><p><strong>You had a powerful experience</strong> — solo, at a retreat, in a ceremony — and you want to do the integration work properly, not just let it fade.</p></div>
+      <div class="for-card"><p><strong>You know there was something important</strong> in what you experienced but you're having trouble putting it into words or knowing what to do with it.</p></div>
+      <div class="for-card"><p><strong>Therapy feels too clinical</strong> for what you went through, and generic integration guides don't speak to your specific experience.</p></div>
+      <div class="for-card"><p><strong>You want structure</strong> — a real 30-day path forward, not vague advice to "journal more" or "be kind to yourself."</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- QUOTE -->
+<section class="quote-section">
+  <blockquote>The trip opens the door. Integration walks you through.</blockquote>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="container">
+    <div class="section-label">Ready</div>
+    <h2>Your report. Your path.</h2>
+    <p>Fill out the intake form. Your personalized report arrives in your inbox within 15 minutes.</p>
+    <a href="report-intake.html" class="btn-primary">Get Your Integration Report — $49</a>
+    <p class="trust" style="margin-top:1rem">Private &nbsp;·&nbsp; No account needed &nbsp;·&nbsp; Educational purposes only &nbsp;·&nbsp; 18+</p>
+  </div>
+</section>
+
+<footer>
+  <span class="footer-logo">Feltshift</span>
+  <p>Educational purposes only. Not medical advice. 18+ only.
+    <a href="/">Home</a>
+  </p>
+</footer>
+
+</body>
+</html>
